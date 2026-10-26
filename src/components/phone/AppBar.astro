@@ -1,0 +1,43 @@
+---
+/** Uygulama ekranlarının üst başlık çubuğu (sağ tarafa "right" slotu ile öğe eklenir). */
+import Icon from '../Icon.astro';
+
+interface Props {
+  title: string;
+  back?: boolean;
+}
+const { title, back = false } = Astro.props;
+---
+<div class="ab">
+  {back && <Icon name="arrow-back-rounded" class="ab__back" />}
+  <span class="ab__title">{title}</span>
+  <span class="ab__right"><slot name="right" /></span>
+</div>
+
+<style>
+  .ab {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 2.5cqw;
+    height: 13cqw;
+    padding: 0 5cqw;
+  }
+  .ab :global(.ab__back) {
+    width: 6cqw;
+    height: 6cqw;
+    color: var(--text);
+  }
+  .ab__title {
+    flex: 1;
+    min-width: 0;
+    font: 650 6.1cqw/1.1 var(--font-display);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ab__right {
+    display: flex;
+    align-items: center;
+  }
+</style>

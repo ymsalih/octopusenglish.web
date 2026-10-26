@@ -1,0 +1,75 @@
+---
+/** Uygulamadaki gerçek içerik sayıları (kaynak: ilgili Flutter ekranları). */
+const stats = [
+  { value: 6, label: 'seviye', note: 'A1’den C2’ye içerik' },
+  { value: 6, label: 'sohbet modu', note: 'Serbestten seyahate' },
+  { value: 5, label: 'hikaye türü', note: 'Maceradan fantastiğe' },
+  { value: 7, label: 'okuma kategorisi', note: 'Günlük yaşamdan iş dünyasına' },
+];
+---
+<section class="stats" aria-label="Rakamlarla Octopus English">
+  <div class="container">
+    <ul class="stats__grid">
+      {stats.map((s, i) => (
+        <li class="stat" data-reveal style={`--d:${i * 0.1}s`}>
+          <span class="stat__num" data-count={s.value}>{s.value}</span>
+          <span class="stat__label">{s.label}</span>
+          <span class="stat__note">{s.note}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .stats {
+    position: relative;
+    padding-block: 72px;
+  }
+  .stats::before,
+  .stats::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(169, 150, 255, 0.4), rgba(242, 196, 90, 0.4), transparent);
+  }
+  .stats::before { top: 0; }
+  .stats::after { bottom: 0; }
+
+  .stats__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px 24px;
+  }
+  @media (min-width: 860px) {
+    .stats__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .stat {
+    display: grid;
+    gap: 4px;
+    text-align: center;
+  }
+  .stat__num {
+    font: 700 clamp(56px, 8vw, 88px) / 1 var(--font-display);
+    background: var(--grad-gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 8px 30px rgba(242, 196, 90, 0.25));
+    font-variant-numeric: tabular-nums;
+  }
+  .stat__label {
+    font: 650 clamp(1.05rem, 1.8vw, 1.3rem) / 1.2 var(--font-display);
+  }
+  .stat__note {
+    color: var(--muted);
+    font-size: 14px;
+  }
+</style>

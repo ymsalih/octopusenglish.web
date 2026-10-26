@@ -1,0 +1,86 @@
+---
+/**
+ * Resmi App Store ve Google Play rozetleri. Link src/data/site.ts'te boşsa
+ * rozet "Yakında" etiketiyle, tıklanamaz halde gösterilir.
+ */
+import { Image } from 'astro:assets';
+import { site } from '../data/site';
+import appStore from '../assets/badges/app-store.svg';
+import googlePlay from '../assets/badges/google-play.png';
+
+interface Props {
+  size?: 'md' | 'lg';
+  align?: 'center' | 'start';
+}
+const { size = 'md', align = 'center' } = Astro.props;
+
+const badges = [
+  { id: 'app-store', href: site.stores.appStore, src: appStore, alt: 'App Store’dan indirin' },
+  { id: 'google-play', href: site.stores.googlePlay, src: googlePlay, alt: 'Google Play’den indirin' },
+];
+---
+<div class:list={['badges', `badges--${size}`, `badges--${align}`]}>
+  {badges.map((b) =>
+    b.href ? (
+      <a class:list={['badge', `badge--${b.id}`]} href={b.href} target="_blank" rel="noopener">
+        <Image src={b.src} alt={b.alt} height={120} />
+      </a>
+    ) : (
+      <span class:list={['badge', `badge--${b.id}`, 'is-soon']} aria-label={`${b.alt} — yakında`}>
+        <Image src={b.src} alt="" height={120} />
+        <span class="soon">Yakında</span>
+      </span>
+    )
+  )}
+</div>
+
+<style>
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+  }
+  .badges--center { justify-content: center; }
+  .badges--start { justify-content: flex-start; }
+
+  .badge {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--h);
+    border-radius: 12px;
+    transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out), filter 0.35s;
+  }
+  .badges--md { --h: 50px; }
+  .badges--lg { --h: 58px; }
+
+  .badge :global(img) {
+    height: 100%;
+    width: auto;
+    display: block;
+  }
+  a.badge:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 34px -12px rgba(242, 196, 90, 0.45);
+  }
+  a.badge:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
+
+  .is-soon :global(img) { filter: saturate(0.6) brightness(0.8); }
+  .soon {
+    position: absolute;
+    top: -9px;
+    right: -8px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--ink);
+    font: 700 11px/1.2 var(--font-body);
+    letter-spacing: 0.02em;
+    box-shadow: 0 6px 16px -6px rgba(242, 196, 90, 0.8);
+  }
+</style>

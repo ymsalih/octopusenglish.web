@@ -1,0 +1,159 @@
+---
+/**
+ * src/content/yasal/ içindeki her Markdown dosyası için bir sayfa üretir:
+ * /gizlilik-politikasi ve /kullanim-kosullari.
+ */
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Icon from '../components/Icon.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('yasal');
+  return pages.map((page) => ({ params: { yasal: page.id }, props: { page } }));
+}
+
+const { page } = Astro.props;
+const { Content, headings } = await render(page);
+const toc = headings.filter((h) => h.depth === 2);
+const updated = page.data.updated.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<BaseLayout title={page.data.title} description={page.data.description}>
+  <PageHeader kicker="Yasal" title={page.data.title}>
+    <p class="updated" data-reveal style="--d:0.12s">
+      <Icon name="history-rounded" /> Son güncelleme: {updated}
+    </p>
+  </PageHeader>
+
+  <div class="container legal">
+    {toc.length > 0 && (
+      <nav class="toc" aria-label="İçindekiler">
+        <p class="toc__title">İçindekiler</p>
+        <ol>
+          {toc.map((h) => (
+            <li><a href={`#${h.slug}`}>{h.text}</a></li>
+          ))}
+        </ol>
+      </nav>
+    )}
+    <article class="prose">
+      <Content />
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .updated {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border-soft);
+    background: rgba(19, 30, 84, 0.5);
+    color: var(--text-2);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .updated :global(.icon) {
+    color: var(--accent);
+  }
+
+  .legal {
+    display: grid;
+    gap: 40px;
+    padding-bottom: 120px;
+  }
+  @media (min-width: 980px) {
+    .legal {
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 64px;
+      align-items: start;
+    }
+    .toc {
+      position: sticky;
+      top: calc(var(--header-h) + 28px);
+    }
+  }
+
+  .toc {
+    padding: 22px;
+    border-radius: 20px;
+    border: 1px solid var(--border-soft);
+    background: rgba(11, 21, 64, 0.6);
+  }
+  .toc__title {
+    margin-bottom: 12px;
+    color: var(--muted);
+    font: 700 12.5px/1 var(--font-body);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 2px;
+  }
+  .toc a {
+    display: block;
+    padding: 7px 10px;
+    border-radius: 10px;
+    color: var(--text-2);
+    font-size: 14px;
+    line-height: 1.35;
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .toc a:hover {
+    background: rgba(159, 178, 255, 0.08);
+    color: var(--text);
+  }
+
+  .prose {
+    max-width: 760px;
+    color: var(--text-2);
+    font-size: 16.5px;
+    line-height: 1.8;
+  }
+  .prose :global(h2) {
+    margin: 56px 0 16px;
+    color: var(--text);
+    font-size: clamp(1.45rem, 2.4vw, 1.8rem);
+    scroll-margin-top: calc(var(--header-h) + 20px);
+  }
+  .prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .prose :global(h3) {
+    margin: 32px 0 10px;
+    color: var(--text);
+    font-size: 1.2rem;
+  }
+  .prose :global(p) {
+    margin: 0 0 16px;
+  }
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin: 0 0 18px;
+    padding-left: 22px;
+  }
+  .prose :global(li) {
+    margin-bottom: 8px;
+  }
+  .prose :global(li::marker) {
+    color: var(--accent);
+  }
+  .prose :global(strong) {
+    color: var(--text);
+  }
+  .prose :global(a) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: rgba(242, 196, 90, 0.4);
+    text-underline-offset: 3px;
+  }
+  .prose :global(a:hover) {
+    text-decoration-color: var(--accent);
+  }
+</style>

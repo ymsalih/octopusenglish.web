@@ -1,0 +1,82 @@
+---
+/**
+ * Kaydırdıkça kelime kelime aydınlanan cümle. Bölüm ekranda sabit kalır
+ * (sticky); --p ilerledikçe her kelimenin opaklığı CSS'te hesaplanır.
+ * [[ ]] içindeki ifadeler altın, {{ }} içindekiler mor vurgulanır.
+ */
+const text =
+  'Bir ahtapotun [[sekiz kolu,]] [[üç kalbi]] ve [[dokuz beyni]] vardır. İngilizce öğrenmek için hepsine ihtiyacın yok: {{Octopus English}} kelimeleri yakalar, kartlarla pekiştirir, seni yapay zekayla konuşturur ve her gün biraz daha derine götürür.';
+
+type Word = { text: string; tone?: 'gold' | 'violet' };
+const words: Word[] = [];
+for (const part of text.split(/(\[\[.*?\]\]|\{\{.*?\}\})/)) {
+  if (!part) continue;
+  const tone = part.startsWith('[[') ? 'gold' : part.startsWith('{{') ? 'violet' : undefined;
+  const clean = tone ? part.slice(2, -2) : part;
+  for (const w of clean.split(/\s+/).filter(Boolean)) words.push({ text: w, tone });
+}
+---
+<section class="manifesto" id="manifesto" data-progress="sticky" aria-label="Neden Octopus English">
+  <div class="manifesto__sticky">
+    <div class="container">
+      <p class="kicker">Neden bir ahtapot?</p>
+      <p class="manifesto__text" style={`--n:${words.length}`}>
+        {words.map((w, i) => (
+          <span class:list={['w', w.tone && `w--${w.tone}`]} style={`--i:${i}`}>{w.text} </span>
+        ))}
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .manifesto {
+    position: relative;
+    height: 260svh;
+  }
+  .manifesto__sticky {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    display: flex;
+    align-items: center;
+  }
+  .manifesto__text {
+    margin-top: 26px;
+    max-width: 22ch;
+    font: 600 clamp(1.9rem, 5.4vw, 4.4rem) / 1.14 var(--font-display);
+    letter-spacing: -0.015em;
+  }
+  @media (min-width: 900px) {
+    .manifesto__text {
+      max-width: 24ch;
+    }
+  }
+  /* Kelime sırası (--i) geldikçe 0.14'ten 1'e aydınlanır. JS yoksa metin tam görünür. */
+  :global(.js) .w {
+    opacity: clamp(0.14, calc(var(--p, 0) * (var(--n) + 8) * 1.25 - var(--i)), 1);
+    transition: opacity 0.15s linear;
+  }
+  .w--gold {
+    color: var(--accent);
+    text-shadow: 0 0 32px rgba(242, 196, 90, 0.35);
+  }
+  .w--violet {
+    color: var(--primary-light);
+    text-shadow: 0 0 32px rgba(169, 150, 255, 0.4);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .manifesto {
+      height: auto;
+      padding-block: 120px;
+    }
+    .manifesto__sticky {
+      position: static;
+      height: auto;
+    }
+    :global(.js) .w {
+      opacity: 1;
+    }
+  }
+</style>

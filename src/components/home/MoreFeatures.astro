@@ -1,0 +1,105 @@
+---
+/** "Sekiz kol": uygulamadaki diğer özellikler (kaynak: dashboard_screen.dart ve ayarlar). */
+import Icon from '../Icon.astro';
+
+const items = [
+  { icon: 'inventory-2-rounded', title: 'Kelime Paketleri', text: 'A1’den C2’ye seviyene göre hazır kelime setleri; beğendiğini tek dokunuşla havuzuna ekle.' },
+  { icon: 'trophy-rounded', title: 'Öğrendiklerim', text: '“Öğrendim” dediğin kelimeler arşivde birikir. İstersen tekrar için havuza geri gönder.' },
+  { icon: 'play-circle-rounded', title: 'Video ile Öğren', text: 'Seçilmiş İngilizce videolarla kulağını alıştır, dinleme pratiği yap.' },
+  { icon: 'newspaper-rounded', title: 'Haberler', text: 'Güncel İngilizce haberlerle her gün biraz okuma pratiği.' },
+  { icon: 'insights', title: 'Gelişim Raporu', text: 'Bütün testlerin ve başarı oranın tek ekranda; en yeni, en eski ya da en başarılıya göre sırala.' },
+  { icon: 'local-fire-department-rounded', title: 'Günlük Seri', text: 'Her gün biraz çalış, serini büyüt. Bir günü kaçırma; seri sıfırdan başlar.' },
+  { icon: 'record-voice-over-rounded', title: 'Seslendirme Ayarları', text: 'Kelimeleri ve metinleri okuyan sesin hızını ve tonunu kendine göre ayarla.' },
+  { icon: 'tune-rounded', title: 'Kendi Seviyen', text: 'İngilizce seviyeni seç; yapay zeka sohbetleri ve içerikleri buna göre hazırlar.' },
+];
+---
+<section class="more section" aria-labelledby="more-title">
+  <div class="container">
+    <div class="more__head">
+      <p class="kicker" data-reveal>Dahası da var</p>
+      <h2 id="more-title" class="title-lg" data-reveal style="--d:0.08s">
+        Sekiz kol, <span class="text-violet">hiç durmayan pratik.</span>
+      </h2>
+      <p class="lead" data-reveal style="--d:0.16s">
+        Ahtapotun her kolu ayrı bir iş görür. Octopus English’te de öyle.
+      </p>
+    </div>
+
+    <ul class="more__grid">
+      {items.map((it, i) => (
+        <li class="more__card glass spot" data-reveal style={`--d:${(i % 4) * 0.08}s`}>
+          <span class="more__icon"><Icon name={it.icon} /></span>
+          <h3>{it.title}</h3>
+          <p>{it.text}</p>
+          <span class="more__arm" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .more__head {
+    display: grid;
+    gap: 18px;
+    max-width: 640px;
+    margin-bottom: 56px;
+  }
+  .more__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 620px) {
+    .more__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1040px) {
+    .more__grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  .more__card {
+    position: relative;
+    padding: 26px 24px 28px;
+    overflow: hidden;
+    transition: transform 0.5s var(--ease-out), border-color 0.5s;
+  }
+  .more__card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(169, 150, 255, 0.35);
+  }
+  .more__icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 15px;
+    background: rgba(124, 92, 245, 0.18);
+    color: var(--primary-light);
+    font-size: 24px;
+    transition: transform 0.6s var(--ease-out), background-color 0.6s, color 0.6s;
+  }
+  .more__card:hover .more__icon {
+    transform: rotate(-8deg) scale(1.08);
+    background: var(--accent);
+    color: var(--ink);
+  }
+  .more__card h3 {
+    margin-top: 18px;
+    font-size: 1.28rem;
+  }
+  .more__card p {
+    margin-top: 8px;
+    color: var(--text-2);
+    font-size: 15px;
+  }
+  .more__arm {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    font: 700 13px/1 var(--font-body);
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+</style>

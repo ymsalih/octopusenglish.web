@@ -1,0 +1,319 @@
+---
+/**
+ * Kelime Havuzum (lib/screens/home_screen.dart). Döngü: "Yeni Kelime" →
+ * alt sayfa açılır → "serendipity" yazılır → Türkçesi otomatik gelir →
+ * kaydedilir → kelime listenin başına eklenir.
+ */
+import Icon from '../../Icon.astro';
+import StatusBar from '../StatusBar.astro';
+import AppBar from '../AppBar.astro';
+import BottomBar from '../BottomBar.astro';
+
+interface Props {
+  inline?: boolean;
+}
+const { inline = false } = Astro.props;
+
+const words = [
+  ['persistent', 'azimli'],
+  ['brave', 'cesur'],
+  ['journey', 'yolculuk'],
+  ['curious', 'meraklı'],
+  ['whisper', 'fısıldamak'],
+  ['harbor', 'liman'],
+];
+const typed = 'serendipity'.split('');
+---
+<div class="screen" data-screen="words" data-screen-inline={inline ? '' : undefined}>
+  <StatusBar />
+  <AppBar title="Kelime Havuzum">
+    <span slot="right" class="ph-pill">
+      <Icon name="style-rounded" />
+      <span class="cnt"><span class="c1">24/50</span><span class="c2">25/50</span></span>
+    </span>
+  </AppBar>
+
+  <div class="search"><Icon name="search-rounded" /> Kelime ara...</div>
+
+  <ul class="list">
+    <li class="item item--new">
+      <span><b>serendipity</b><span>mutlu tesadüf</span></span>
+      <Icon name="volume-up-rounded" />
+    </li>
+    {words.map(([en, tr]) => (
+      <li class="item">
+        <span><b>{en}</b><span>{tr}</span></span>
+        <Icon name="volume-up-rounded" />
+      </li>
+    ))}
+  </ul>
+
+  <span class="fab"><Icon name="add-rounded" /> Yeni Kelime</span>
+
+  <div class="sheet">
+    <span class="sheet__handle"></span>
+    <p class="sheet__title">Yeni Kelime Ekle</p>
+    <p class="ph-caption">İngilizcesini yaz, Türkçesi otomatik gelsin.</p>
+    <div class="field field--src">
+      <Icon name="language-rounded" />
+      <span class="field__body">
+        <span class="field__label">İngilizce</span>
+        <span class="field__value">{typed.map((ch, i) => <span class="ch" style={`--i:${i}`}>{ch}</span>)}</span>
+      </span>
+      <span class="spinner"></span>
+    </div>
+    <span class="swap"><Icon name="swap-vert-rounded" /></span>
+    <div class="field">
+      <Icon name="translate-rounded" />
+      <span class="field__body">
+        <span class="field__label">Türkçe</span>
+        <span class="field__value auto">mutlu tesadüf</span>
+      </span>
+    </div>
+    <span class="save"><Icon name="check-rounded" /> Havuza Kaydet</span>
+  </div>
+
+  <BottomBar active="words" />
+</div>
+
+<style>
+  .cnt {
+    display: inline-grid;
+  }
+  .cnt > span {
+    grid-area: 1 / 1;
+  }
+  .c1 {
+    opacity: 0;
+  }
+
+  .search {
+    margin: 1cqw 5cqw 3cqw;
+    display: flex;
+    align-items: center;
+    gap: 2.4cqw;
+    padding: 3.2cqw 4cqw;
+    border-radius: 4cqw;
+    border: 1px solid var(--border);
+    background: rgba(19, 30, 84, 0.7);
+    color: var(--muted);
+    font-size: 3.8cqw;
+  }
+  .search :global(.icon) {
+    width: 5cqw;
+    height: 5cqw;
+  }
+
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0 5cqw;
+    display: grid;
+    gap: 2.2cqw;
+    overflow: hidden;
+    flex: 1;
+    align-content: start;
+  }
+  .item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3cqw 3.4cqw 3cqw 4.2cqw;
+    border-radius: 3.6cqw;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .item > span {
+    display: grid;
+    gap: 0.6cqw;
+  }
+  .item b {
+    font-weight: 800;
+    font-size: 4.3cqw;
+    line-height: 1.1;
+  }
+  .item span span {
+    color: var(--text-2);
+    font-size: 3.6cqw;
+    line-height: 1.1;
+  }
+  .item :global(.icon) {
+    width: 5.6cqw;
+    height: 5.6cqw;
+    color: var(--primary-light);
+  }
+  .item--new {
+    max-height: 20cqw;
+    border-color: rgba(242, 196, 90, 0.55);
+    box-shadow: 0 0 0 1px rgba(242, 196, 90, 0.2), 0 0 24px -6px rgba(242, 196, 90, 0.45);
+  }
+
+  .fab {
+    position: absolute;
+    z-index: 11;
+    right: 5cqw;
+    bottom: 27cqw;
+    display: inline-flex;
+    align-items: center;
+    gap: 1.5cqw;
+    padding: 3.6cqw 4.8cqw;
+    border-radius: 5cqw;
+    background: var(--primary);
+    color: #fff;
+    font: 700 3.8cqw/1 var(--font-body);
+    box-shadow: 0 8px 22px -6px rgba(124, 92, 245, 0.7);
+  }
+  .fab :global(.icon) {
+    width: 5cqw;
+    height: 5cqw;
+  }
+
+  .sheet {
+    position: absolute;
+    z-index: 25;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 3cqw 6cqw 10cqw;
+    display: grid;
+    gap: 2.4cqw;
+    border-radius: 7cqw 7cqw 0 0;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.55);
+    transform: translateY(110%);
+  }
+  .sheet__handle {
+    justify-self: center;
+    width: 11cqw;
+    height: 1.2cqw;
+    border-radius: 2cqw;
+    background: var(--border);
+  }
+  .sheet__title {
+    margin-top: 2cqw;
+    font: 650 5.6cqw/1.1 var(--font-display);
+  }
+  .field {
+    display: flex;
+    align-items: center;
+    gap: 3cqw;
+    padding: 2.6cqw 3.6cqw;
+    border-radius: 3.6cqw;
+    border: 1px solid var(--border);
+    background: rgba(11, 21, 64, 0.7);
+  }
+  .field > :global(.icon) {
+    width: 5cqw;
+    height: 5cqw;
+    color: var(--muted);
+  }
+  .field--src {
+    border-color: var(--primary-light);
+  }
+  .field__body {
+    flex: 1;
+    display: grid;
+    gap: 0.4cqw;
+  }
+  .field__label {
+    font-size: 2.9cqw;
+    color: var(--muted);
+  }
+  .field__value {
+    min-height: 1.3em;
+    font-size: 4.1cqw;
+    font-weight: 600;
+  }
+  .spinner {
+    width: 4.4cqw;
+    height: 4.4cqw;
+    border-radius: 50%;
+    border: 0.7cqw solid rgba(169, 150, 255, 0.25);
+    border-top-color: var(--primary-light);
+    opacity: 0;
+  }
+  .swap {
+    justify-self: center;
+    color: var(--secondary);
+    font-size: 5.4cqw;
+    line-height: 0;
+  }
+  .save {
+    margin-top: 1.2cqw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.6cqw;
+    padding: 3.4cqw;
+    border-radius: 999px;
+    background: var(--primary);
+    color: #fff;
+    font: 700 3.9cqw/1 var(--font-body);
+  }
+  .save :global(.icon) {
+    width: 4.8cqw;
+    height: 4.8cqw;
+  }
+
+  /* ---- Döngü (9 sn) ---- */
+  .screen.is-active .fab { animation: w-fab 9s var(--ease-out) infinite; }
+  .screen.is-active .sheet { animation: w-sheet 9s var(--ease-out) infinite; }
+  .screen.is-active .ch { animation: w-ch 9s linear infinite backwards; animation-delay: calc(var(--i) * 0.16s); }
+  .screen.is-active .spinner { animation: w-spin-show 9s linear infinite, w-spin 0.7s linear infinite; }
+  .screen.is-active .auto { animation: w-auto 9s var(--ease-out) infinite; }
+  .screen.is-active .save { animation: w-save 9s var(--ease-out) infinite; }
+  .screen.is-active .item--new { animation: w-new 9s var(--ease-out) infinite; }
+  .screen.is-active .c1 { animation: w-c1 9s linear infinite; }
+  .screen.is-active .c2 { animation: w-c2 9s linear infinite; }
+
+  @keyframes w-fab {
+    0%, 9% { transform: scale(1); }
+    11% { transform: scale(0.9); }
+    14%, 100% { transform: scale(1); }
+  }
+  @keyframes w-sheet {
+    0%, 12% { transform: translateY(110%); }
+    18%, 63% { transform: translateY(0); }
+    69%, 100% { transform: translateY(110%); }
+  }
+  @keyframes w-ch {
+    0%, 19% { opacity: 0; }
+    20%, 95% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  @keyframes w-spin-show {
+    0%, 41% { opacity: 0; }
+    42%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+  @keyframes w-spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes w-auto {
+    0%, 49% { opacity: 0; transform: translateY(1.5cqw); }
+    53%, 95% { opacity: 1; transform: none; }
+    100% { opacity: 0; }
+  }
+  @keyframes w-save {
+    0%, 59% { transform: scale(1); filter: none; }
+    61% { transform: scale(0.94); filter: brightness(1.25); }
+    64%, 100% { transform: scale(1); filter: none; }
+  }
+  @keyframes w-new {
+    0%, 68% { max-height: 0; opacity: 0; padding-block: 0; margin-bottom: -2.2cqw; border-width: 0; transform: translateY(-3cqw); }
+    74% { max-height: 20cqw; opacity: 1; padding-block: 3cqw; margin-bottom: 0; border-width: 1px; transform: none; }
+    94% { max-height: 20cqw; opacity: 1; padding-block: 3cqw; margin-bottom: 0; border-width: 1px; }
+    100% { max-height: 0; opacity: 0; padding-block: 0; margin-bottom: -2.2cqw; border-width: 0; }
+  }
+  @keyframes w-c1 {
+    0%, 72% { opacity: 1; }
+    73%, 96% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes w-c2 {
+    0%, 72% { opacity: 0; }
+    73%, 96% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+</style>

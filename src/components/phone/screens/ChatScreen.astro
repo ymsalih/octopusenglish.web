@@ -1,0 +1,293 @@
+---
+/**
+ * Octopus AI sohbet (lib/screens/chat_screen.dart). Ekran her açıldığında
+ * konuşma baştan oynar: kullanıcı hatalı bir cümle yazar, yapay zeka cevap
+ * verir, gramer düzeltmesi Türkçe açıklamasıyla gelir, cevap çevrilir.
+ */
+import { Image } from 'astro:assets';
+import Icon from '../../Icon.astro';
+import StatusBar from '../StatusBar.astro';
+import BottomBar from '../BottomBar.astro';
+import logo from '../../../assets/logo.png';
+
+interface Props {
+  inline?: boolean;
+}
+const { inline = false } = Astro.props;
+
+const modes = ['Serbest', 'Gramer', 'Kelime', 'Günlük', 'İş', 'Seyahat'];
+---
+<div class="screen" data-screen="chat" data-screen-inline={inline ? '' : undefined}>
+  <StatusBar />
+
+  <div class="head">
+    <span class="avatar"><Image src={logo} alt="" width={64} height={64} /></span>
+    <span class="who">
+      <b>Octopus AI</b>
+      <span><i></i>İngilizce öğretmenin</span>
+    </span>
+    <span class="ph-pill"><Icon name="forum-rounded" /> 3/20</span>
+  </div>
+
+  <div class="modes">
+    {modes.map((m) => <span class:list={['ph-chip', { 'is-on': m === 'Seyahat' }]}>{m}</span>)}
+  </div>
+
+  <div class="msgs">
+    <div class="msg msg--ai m1">Hello! I am your AI English tutor. Let’s start chatting in English!</div>
+    <div class="msg msg--user m2">I goed to London last summer.</div>
+    <div class="typing m3"><i></i><i></i><i></i></div>
+    <div class="msg msg--ai m4">
+      That sounds amazing! What did you visit in London?
+      <span class="tr">Kulağa harika geliyor! Londra’da nereleri gezdin?</span>
+    </div>
+    <div class="acts m4">
+      <span><Icon name="volume-up-rounded" /> Dinle</span>
+      <span class="acts__tr"><Icon name="translate-rounded" /> Çevir</span>
+      <span><Icon name="flag-outline-rounded" /> Bildir</span>
+    </div>
+    <div class="fix m5">
+      <span class="fix__title"><Icon name="auto-awesome-rounded" /> Gramer düzeltmesi</span>
+      <span class="fix__line fix__line--bad"><Icon name="close-rounded" /><s>I goed to London</s></span>
+      <span class="fix__line fix__line--ok"><Icon name="check-rounded" />I went to London</span>
+      <span class="fix__why">“go” düzensiz bir fiildir; geçmiş zamanda “went” olur.</span>
+    </div>
+  </div>
+
+  <div class="input">
+    <span>İngilizce bir şeyler yazın...</span>
+    <span class="send"><Icon name="send-rounded" /></span>
+  </div>
+  <BottomBar active="chat" />
+</div>
+
+<style>
+  .head {
+    display: flex;
+    align-items: center;
+    gap: 3cqw;
+    padding: 1cqw 5cqw 3cqw;
+  }
+  .avatar {
+    display: grid;
+    place-items: center;
+    width: 10.5cqw;
+    height: 10.5cqw;
+    border-radius: 50%;
+    background: var(--surface-high);
+    border: 1px solid var(--border);
+  }
+  .avatar :global(img) {
+    width: 82%;
+    height: auto;
+  }
+  .who {
+    flex: 1;
+    display: grid;
+    gap: 0.6cqw;
+  }
+  .who b {
+    font: 650 4.8cqw/1 var(--font-display);
+  }
+  .who span {
+    display: flex;
+    align-items: center;
+    gap: 1.4cqw;
+    font-size: 3cqw;
+    color: var(--muted);
+    line-height: 1;
+  }
+  .who i {
+    width: 1.8cqw;
+    height: 1.8cqw;
+    border-radius: 50%;
+    background: var(--success);
+  }
+
+  .modes {
+    display: flex;
+    gap: 1.8cqw;
+    padding: 0 5cqw 3cqw;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  }
+  /* Seçili mod (Seyahat) görünsün diye sıra, kaydırılmış gibi sola alınır. */
+  .modes .ph-chip:first-child {
+    margin-left: -24cqw;
+  }
+
+  .msgs {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 2.4cqw;
+    padding: 0 5cqw 3cqw;
+    overflow: hidden;
+  }
+  .msg {
+    max-width: 82%;
+    padding: 3cqw 3.8cqw;
+    font-size: 3.7cqw;
+    line-height: 1.4;
+  }
+  .msg--ai {
+    align-self: flex-start;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 1.6cqw 4.6cqw 4.6cqw 4.6cqw;
+  }
+  .msg--user {
+    align-self: flex-end;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 4.6cqw 4.6cqw 1.6cqw 4.6cqw;
+  }
+  .tr {
+    display: block;
+    margin-top: 2.4cqw;
+    padding-top: 2.4cqw;
+    border-top: 1px solid var(--border);
+    color: var(--secondary);
+    font-size: 3.5cqw;
+  }
+  .acts {
+    display: flex;
+    gap: 3.4cqw;
+    margin-top: -1cqw;
+    padding-left: 1cqw;
+    font: 700 2.9cqw/1 var(--font-body);
+    color: var(--muted);
+  }
+  .acts span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8cqw;
+  }
+  .acts :global(.icon) {
+    width: 3.6cqw;
+    height: 3.6cqw;
+  }
+  .typing {
+    align-self: flex-start;
+    display: flex;
+    gap: 1.2cqw;
+    padding: 3.4cqw 4cqw;
+    border-radius: 1.6cqw 4.6cqw 4.6cqw 4.6cqw;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    display: none;
+  }
+  .typing i {
+    width: 1.8cqw;
+    height: 1.8cqw;
+    border-radius: 50%;
+    background: var(--muted);
+  }
+
+  .fix {
+    align-self: stretch;
+    display: grid;
+    gap: 1.6cqw;
+    padding: 3.2cqw 3.8cqw;
+    border-radius: 4cqw;
+    border: 1px solid rgba(242, 196, 90, 0.45);
+    background: linear-gradient(180deg, rgba(242, 196, 90, 0.12), rgba(242, 196, 90, 0.04));
+    font-size: 3.5cqw;
+  }
+  .fix__title {
+    display: flex;
+    align-items: center;
+    gap: 1.4cqw;
+    font: 800 2.8cqw/1 var(--font-body);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .fix__line {
+    display: flex;
+    align-items: center;
+    gap: 1.6cqw;
+    font-weight: 600;
+  }
+  .fix :global(.icon) {
+    flex: 0 0 auto;
+    width: 4cqw;
+    height: 4cqw;
+  }
+  .fix__line--bad {
+    color: var(--danger);
+  }
+  .fix__line--bad s {
+    text-decoration-thickness: 0.35cqw;
+  }
+  .fix__line--ok {
+    color: var(--success);
+  }
+  .fix__why {
+    color: var(--text-2);
+    font-size: 3.2cqw;
+  }
+
+  .input {
+    display: flex;
+    align-items: center;
+    gap: 2cqw;
+    margin: 0 4cqw 3cqw;
+    padding: 2cqw 2cqw 2cqw 4.4cqw;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 3.5cqw;
+  }
+  .input span:first-child {
+    flex: 1;
+  }
+  .send {
+    display: grid;
+    place-items: center;
+    width: 8.6cqw;
+    height: 8.6cqw;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    font-size: 4.4cqw;
+  }
+
+  /* ---- Ekran açılınca bir kez oynar ---- */
+  .is-active .m2 { animation: c-pop 0.55s var(--ease-out) 0.5s both; }
+  .is-active .m3 { display: flex; animation: c-typing 1.5s ease 1.2s both; }
+  .is-active .m3 i { animation: c-dot 0.9s ease-in-out infinite; }
+  .is-active .m3 i:nth-child(2) { animation-delay: 0.15s; }
+  .is-active .m3 i:nth-child(3) { animation-delay: 0.3s; }
+  .is-active .m4 { animation: c-pop 0.55s var(--ease-out) 2.7s both; }
+  .is-active .m5 { animation: c-pop 0.6s var(--ease-out) 3.5s both; }
+  .is-active .acts__tr { animation: c-tap 0.6s var(--ease-out) 4.8s both; }
+  .is-active .tr { animation: c-tr 0.6s var(--ease-out) 5.2s both; }
+
+  @keyframes c-pop {
+    from { opacity: 0; transform: translateY(3cqw) scale(0.96); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes c-typing {
+    0% { opacity: 0; max-height: 0; padding-block: 0; margin-bottom: -2.4cqw; }
+    12%, 85% { opacity: 1; max-height: 12cqw; padding-block: 3.4cqw; margin-bottom: 0; }
+    100% { opacity: 0; max-height: 0; padding-block: 0; margin-bottom: -2.4cqw; border-width: 0; }
+  }
+  @keyframes c-dot {
+    0%, 100% { transform: translateY(0); opacity: 0.5; }
+    50% { transform: translateY(-1cqw); opacity: 1; }
+  }
+  @keyframes c-tap {
+    0% { color: var(--muted); }
+    40%, 100% { color: var(--secondary); }
+  }
+  @keyframes c-tr {
+    from { opacity: 0; max-height: 0; margin-top: 0; padding-top: 0; }
+    to { opacity: 1; max-height: 16cqw; }
+  }
+</style>

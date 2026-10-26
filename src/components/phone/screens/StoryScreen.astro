@@ -1,0 +1,234 @@
+---
+/**
+ * Etkileşimli hikaye (lib/screens/story_screen.dart). Döngü: bilinmeyen
+ * kelimeye dokunulur → çevirisi alt sayfada açılır → kapanır → okuyucu
+ * hikayenin gidişatını seçer.
+ */
+import Icon from '../../Icon.astro';
+import StatusBar from '../StatusBar.astro';
+import AppBar from '../AppBar.astro';
+
+interface Props {
+  inline?: boolean;
+}
+const { inline = false } = Astro.props;
+---
+<div class="screen" data-screen="story" data-screen-inline={inline ? '' : undefined}>
+  <StatusBar />
+  <AppBar title="The Lighthouse Key" back />
+
+  <div class="body">
+    <div class="meta">
+      <span class="ph-overline">Bölüm 2 / 3</span>
+      <span class="tools">
+        <Icon name="g-translate" />
+        <Icon name="volume-up-rounded" />
+        <Icon name="flag-outline-rounded" />
+      </span>
+    </div>
+    <p class="ph-caption">Bilmediğin kelimeye dokun</p>
+
+    <div class="ph-card text">
+      The storm grew stronger. Mira held the old key and <span class="word">whispered</span>:
+      “If the light goes out tonight, no ship will find the harbor.” High above, the lighthouse began to flicker.
+    </div>
+
+    <p class="q">Ne yapmak istersin?</p>
+    <p class="ph-caption">Çevirisi için seçeneğe uzun bas</p>
+
+    <div class="choice choice--a">
+      <span class="letter">A</span>
+      <span>Climb the stairs and fix the light</span>
+      <Icon name="arrow-forward-rounded" />
+    </div>
+    <div class="choice choice--b">
+      <span class="letter">B</span>
+      <span>Run to the harbor and warn the ships</span>
+      <Icon name="arrow-forward-rounded" />
+    </div>
+  </div>
+
+  <div class="sheet">
+    <span class="sheet__word">whispered</span>
+    <span class="sheet__tr">fısıldadı</span>
+    <span class="sheet__btn"><Icon name="add-rounded" /> Havuza Ekle</span>
+  </div>
+</div>
+
+<style>
+  .body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2cqw;
+    padding: 1cqw 5cqw 6cqw;
+    overflow: hidden;
+  }
+  .meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .tools {
+    display: flex;
+    gap: 3cqw;
+    color: var(--secondary);
+    font-size: 5cqw;
+  }
+  .text {
+    margin-top: 1cqw;
+    padding: 4.4cqw;
+    font-size: 3.9cqw;
+    line-height: 1.6;
+  }
+  .word {
+    position: relative;
+    display: inline-block;
+    padding: 0 0.8cqw;
+    margin: 0 -0.8cqw;
+    border-radius: 1.4cqw;
+    background: rgba(169, 150, 255, 0.28);
+    color: #fff;
+    font-weight: 700;
+  }
+  .word::after,
+  .choice--b::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 9cqw;
+    height: 9cqw;
+    margin: -4.5cqw 0 0 -4.5cqw;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.55);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .q {
+    margin-top: 3cqw;
+    font: 650 4.8cqw/1.1 var(--font-display);
+  }
+  .choice {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 3cqw;
+    margin-top: 1cqw;
+    padding: 3.4cqw;
+    border-radius: 3.6cqw;
+    border: 1px solid rgba(169, 150, 255, 0.35);
+    background: var(--surface);
+    font-size: 3.6cqw;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .choice > span:nth-child(2) {
+    flex: 1;
+  }
+  .choice :global(.icon) {
+    width: 4.6cqw;
+    height: 4.6cqw;
+    color: var(--muted);
+  }
+  .letter {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 7.4cqw;
+    height: 7.4cqw;
+    border-radius: 2.2cqw;
+    background: rgba(124, 92, 245, 0.25);
+    color: var(--primary-light);
+    font: 700 3.6cqw/1 var(--font-display);
+  }
+  .choice--b {
+    border-color: var(--accent);
+    background: linear-gradient(180deg, rgba(242, 196, 90, 0.16), rgba(242, 196, 90, 0.05));
+  }
+  .choice--b .letter {
+    background: var(--accent);
+    color: var(--ink);
+  }
+
+  .sheet {
+    position: absolute;
+    z-index: 25;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    justify-items: center;
+    gap: 2cqw;
+    padding: 7cqw 6cqw 10cqw;
+    border-radius: 7cqw 7cqw 0 0;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.55);
+    transform: translateY(110%);
+  }
+  .sheet__word {
+    font: 700 7.6cqw/1 var(--font-display);
+  }
+  .sheet__tr {
+    color: var(--secondary);
+    font-size: 5.6cqw;
+    font-weight: 600;
+  }
+  .sheet__btn {
+    justify-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.4cqw;
+    margin-top: 3cqw;
+    padding: 3.4cqw;
+    border-radius: 3.6cqw;
+    background: var(--primary);
+    font: 700 3.9cqw/1 var(--font-body);
+  }
+  .sheet__btn :global(.icon) {
+    width: 5cqw;
+    height: 5cqw;
+  }
+
+  /* ---- Döngü (10 sn) ---- */
+  .is-active .word { animation: s-word 10s var(--ease-out) infinite; }
+  .is-active .word::after { animation: s-tap-word 10s var(--ease-out) infinite; }
+  .is-active .sheet { animation: s-sheet 10s var(--ease-out) infinite; }
+  .is-active .choice--b { animation: s-choice 10s var(--ease-out) infinite; }
+  .is-active .choice--b .letter { animation: s-letter 10s var(--ease-out) infinite; }
+  .is-active .choice--b::after { animation: s-tap-choice 10s var(--ease-out) infinite; }
+
+  @keyframes s-word {
+    0%, 11% { background: transparent; color: inherit; }
+    13%, 56% { background: rgba(169, 150, 255, 0.28); color: #fff; }
+    60%, 100% { background: transparent; color: inherit; }
+  }
+  @keyframes s-tap-word {
+    0%, 10% { opacity: 0; transform: scale(0.3); }
+    12% { opacity: 0.8; transform: scale(0.6); }
+    18%, 100% { opacity: 0; transform: scale(1.6); }
+  }
+  @keyframes s-sheet {
+    0%, 14% { transform: translateY(110%); }
+    20%, 48% { transform: translateY(0); }
+    54%, 100% { transform: translateY(110%); }
+  }
+  @keyframes s-choice {
+    0%, 64% { border-color: rgba(169, 150, 255, 0.35); background: var(--surface); transform: none; }
+    66% { transform: scale(0.97); }
+    68%, 94% { border-color: var(--accent); background: linear-gradient(180deg, rgba(242, 196, 90, 0.16), rgba(242, 196, 90, 0.05)); transform: none; }
+    100% { border-color: rgba(169, 150, 255, 0.35); background: var(--surface); }
+  }
+  @keyframes s-letter {
+    0%, 65% { background: rgba(124, 92, 245, 0.25); color: var(--primary-light); }
+    68%, 94% { background: var(--accent); color: var(--ink); }
+    100% { background: rgba(124, 92, 245, 0.25); color: var(--primary-light); }
+  }
+  @keyframes s-tap-choice {
+    0%, 63% { opacity: 0; transform: scale(0.3); }
+    65% { opacity: 0.8; transform: scale(0.6); }
+    72%, 100% { opacity: 0; transform: scale(2.4); }
+  }
+</style>

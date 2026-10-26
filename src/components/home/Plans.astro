@@ -1,0 +1,245 @@
+---
+/** Octopus Premium paketleri. Limitler src/data/plans.ts'ten gelir. */
+import Icon from '../Icon.astro';
+import { plans, limitRows, formatLimit } from '../../data/plans';
+---
+<section class="plans section" id="premium" aria-labelledby="plans-title">
+  <div class="container">
+    <div class="plans__head">
+      <p class="kicker" data-reveal>Octopus Premium</p>
+      <h2 id="plans-title" class="title-lg" data-reveal style="--d:0.08s">
+        Daha fazla pratik, <span class="text-gold">daha hızlı ilerleme.</span>
+      </h2>
+      <p class="lead" data-reveal style="--d:0.16s">
+        Ücretsiz başla; istediğinde Plus, Pro veya Max ile sınırlarını genişlet. İstediğin zaman iptal edebilirsin.
+      </p>
+    </div>
+
+    <ul class="plans__grid">
+      {plans.map((p, i) => (
+        <li class:list={['plan', `plan--${p.id}`]} data-reveal style={`--d:${i * 0.1}s`}>
+          <div class="plan__inner">
+            {p.badge && <span class="plan__badge">{p.badge}</span>}
+            <h3 class="plan__name">
+              {p.id === 'basic' ? p.name : `Octopus ${p.name}`}
+            </h3>
+            <p class="plan__tagline">{p.tagline}</p>
+            <p class="plan__price">{p.id === 'basic' ? 'Ücretsiz' : 'Aylık veya yıllık'}</p>
+            <ul class="plan__limits">
+              {limitRows.map((row) => (
+                <li>
+                  <Icon name={row.icon} />
+                  <span class="plan__label">{row.label}</span>
+                  <b>{formatLimit(p.limits[row.key], row.daily)}</b>
+                </li>
+              ))}
+            </ul>
+            <a class:list={['btn', p.id === 'max' || p.id === 'pro' ? 'btn--gold' : 'btn--ghost', 'plan__cta']} href="#indir">
+              {p.id === 'basic' ? 'Ücretsiz başla' : 'Uygulamada yükselt'}
+            </a>
+          </div>
+        </li>
+      ))}
+    </ul>
+    <p class="plans__hint" aria-hidden="true">Diğer paketler için kaydır <Icon name="arrow-forward-rounded" /></p>
+
+    <p class="plans__note" data-reveal>
+      Plus, Pro ve Max aylık ya da yıllık alınabilir; yıllık planda aylığa göre tasarruf edersin. Güncel fiyatlar ve
+      limitler uygulama içinde gösterilir. Abonelikler App Store veya Google Play üzerinden yönetilir ve dönem bitmeden
+      iptal edilmezse otomatik olarak yenilenir.
+    </p>
+  </div>
+</section>
+
+<style>
+  @property --angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+  }
+
+  .plans__head {
+    display: grid;
+    gap: 18px;
+    justify-items: center;
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 56px;
+  }
+
+  .plans__grid {
+    list-style: none;
+    margin: 0;
+    padding: 16px 0;
+    display: grid;
+    gap: 16px;
+  }
+  /* Telefonda yana kaydırılan kartlar */
+  @media (max-width: 759.98px) {
+    .plans__grid {
+      grid-auto-flow: column;
+      grid-auto-columns: min(86%, 340px);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      margin-inline: calc(var(--gutter) * -1);
+      padding-inline: var(--gutter);
+      scroll-padding-inline: var(--gutter);
+      scrollbar-width: none;
+    }
+    .plans__grid::-webkit-scrollbar {
+      display: none;
+    }
+    .plan {
+      scroll-snap-align: start;
+    }
+    /* Yana kaydırılan kartlar beklemeden görünsün; yandaki kartın kenarı
+       kaydırılabildiğini belli eder. */
+    :global(.js) .plan[data-reveal] {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+    .plans__hint {
+      display: flex;
+    }
+  }
+  .plans__hint {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .plans__hint :global(.icon) {
+    animation: nudge 1.6s var(--ease-in-out) infinite;
+  }
+  @keyframes nudge {
+    50% { transform: translateX(5px); }
+  }
+  @media (min-width: 760px) {
+    .plans__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1100px) {
+    .plans__grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .plan {
+    position: relative;
+    border-radius: 26px;
+    padding: 1px;
+    background: var(--border-soft);
+  }
+  .plan__inner {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 28px 22px 24px;
+    border-radius: 25px;
+    background: linear-gradient(180deg, rgba(19, 30, 84, 0.95), rgba(11, 21, 64, 0.95));
+  }
+  .plan--pro {
+    background: linear-gradient(160deg, #a996ff, rgba(124, 92, 245, 0.25) 40%, rgba(159, 178, 255, 0.6));
+    box-shadow: 0 30px 80px -40px rgba(124, 92, 245, 0.8);
+  }
+  /* Max: kenarında dönen altın ışık */
+  .plan--max {
+    background: conic-gradient(from var(--angle), #f2c45a, rgba(242, 196, 90, 0.08) 25%, rgba(242, 196, 90, 0.08) 50%, #ffe3a1 70%, #f2c45a);
+    box-shadow: 0 30px 80px -40px rgba(242, 196, 90, 0.6);
+    animation: plan-spin 6s linear infinite;
+  }
+  @keyframes plan-spin {
+    to { --angle: 360deg; }
+  }
+  .plan--max .plan__inner {
+    background:
+      radial-gradient(120% 60% at 50% 0%, rgba(242, 196, 90, 0.12), transparent 60%),
+      linear-gradient(180deg, rgba(19, 30, 84, 0.97), rgba(11, 21, 64, 0.97));
+  }
+
+  .plan__badge {
+    position: absolute;
+    top: -12px;
+    left: 22px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--grad-primary);
+    color: #fff;
+    font: 800 11.5px/1 var(--font-body);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .plan--max .plan__badge {
+    background: var(--grad-gold);
+    color: var(--ink);
+  }
+  .plan__name {
+    font-size: 1.6rem;
+  }
+  .plan--max .plan__name {
+    color: var(--accent);
+  }
+  .plan__tagline {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .plan__price {
+    margin-top: 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border-soft);
+    font: 650 1.25rem/1.2 var(--font-display);
+  }
+  .plan__limits {
+    list-style: none;
+    margin: 18px 0 24px;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+    flex: 1;
+  }
+  .plan__limits li {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    column-gap: 10px;
+    align-items: start;
+    font-size: 14px;
+  }
+  .plan__limits :global(.icon) {
+    width: 20px;
+    height: 20px;
+    color: var(--primary-light);
+    grid-row: span 2;
+  }
+  .plan--max .plan__limits :global(.icon) {
+    color: var(--accent);
+  }
+  .plan__label {
+    color: var(--muted);
+    line-height: 1.3;
+  }
+  .plan__limits b {
+    font-weight: 700;
+    color: var(--text);
+  }
+  .plan__cta {
+    width: 100%;
+  }
+
+  .plans__note {
+    max-width: 760px;
+    margin: 36px auto 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13.5px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .plan--max {
+      animation: none;
+    }
+  }
+</style>

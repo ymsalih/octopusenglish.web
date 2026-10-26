@@ -1,0 +1,42 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import logo from '../assets/logo.png';
+---
+<BaseLayout title="Sayfa bulunamadı">
+  <section class="nf container">
+    <Image src={logo} alt="" width={180} height={180} densities={[1, 2]} class="nf__octo" />
+    <p class="kicker">404</p>
+    <h1 class="title-lg">Bu derinlikte bir şey bulamadık.</h1>
+    <p class="lead">Aradığın sayfa taşınmış ya da hiç var olmamış olabilir.</p>
+    <a class="btn btn--gold" href="/">Ana sayfaya dön</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf {
+    min-height: 100svh;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 18px;
+    padding-top: var(--header-h);
+    padding-bottom: 60px;
+    text-align: center;
+  }
+  .nf :global(.nf__octo) {
+    width: 180px;
+    height: auto;
+    filter: drop-shadow(0 20px 40px rgba(124, 92, 245, 0.55));
+    animation: sway 5s var(--ease-in-out) infinite;
+  }
+  @keyframes sway {
+    0%, 100% { transform: rotate(-6deg) translateY(0); }
+    50% { transform: rotate(6deg) translateY(-10px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nf :global(.nf__octo) {
+      animation: none;
+    }
+  }
+</style>

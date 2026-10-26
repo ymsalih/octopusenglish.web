@@ -1,0 +1,254 @@
+---
+import StoreBadges from '../StoreBadges.astro';
+import Icon from '../Icon.astro';
+---
+<section class="hero" data-progress="exit" aria-labelledby="hero-title">
+  <div class="hero__scene" aria-hidden="true">
+    <canvas class="hero__canvas"></canvas>
+  </div>
+
+  <div class="hero__content container">
+    <div class="hero__stage" data-octo-box></div>
+
+    <div class="hero__text">
+      <p class="wordmark" aria-hidden="true">
+        <span class="wordmark__top">Octopus</span>
+        <span class="wordmark__sub">ENGLISH</span>
+      </p>
+      <h1 id="hero-title" class="hero__title">
+        İngilizceyi <span class="text-gold">yaşayarak</span> öğren.
+      </h1>
+      <p class="hero__lead">
+        Yapay zeka öğretmenin, etkileşimli hikayeler, kamerayla çeviri ve akıllı kelime kartları. Hepsi tek uygulamada,
+        A1’den C2’ye.
+      </p>
+      <div class="hero__badges">
+        <StoreBadges size="lg" />
+      </div>
+      <p class="hero__note">
+        <Icon name="check-circle-rounded" /> Ücretsiz başla
+        <span></span>
+        <Icon name="check-circle-rounded" /> Türkçe açıklamalar
+      </p>
+    </div>
+  </div>
+
+  <a class="cue" href="#manifesto">
+    <span>Derinlere dal</span>
+    <span class="cue__line"></span>
+  </a>
+</section>
+
+<script>
+  import { createOctopusScene } from '../../scripts/octopus-scene.js';
+
+  const hero = document.querySelector<HTMLElement>('.hero')!;
+  const canvas = hero.querySelector<HTMLCanvasElement>('.hero__canvas')!;
+  const stage = hero.querySelector<HTMLElement>('[data-octo-box]')!;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Ahtapotun kutusu sayfa düzeninden okunur (transform'lardan etkilenmez).
+  let box = { cx: 0, top: 0, h: 0 };
+  const measure = () => {
+    let top = 0;
+    let el: HTMLElement | null = stage;
+    while (el && el !== hero) {
+      top += el.offsetTop;
+      el = el.offsetParent as HTMLElement | null;
+    }
+    box = { cx: hero.clientWidth / 2, top, h: stage.offsetHeight };
+  };
+  measure();
+  new ResizeObserver(measure).observe(hero);
+
+  const scene = createOctopusScene(canvas, {
+    box: () => box,
+    still: reduce ? 4.6 : undefined,
+  });
+
+  // Gözler imleci (dokunmatikte parmağı) takip eder.
+  const look = (x: number, y: number) => {
+    const r = canvas.getBoundingClientRect();
+    const cx = r.left + box.cx;
+    const cy = r.top + box.top + box.h * 0.3;
+    scene.look((x - cx) / (r.width * 0.4), (y - cy) / (r.height * 0.4));
+  };
+  window.addEventListener('pointermove', (e) => look(e.clientX, e.clientY), { passive: true });
+
+  // Sahne ekran dışındayken çizim durur.
+  new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) scene.resume();
+    else scene.pause();
+  }).observe(hero);
+
+  // Kullanıcı açılış bitmeden kaydırırsa yazılar beklemeden gelir.
+  const skip = () => hero.classList.add('is-skipped');
+  window.addEventListener('scroll', skip, { once: true, passive: true });
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero__scene {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    transform-origin: 50% 30%;
+    transform: translate3d(0, calc(var(--p, 0) * 18%), 0) scale(calc(1 + var(--p, 0) * 0.14));
+    opacity: calc(1 - var(--p, 0) * 1.15);
+    -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 72%, transparent 100%);
+  }
+  .hero__canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: calc(var(--header-h) + 4px);
+    padding-bottom: 92px;
+    text-align: center;
+  }
+  /* Ahtapot bu boşluğa çizilir. */
+  .hero__stage {
+    flex: 0 0 auto;
+    width: 100%;
+    height: clamp(170px, 34svh, 360px);
+  }
+  .hero__text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translate3d(0, calc(var(--p, 0) * -90px), 0);
+    opacity: calc(1 - var(--p, 0) * 1.7);
+  }
+
+  .wordmark {
+    display: grid;
+    justify-items: center;
+    margin: 8px 0 18px;
+  }
+  .wordmark__top {
+    font: 700 clamp(40px, 6vw, 58px) / 1 var(--font-display);
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  .wordmark__sub {
+    font: 500 clamp(17px, 2.3vw, 23px) / 1.3 var(--font-display);
+    letter-spacing: 0.42em;
+    margin-right: -0.42em;
+    color: var(--secondary);
+  }
+  .hero__title {
+    font-size: clamp(1.7rem, 4.2vw, 3rem);
+    font-weight: 600;
+  }
+  .hero__lead {
+    max-width: 560px;
+    margin-top: 14px;
+    color: var(--text-2);
+    font-size: clamp(0.98rem, 1.5vw, 1.12rem);
+  }
+  .hero__badges {
+    margin-top: 28px;
+  }
+  .hero__note {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .hero__note :global(.icon) {
+    width: 17px;
+    height: 17px;
+    color: var(--success);
+  }
+  .hero__note span {
+    width: 14px;
+  }
+
+  .cue {
+    position: absolute;
+    left: 50%;
+    bottom: 22px;
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    transform: translateX(-50%);
+    color: var(--muted);
+    font: 700 11.5px/1 var(--font-body);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    opacity: calc(1 - var(--p, 0) * 4);
+  }
+  .cue__line {
+    position: relative;
+    width: 1px;
+    height: 40px;
+    overflow: hidden;
+    background: rgba(159, 178, 255, 0.2);
+  }
+  .cue__line::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -40%;
+    width: 1px;
+    height: 40%;
+    background: var(--accent);
+    animation: cue 2.2s var(--ease-in-out) infinite;
+  }
+  @keyframes cue {
+    to { top: 100%; }
+  }
+
+  /* Açılış: yazılar ahtapot "O"yu oluştururken sırayla gelir. */
+  @media (prefers-reduced-motion: no-preference) {
+    .wordmark,
+    .hero__title,
+    .hero__lead,
+    .hero__badges,
+    .hero__note,
+    .cue > * {
+      animation: hero-in 1.1s var(--ease-out) both;
+    }
+    .wordmark { animation-delay: 2.3s; }
+    .hero__title { animation-delay: 2.6s; }
+    .hero__lead { animation-delay: 2.8s; }
+    .hero__badges { animation-delay: 3s; }
+    .hero__note { animation-delay: 3.2s; }
+    .cue > * { animation-delay: 3.7s; }
+    .is-skipped :is(.wordmark, .hero__title, .hero__lead, .hero__badges, .hero__note, .cue > *) {
+      animation-delay: 0s;
+      animation-duration: 0.6s;
+    }
+  }
+  @keyframes hero-in {
+    from { opacity: 0; transform: translateY(18px); filter: blur(6px); }
+    to { opacity: 1; transform: none; filter: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cue__line::after { animation: none; }
+  }
+
+  @media (min-width: 900px) {
+    .hero__stage {
+      height: clamp(240px, 38svh, 400px);
+    }
+  }
+</style>

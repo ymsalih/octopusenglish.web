@@ -1,0 +1,74 @@
+---
+/** Uygulamanın alt menüsü (lib/screens/dashboard_screen.dart ile aynı sekmeler). */
+import Icon from '../Icon.astro';
+
+interface Props {
+  active: 'home' | 'words' | 'test' | 'speak' | 'chat';
+}
+const { active } = Astro.props;
+
+const tabs = [
+  { id: 'home', label: 'Ana Sayfa', icon: 'home-rounded' },
+  { id: 'words', label: 'Kelimeler', icon: 'style-rounded' },
+  { id: 'test', label: 'Test', icon: 'quiz-rounded' },
+  { id: 'speak', label: 'Telaffuz', icon: 'mic-rounded' },
+  { id: 'chat', label: 'Sohbet', icon: 'forum-rounded' },
+];
+---
+<div class="bb" aria-hidden="true">
+  {tabs.map((t) => (
+    <span class:list={['bb__item', { 'is-on': t.id === active }]}>
+      <span class="bb__icon"><Icon name={t.icon} /></span>
+      <span class="bb__label">{t.label}</span>
+    </span>
+  ))}
+  <span class="bb__home"></span>
+</div>
+
+<style>
+  .bb {
+    position: relative;
+    z-index: 10;
+    flex: 0 0 auto;
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 2.2cqw 2cqw 7.5cqw;
+    border-top: 1px solid rgba(38, 53, 122, 0.8);
+    background: rgba(5, 9, 32, 0.92);
+  }
+  .bb__item {
+    display: grid;
+    justify-items: center;
+    gap: 1cqw;
+    color: var(--muted);
+  }
+  .bb__icon {
+    display: grid;
+    place-items: center;
+    width: 12cqw;
+    height: 6.6cqw;
+    border-radius: 999px;
+    font-size: 5.4cqw;
+  }
+  .bb__label {
+    font: 700 2.8cqw/1 var(--font-body);
+  }
+  .is-on {
+    color: var(--text);
+  }
+  .is-on .bb__icon {
+    background: rgba(124, 92, 245, 0.32);
+    color: #fff;
+  }
+  .bb__home {
+    position: absolute;
+    left: 50%;
+    bottom: 2.2cqw;
+    width: 34%;
+    height: 1.3cqw;
+    border-radius: 999px;
+    background: rgba(244, 241, 255, 0.75);
+    transform: translateX(-50%);
+  }
+</style>

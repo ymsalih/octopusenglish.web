@@ -1,0 +1,33 @@
+---
+/**
+ * Uygulamadaki Material ikonlarının aynısı (Material Symbols, "rounded").
+ * İkon derleme anında SVG'ye çevrilir; tarayıcıya ikon kütüphanesi gitmez.
+ * Adlar: https://icon-sets.iconify.design/material-symbols/
+ */
+import icons from '@iconify-json/material-symbols/icons.json';
+import { getIconData, iconToSVG, replaceIDs } from '@iconify/utils';
+
+interface Props {
+  name: string;
+  size?: number | string;
+  class?: string;
+  label?: string;
+}
+
+const { name, size = '1em', class: className, label } = Astro.props;
+const data = getIconData(icons, name);
+if (!data) throw new Error(`Icon.astro: "${name}" ikonu material-symbols setinde yok.`);
+
+const { attributes, body } = iconToSVG(data, { height: size });
+---
+<svg
+  {...attributes}
+  width={size}
+  height={size}
+  class:list={['icon', className]}
+  aria-hidden={label ? undefined : 'true'}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  fill="currentColor"
+  set:html={replaceIDs(body)}
+/>

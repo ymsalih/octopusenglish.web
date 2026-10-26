@@ -1,0 +1,143 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
+import { site } from '../data/site';
+
+const year = new Date().getFullYear();
+const columns = [
+  {
+    title: 'Uygulama',
+    links: [
+      { href: '/#ozellikler', label: 'Özellikler' },
+      { href: '/#nasil-calisir', label: 'Nasıl çalışır' },
+      { href: '/#premium', label: 'Octopus Premium' },
+      { href: '/#indir', label: 'İndir' },
+    ],
+  },
+  {
+    title: 'Yardım',
+    links: [
+      { href: '/destek', label: 'Destek ve SSS' },
+      { href: `mailto:${site.email}?subject=${encodeURIComponent('Octopus English – Destek')}`, label: 'Bize yazın' },
+    ],
+  },
+  {
+    title: 'Yasal',
+    links: [
+      { href: '/gizlilik-politikasi', label: 'Gizlilik Politikası' },
+      { href: '/kullanim-kosullari', label: 'Kullanım Koşulları' },
+    ],
+  },
+];
+---
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a class="brand" href="/">
+          <Image src={logo} alt="" width={48} height={48} densities={[1, 2]} />
+          <span>Octopus <span>English</span></span>
+        </a>
+        <p>Kelimeleri yakala, kartlarla pekiştir, yapay zekayla konuş. Her gün biraz daha derine.</p>
+        <a class="mail" href={`mailto:${site.email}`}>{site.email}</a>
+      </div>
+
+      {columns.map((col) => (
+        <nav class="footer__col" aria-label={col.title}>
+          <h2>{col.title}</h2>
+          <ul>
+            {col.links.map((l) => (
+              <li><a href={l.href}>{l.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      ))}
+    </div>
+
+    <div class="footer__bottom">
+      <p>© {year} Octopus English. Tüm hakları saklıdır.</p>
+      <p class="legal-note">
+        Apple ve App Store, Apple Inc.’in ticari markalarıdır. Google Play ve Google Play logosu, Google LLC’nin ticari markalarıdır.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    z-index: 1;
+    padding: 72px 0 40px;
+    border-top: 1px solid var(--border-soft);
+    background: linear-gradient(180deg, rgba(3, 6, 26, 0.4), rgba(3, 6, 26, 0.9));
+  }
+  .footer__top {
+    display: grid;
+    gap: 40px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 720px) {
+    .footer__top {
+      grid-template-columns: 1.6fr repeat(3, 1fr);
+    }
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font: 650 22px/1 var(--font-display);
+  }
+  .brand > span span {
+    color: var(--secondary);
+    font-weight: 500;
+  }
+  .footer__brand p {
+    margin-top: 16px;
+    max-width: 34ch;
+    color: var(--text-2);
+    font-size: 15px;
+  }
+  .mail {
+    display: inline-block;
+    margin-top: 14px;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 15px;
+    border-bottom: 1px solid rgba(242, 196, 90, 0.35);
+  }
+  .footer__col h2 {
+    font: 700 12.5px/1 var(--font-body);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .footer__col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .footer__col a {
+    color: var(--text-2);
+    font-size: 15px;
+    transition: color 0.2s;
+  }
+  .footer__col a:hover {
+    color: var(--text);
+  }
+  .footer__bottom {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-soft);
+    display: grid;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .legal-note {
+    font-size: 12px;
+    opacity: 0.8;
+  }
+</style>

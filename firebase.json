@@ -1,0 +1,33 @@
+{
+  "hosting": [
+    {
+      "site": "octopusenglish",
+      "public": "dist",
+      "cleanUrls": true,
+      "trailingSlash": false,
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "headers": [
+        {
+          "source": "/_astro/**",
+          "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+        }
+      ]
+    },
+    {
+      "site": "octopus-web-bdef8",
+      "public": "redirect",
+      "redirects": [
+        {
+          "source": "/",
+          "destination": "https://octopusenglish.web.app/",
+          "type": 301
+        },
+        {
+          "source": "/:path*",
+          "destination": "https://octopusenglish.web.app/:path",
+          "type": 301
+        }
+      ]
+    }
+  ]
+}

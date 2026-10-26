@@ -1,0 +1,332 @@
+---
+/**
+ * Okuma & Telaffuz (lib/screens/reading_practice_screen.dart). Döngü:
+ * "Dinliyorum..." → okunan kelimeler sırayla yeşile döner, iki kelime
+ * kırmızı kalır → puan kartı gelir (%90, 18/20 kelime).
+ */
+import Icon from '../../Icon.astro';
+import StatusBar from '../StatusBar.astro';
+import AppBar from '../AppBar.astro';
+import BottomBar from '../BottomBar.astro';
+
+interface Props {
+  inline?: boolean;
+}
+const { inline = false } = Astro.props;
+
+const text =
+  'Every morning, Ayla takes the ferry across the Bosphorus. She drinks hot tea and watches the seagulls follow the boat.';
+const missed = new Set([8, 16]); // "Bosphorus." ve "seagulls"
+const words = text.split(' ');
+const categories = ['Daily Life', 'Technology', 'Science', 'Travel'];
+const levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+---
+<div class="screen" data-screen="speak" data-screen-inline={inline ? '' : undefined}>
+  <StatusBar />
+  <AppBar title="Okuma & Telaffuz" />
+
+  <div class="row">
+    {categories.map((c, i) => <span class:list={['ph-chip', { 'is-on': i === 0 }]}>{c}</span>)}
+  </div>
+  <div class="row row--lv">
+    {levels.map((l) => <span class:list={['lv', { 'is-on': l === 'B1' }]}>{l}</span>)}
+  </div>
+
+  <div class="body">
+    <div class="head">
+      <b>A Morning in Istanbul</b>
+      <Icon name="g-translate" />
+      <span class="lvl">B1</span>
+    </div>
+
+    <div class="ph-card text">
+      {words.map((w, i) => (
+        <span class:list={['w', { 'w--bad': missed.has(i) }]} style={`--i:${i}`}>{w}</span>
+      ))}
+    </div>
+
+    <div class="slot">
+      <div class="listen">
+        <span class="mic"><Icon name="mic-rounded" /></span>
+        <span class="listen__body">
+          <b>Dinliyorum...</b>
+          <i>Every morning, Ayla takes the ferry across the…</i>
+        </span>
+      </div>
+      <div class="score">
+        <svg viewBox="0 0 36 36" class="ring" aria-hidden="true">
+          <circle cx="18" cy="18" r="15.5" class="ring__bg" />
+          <circle cx="18" cy="18" r="15.5" class="ring__fg" pathLength="100" />
+        </svg>
+        <span class="score__pct">%90</span>
+        <span class="score__body">
+          <b>Harika telaffuz!</b>
+          <span>18 / 20 kelime doğru. Kırmızı kelimelere dokunup dinleyebilirsin.</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="btns">
+      <span class="btn-ph btn-ph--soft"><Icon name="volume-up-rounded" /> Metni Dinle</span>
+      <span class="btn-ph btn-ph--main">
+        <span class="lbl lbl--a"><Icon name="mic-rounded" /> Okuyacağım</span>
+        <span class="lbl lbl--b"><Icon name="stop-rounded" /> Bitir</span>
+      </span>
+    </div>
+  </div>
+
+  <BottomBar active="speak" />
+</div>
+
+<style>
+  .row {
+    display: flex;
+    gap: 2cqw;
+    padding: 0 5cqw;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent);
+    mask-image: linear-gradient(90deg, #000 85%, transparent);
+  }
+  .row--lv {
+    margin-top: 2.4cqw;
+  }
+  .lv {
+    padding: 1.6cqw 3.4cqw;
+    border-radius: 3cqw;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-2);
+    font: 700 3.3cqw/1 var(--font-body);
+  }
+  .lv.is-on {
+    border-color: var(--secondary);
+    background: rgba(159, 178, 255, 0.2);
+    color: var(--secondary);
+  }
+
+  .body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3cqw;
+    padding: 4cqw 5cqw 3cqw;
+    min-height: 0;
+  }
+  .head {
+    display: flex;
+    align-items: center;
+    gap: 2cqw;
+  }
+  .head b {
+    flex: 1;
+    font: 650 5.2cqw/1.1 var(--font-display);
+  }
+  .head :global(.icon) {
+    width: 5.4cqw;
+    height: 5.4cqw;
+    color: var(--secondary);
+  }
+  .lvl {
+    padding: 1.4cqw 2.6cqw;
+    border-radius: 2.6cqw;
+    background: rgba(159, 178, 255, 0.2);
+    color: var(--secondary);
+    font: 800 3.2cqw/1 var(--font-body);
+  }
+  .text {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1cqw 1.4cqw;
+    padding: 4.4cqw;
+    font-size: 4.6cqw;
+    line-height: 1.5;
+  }
+  .w {
+    color: var(--success);
+  }
+  .w--bad {
+    color: var(--danger);
+    text-decoration: underline;
+    text-decoration-color: var(--danger);
+    text-underline-offset: 0.6cqw;
+  }
+
+  .slot {
+    display: grid;
+  }
+  .listen,
+  .score {
+    grid-area: 1 / 1;
+    display: flex;
+    align-items: center;
+    gap: 3cqw;
+    padding: 3.4cqw;
+    border-radius: 4cqw;
+  }
+  .listen {
+    background: rgba(124, 92, 245, 0.2);
+    opacity: 0;
+  }
+  .mic {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 10cqw;
+    height: 10cqw;
+    border-radius: 50%;
+    background: var(--primary);
+    font-size: 5.4cqw;
+  }
+  .mic::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 0.6cqw solid var(--primary-light);
+    opacity: 0;
+  }
+  .listen__body {
+    display: grid;
+    gap: 0.8cqw;
+    font-size: 3.4cqw;
+  }
+  .listen__body b {
+    color: var(--primary-light);
+  }
+  .listen__body i {
+    color: var(--text-2);
+  }
+
+  .score {
+    border: 1px solid rgba(79, 209, 165, 0.45);
+    background: var(--surface);
+  }
+  .ring {
+    flex: 0 0 auto;
+    width: 13cqw;
+    height: 13cqw;
+    transform: rotate(-90deg);
+  }
+  .ring__bg {
+    fill: none;
+    stroke: var(--surface-high);
+    stroke-width: 3.4;
+  }
+  .ring__fg {
+    fill: none;
+    stroke: var(--success);
+    stroke-width: 3.4;
+    stroke-linecap: round;
+    stroke-dasharray: 90 100;
+  }
+  .score__pct {
+    position: absolute;
+    width: 13cqw;
+    text-align: center;
+    font: 700 3.4cqw/1 var(--font-display);
+  }
+  .score {
+    position: relative;
+  }
+  .score__body {
+    display: grid;
+    gap: 0.6cqw;
+    font-size: 3.1cqw;
+    color: var(--muted);
+  }
+  .score__body b {
+    color: var(--text);
+    font: 650 4.4cqw/1.1 var(--font-display);
+  }
+
+  .btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3cqw;
+    margin-top: auto;
+  }
+  .btn-ph {
+    display: grid;
+    place-items: center;
+    padding: 3.6cqw 2cqw;
+    border-radius: 4cqw;
+    font: 700 3.6cqw/1 var(--font-body);
+  }
+  .btn-ph :global(.icon) {
+    width: 4.8cqw;
+    height: 4.8cqw;
+    vertical-align: -0.9cqw;
+  }
+  .btn-ph--soft {
+    background: rgba(124, 92, 245, 0.3);
+  }
+  .btn-ph--main {
+    background: var(--primary);
+  }
+  .lbl {
+    grid-area: 1 / 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 1.2cqw;
+  }
+  .lbl--b {
+    opacity: 0;
+  }
+
+  /* ---- Döngü (11 sn) ---- */
+  /* backwards: gecikme süresince ilk kare (beyaz) uygulanır, kelime erken yeşil görünmez. */
+  .is-active .w { animation: sp-ok 11s linear infinite backwards; animation-delay: calc(var(--i) * 0.24s); }
+  .is-active .w--bad { animation-name: sp-bad; }
+  .is-active .listen { animation: sp-listen 11s var(--ease-out) infinite; }
+  .is-active .mic::before { animation: sp-pulse 1.3s var(--ease-out) infinite; }
+  .is-active .score { animation: sp-score 11s var(--ease-out) infinite; }
+  .is-active .ring__fg { animation: sp-ring 11s var(--ease-out) infinite; }
+  .is-active .btn-ph--main { animation: sp-main 11s linear infinite; }
+  .is-active .lbl--a { animation: sp-lbl-a 11s linear infinite; }
+  .is-active .lbl--b { animation: sp-lbl-b 11s linear infinite; }
+
+  @keyframes sp-ok {
+    0%, 10% { color: var(--text); }
+    12%, 92% { color: var(--success); }
+    100% { color: var(--text); }
+  }
+  @keyframes sp-bad {
+    0%, 10% { color: var(--text); text-decoration-color: transparent; }
+    12%, 92% { color: var(--danger); text-decoration-color: var(--danger); }
+    100% { color: var(--text); text-decoration-color: transparent; }
+  }
+  @keyframes sp-listen {
+    0%, 6% { opacity: 0; transform: translateY(2cqw); }
+    9%, 58% { opacity: 1; transform: none; }
+    62%, 100% { opacity: 0; transform: translateY(-2cqw); }
+  }
+  @keyframes sp-pulse {
+    from { opacity: 0.9; transform: scale(1); }
+    to { opacity: 0; transform: scale(1.7); }
+  }
+  @keyframes sp-score {
+    0%, 61% { opacity: 0; transform: translateY(3cqw) scale(0.96); }
+    66%, 94% { opacity: 1; transform: none; }
+    100% { opacity: 0; }
+  }
+  @keyframes sp-ring {
+    0%, 63% { stroke-dasharray: 0 100; }
+    76%, 100% { stroke-dasharray: 90 100; }
+  }
+  @keyframes sp-main {
+    0%, 7% { background: var(--primary); }
+    8%, 59% { background: #d93f58; }
+    60%, 100% { background: var(--primary); }
+  }
+  @keyframes sp-lbl-a {
+    0%, 7% { opacity: 1; }
+    8%, 59% { opacity: 0; }
+    60%, 100% { opacity: 1; }
+  }
+  @keyframes sp-lbl-b {
+    0%, 7% { opacity: 0; }
+    8%, 59% { opacity: 1; }
+    60%, 100% { opacity: 0; }
+  }
+</style>

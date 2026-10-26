@@ -1,0 +1,204 @@
+---
+/**
+ * Üç adım. Arkadaki dalgalı çizgi (bir ahtapot kolu gibi) kaydırdıkça
+ * çizilir: data-progress="through" → --p.
+ */
+import Icon from '../Icon.astro';
+
+const steps = [
+  {
+    icon: 'photo-camera-rounded',
+    title: 'Kelimeni yakala',
+    text: 'Kamerayla taradığın, çevirdiğin ya da hazır paketlerden seçtiğin kelimeleri kendi havuzunda topla. Ne öğreneceğine sen karar ver.',
+  },
+  {
+    icon: 'bolt-rounded',
+    title: 'Kullanarak pekiştir',
+    text: 'Kartlarla kendini test et, hikayelerde karşılaş, yapay zekayla sohbet ederken gerçek cümlelerde kullan.',
+  },
+  {
+    icon: 'local-fire-department-rounded',
+    title: 'Her gün biraz daha',
+    text: 'Kısa günlük tekrarlarla serini büyüt, Gelişim Raporu’nda başarı oranını adım adım izle.',
+  },
+];
+---
+<section class="how section" id="nasil-calisir" aria-labelledby="how-title">
+  <div class="container">
+    <div class="how__head">
+      <p class="kicker" data-reveal>Nasıl çalışır</p>
+      <h2 id="how-title" class="title-lg" data-reveal style="--d:0.08s">
+        Üç adımda <span class="text-gold">derinleş.</span>
+      </h2>
+    </div>
+
+    <div class="how__track" data-progress="through">
+      <svg class="how__line how__line--h" viewBox="0 0 1000 56" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="how-grad-h" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stop-color="#7c5cf5" />
+            <stop offset="0.55" stop-color="#a996ff" />
+            <stop offset="1" stop-color="#f2c45a" />
+          </linearGradient>
+        </defs>
+        <path class="how__ghost" d="M0,28 C60,6 110,6 166.7,28 S280,50 333.3,28 S440,6 500,28 S610,50 666.7,28 S780,6 833.3,28 S950,50 1000,28" />
+        <path class="how__draw" stroke="url(#how-grad-h)" pathLength="1" d="M0,28 C60,6 110,6 166.7,28 S280,50 333.3,28 S440,6 500,28 S610,50 666.7,28 S780,6 833.3,28 S950,50 1000,28" />
+      </svg>
+      <svg class="how__line how__line--v" viewBox="0 0 40 1000" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="how-grad-v" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#7c5cf5" />
+            <stop offset="0.55" stop-color="#a996ff" />
+            <stop offset="1" stop-color="#f2c45a" />
+          </linearGradient>
+        </defs>
+        <path class="how__ghost" d="M20,0 C0,60 0,110 20,166.7 S40,280 20,333.3 S0,440 20,500 S40,610 20,666.7 S0,780 20,833.3 S40,950 20,1000" />
+        <path class="how__draw" stroke="url(#how-grad-v)" pathLength="1" d="M20,0 C0,60 0,110 20,166.7 S40,280 20,333.3 S0,440 20,500 S40,610 20,666.7 S0,780 20,833.3 S40,950 20,1000" />
+      </svg>
+
+      <ol class="how__steps">
+        {steps.map((s, i) => (
+          <li class="how__step" data-reveal style={`--d:${0.1 + i * 0.15}s`}>
+            <span class="how__node"><Icon name={s.icon} /></span>
+            <div class="how__card glass spot">
+              <span class="how__n">Adım {i + 1}</span>
+              <h3>{s.title}</h3>
+              <p>{s.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .how__head {
+    display: grid;
+    gap: 18px;
+    justify-items: center;
+    text-align: center;
+    margin-bottom: clamp(56px, 8vw, 96px);
+  }
+
+  .how__track {
+    position: relative;
+  }
+  .how__line {
+    position: absolute;
+    pointer-events: none;
+    overflow: visible;
+  }
+  .how__line path {
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .how__ghost {
+    stroke: rgba(159, 178, 255, 0.12);
+    stroke-dasharray: 2 10;
+  }
+  .how__draw {
+    stroke-dasharray: 1;
+    /* Bölüm ekranın ortasına gelirken çizilmeye başlar, çıkarken tamamlanır. */
+    stroke-dashoffset: clamp(0, calc(1 - (var(--p, 1) - 0.2) * 2.4), 1);
+    filter: drop-shadow(0 0 6px rgba(169, 150, 255, 0.6));
+  }
+
+  .how__steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 36px;
+  }
+  .how__step {
+    position: relative;
+  }
+  .how__node {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--muted);
+    font-size: 26px;
+    transition: all 0.8s var(--ease-out) 0.4s;
+  }
+  .how__step.is-visible .how__node,
+  :global(html:not(.js)) .how__node {
+    border-color: transparent;
+    background: var(--grad-primary);
+    color: #fff;
+    box-shadow: 0 0 0 6px rgba(124, 92, 245, 0.18), 0 10px 40px -6px rgba(124, 92, 245, 0.8);
+  }
+  .how__card {
+    padding: 26px;
+  }
+  .how__n {
+    color: var(--accent);
+    font: 700 12.5px/1 var(--font-body);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .how__card h3 {
+    margin-top: 10px;
+    font-size: 1.55rem;
+  }
+  .how__card p {
+    margin-top: 10px;
+    color: var(--text-2);
+  }
+
+  /* Mobil: dikey kol, düğümler solda */
+  .how__line--h {
+    display: none;
+  }
+  .how__line--v {
+    left: 8px;
+    top: 0;
+    width: 40px;
+    height: 100%;
+  }
+  .how__step {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+
+  /* Masaüstü: yatay kol, düğümler kartların üstünde */
+  @media (min-width: 860px) {
+    .how__line--v {
+      display: none;
+    }
+    .how__line--h {
+      display: block;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 56px;
+    }
+    .how__steps {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+    .how__step {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      gap: 28px;
+    }
+    .how__card {
+      text-align: center;
+      height: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .how__draw {
+      stroke-dashoffset: 0;
+    }
+  }
+</style>

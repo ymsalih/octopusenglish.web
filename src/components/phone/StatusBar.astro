@@ -1,0 +1,73 @@
+---
+/** Telefonun en üstündeki saat, sinyal, Wi‑Fi ve pil göstergesi. */
+---
+<div class="sb" aria-hidden="true">
+  <span class="sb__time">9:41</span>
+  <span class="sb__icons">
+    <svg viewBox="0 0 18 12" class="sb__signal">
+      <rect x="0" y="8" width="3" height="4" rx="1" />
+      <rect x="5" y="5.5" width="3" height="6.5" rx="1" />
+      <rect x="10" y="3" width="3" height="9" rx="1" />
+      <rect x="15" y="0" width="3" height="12" rx="1" />
+    </svg>
+    <svg viewBox="0 0 16 12" class="sb__wifi">
+      <path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0L8 11.5Z" />
+      <path d="M3.4 6.8a6.5 6.5 0 0 1 9.2 0l-1.4 1.4a4.5 4.5 0 0 0-6.4 0L3.4 6.8Z" />
+      <path d="M1.1 4.5a9.8 9.8 0 0 1 13.8 0l-1.4 1.4a7.8 7.8 0 0 0-11 0L1.1 4.5Z" />
+    </svg>
+    <span class="sb__battery"><span></span></span>
+  </span>
+</div>
+
+<style>
+  .sb {
+    position: relative;
+    z-index: 20;
+    flex: 0 0 auto;
+    height: 12.5cqw;
+    padding: 3.6cqw 7cqw 0 9cqw;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    font: 700 4.4cqw/1 var(--font-body);
+    letter-spacing: 0.01em;
+  }
+  .sb__icons {
+    display: flex;
+    align-items: center;
+    gap: 1.5cqw;
+    padding-top: 0.4cqw;
+  }
+  .sb__signal,
+  .sb__wifi {
+    height: 3.4cqw;
+    width: auto;
+    fill: currentColor;
+  }
+  .sb__battery {
+    position: relative;
+    width: 7cqw;
+    height: 3.5cqw;
+    border: 0.35cqw solid rgba(244, 241, 255, 0.55);
+    border-radius: 1cqw;
+    padding: 0.35cqw;
+  }
+  .sb__battery::after {
+    content: '';
+    position: absolute;
+    right: -1.2cqw;
+    top: 50%;
+    width: 0.7cqw;
+    height: 1.4cqw;
+    border-radius: 0 0.5cqw 0.5cqw 0;
+    background: rgba(244, 241, 255, 0.55);
+    transform: translateY(-50%);
+  }
+  .sb__battery span {
+    display: block;
+    width: 78%;
+    height: 100%;
+    border-radius: 0.5cqw;
+    background: var(--text);
+  }
+</style>

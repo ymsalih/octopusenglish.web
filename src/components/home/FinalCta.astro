@@ -1,0 +1,128 @@
+---
+import { Image } from 'astro:assets';
+import StoreBadges from '../StoreBadges.astro';
+import logo from '../../assets/logo.png';
+
+// Kabarcıklar derleme anında sabit değerlerle üretilir (her ziyarette aynı).
+const bubbles = Array.from({ length: 16 }, (_, i) => ({
+  left: (i * 37) % 100,
+  size: 4 + ((i * 7) % 12),
+  delay: (i * 0.73) % 9,
+  duration: 7 + ((i * 3) % 6),
+}));
+---
+<section class="cta" id="indir" aria-labelledby="cta-title">
+  <div class="cta__bubbles" aria-hidden="true">
+    {bubbles.map((b) => (
+      <span style={`--x:${b.left}%;--s:${b.size}px;--delay:${b.delay}s;--dur:${b.duration}s`}></span>
+    ))}
+  </div>
+
+  <div class="container cta__inner">
+    <div class="cta__octo" data-reveal="scale">
+      <span class="cta__ring" aria-hidden="true"></span>
+      <span class="cta__ring cta__ring--2" aria-hidden="true"></span>
+      <Image src={logo} alt="Octopus English maskotu mor ahtapot" width={260} height={260} densities={[1, 2]} class="cta__logo" />
+    </div>
+    <h2 id="cta-title" class="title-xl" data-reveal style="--d:0.1s">
+      Derinlere dalmaya <span class="text-gold">hazır mısın?</span>
+    </h2>
+    <p class="lead" data-reveal style="--d:0.2s">
+      Octopus English’i indir, ilk kelimeni bugün yakala. Ücretsiz başla, istediğinde Premium’a geç.
+    </p>
+    <div data-reveal style="--d:0.3s">
+      <StoreBadges size="lg" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(110px, 16vw, 200px);
+    text-align: center;
+  }
+  .cta::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    width: min(1100px, 160vw);
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(closest-side, rgba(124, 92, 245, 0.35), rgba(124, 92, 245, 0.08) 55%, transparent);
+    pointer-events: none;
+  }
+  .cta__inner {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 22px;
+  }
+  .cta__inner .lead {
+    max-width: 560px;
+  }
+
+  .cta__octo {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: clamp(190px, 26vw, 260px);
+    aspect-ratio: 1;
+    margin-bottom: 10px;
+  }
+  .cta__octo :global(.cta__logo) {
+    position: relative;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 24px 50px rgba(124, 92, 245, 0.6));
+    animation: bob 6s var(--ease-in-out) infinite;
+  }
+  .cta__ring {
+    position: absolute;
+    inset: 4%;
+    border-radius: 50%;
+    border: 1px solid rgba(242, 196, 90, 0.35);
+    animation: ring 4.5s var(--ease-out) infinite;
+  }
+  .cta__ring--2 {
+    animation-delay: 2.25s;
+  }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-14px) rotate(2deg); }
+  }
+  @keyframes ring {
+    from { transform: scale(0.7); opacity: 0.9; }
+    to { transform: scale(1.5); opacity: 0; }
+  }
+
+  .cta__bubbles span {
+    position: absolute;
+    bottom: -20px;
+    left: var(--x);
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    border: 1px solid rgba(200, 210, 255, 0.45);
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.5), rgba(159, 178, 255, 0.08) 60%);
+    animation: rise var(--dur) linear var(--delay) infinite;
+    opacity: 0;
+  }
+  @keyframes rise {
+    0% { transform: translate3d(0, 0, 0); opacity: 0; }
+    10% { opacity: 0.8; }
+    50% { transform: translate3d(14px, -45vh, 0); }
+    90% { opacity: 0.6; }
+    100% { transform: translate3d(-10px, -95vh, 0); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta__octo :global(.cta__logo),
+    .cta__ring,
+    .cta__bubbles span {
+      animation: none;
+    }
+  }
+</style>

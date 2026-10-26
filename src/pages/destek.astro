@@ -1,0 +1,270 @@
+---
+/**
+ * Destek ve SSS. Cevaplar uygulamanın gerçek davranışına göre yazıldı
+ * (ayarlar, abonelik, izin ve limit ekranları).
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+
+const mailto = `mailto:${site.email}?subject=${encodeURIComponent('Octopus English – Destek')}`;
+
+const quick = [
+  { icon: 'mail-rounded', title: 'Bize yaz', text: 'Sorun, öneri ya da şikayetin için e-posta gönder.', href: mailto, cta: site.email },
+  { icon: 'credit-card-rounded', title: 'Abonelik', text: 'Paketini yönetme, iptal etme ve geri yükleme.', href: '#abonelik', cta: 'Cevaplara git' },
+  { icon: 'delete-forever-rounded', title: 'Hesap silme', text: 'Hesabını ve verilerini kalıcı olarak silme.', href: '#hesap', cta: 'Cevaplara git' },
+];
+
+const groups = [
+  {
+    id: 'hesap',
+    title: 'Hesap',
+    items: [
+      {
+        q: 'Doğrulama e-postası gelmedi, ne yapmalıyım?',
+        a: 'E-posta ile kayıt olduktan sonra adresine bir doğrulama bağlantısı gönderilir. Gelen kutunda göremiyorsan Spam (Gereksiz) klasörünü kontrol et. Hâlâ bulamıyorsan bize yaz.',
+      },
+      {
+        q: 'Şifremi unuttum.',
+        a: 'Giriş ekranındaki "Şifremi unuttum" bağlantısına dokun ve kayıtlı e-posta adresini yaz. Şifreni yenilemen için bir bağlantı gönderilir.',
+      },
+      {
+        q: 'Telefonumu değiştirirsem kelimelerim kaybolur mu?',
+        a: 'Hayır. Kelime havuzun, testlerin ve istatistiklerin hesabına kayıtlıdır. Yeni telefonunda aynı hesapla giriş yapman yeterli.',
+      },
+      {
+        q: 'Hesabımı nasıl silerim?',
+        a: 'Ayarlar → Hesap ve Yasal Bilgiler → Hesabımı Sil adımını izle. Hesabın, kelime havuzun, test geçmişin ve istatistiklerin kalıcı olarak silinir; bu işlem geri alınamaz. Güvenlik için şifreni yeniden girmen istenebilir. Hesabı silmek aboneliğini iptal etmez.',
+      },
+    ],
+  },
+  {
+    id: 'abonelik',
+    title: 'Abonelik ve Premium',
+    items: [
+      {
+        q: 'Aboneliğimi nasıl iptal ederim?',
+        a: 'iPhone’da Ayarlar → Apple Kimliği → Abonelikler, Android’de Google Play → Ödemeler ve abonelikler → Abonelikler bölümünden iptal edebilirsin. Uygulamadaki Profil ekranında yer alan "Aboneliği Yönet / İptal Et" seçeneği de seni doğrudan bu sayfaya götürür. İptal, mevcut dönemin sonunda geçerli olur.',
+      },
+      {
+        q: 'Satın aldığım paket görünmüyor.',
+        a: 'Octopus Premium ekranındaki "Satın Alımları Geri Yükle" seçeneğine dokun. Ödemen bankanın onayını bekliyorsa paketin onay geldiğinde aktifleşir.',
+      },
+      {
+        q: 'Aboneliğimi başka bir telefonda kullanabilir miyim?',
+        a: 'Evet, aynı hesapla giriş yaptığında paketin geçerlidir. Yalnız paket değişikliklerini aboneliği satın aldığın platformun mağazasından (App Store veya Google Play) yapabilirsin.',
+      },
+      {
+        q: 'Paketler arasındaki fark nedir?',
+        a: 'Basic ücretsizdir. Plus, Pro ve Max; kelime havuzu kapasitesini ve günlük sohbet, hikaye, çeviri ve test haklarını artırır. Max’te kelime havuzu, çeviri ve test hakları sınırsızdır. Ayrıntılar ana sayfadaki Premium bölümünde.',
+      },
+    ],
+  },
+  {
+    id: 'ozellikler',
+    title: 'Özellikler',
+    items: [
+      {
+        q: 'Günlük haklarım ne zaman yenilenir?',
+        a: 'Sohbet, hikaye, çeviri ve test hakların her gün, telefonunun tarihine göre gece yarısı sıfırlanır. Kelime havuzu kapasitesi ise günlük değil, toplamdır.',
+      },
+      {
+        q: 'Sohbet, hikaye veya çeviri çalışmıyor.',
+        a: 'Bu özellikler veri paylaşım izni gerektirir. Ayarlar → Gizlilik → "Yapay zeka ve çeviri veri paylaşımı" seçeneğinin açık olduğundan emin ol. Açıksa günlük hakkın dolmuş olabilir; ertesi gün yenilenir ya da paketini yükseltebilirsin.',
+      },
+      {
+        q: 'Mikrofon veya kamera izni istiyor.',
+        a: 'Telaffuz pratiği ve sesle yazma için mikrofon (iPhone’da ayrıca konuşma tanıma), kamerayla tarama için kamera izni gerekir. Telefonunun Ayarlar bölümünden Octopus English’e bu izinleri verebilirsin.',
+      },
+      {
+        q: 'Günlük seri nasıl çalışır?',
+        a: 'Gün içinde en az bir çalışma yaptığında (kelime eklemek, test çözmek, sohbet etmek, telaffuz pratiği gibi) serin bir artar. Bir günü boş geçirirsen seri sıfırdan başlar.',
+      },
+      {
+        q: 'Yapay zeka uygunsuz bir şey yazdı.',
+        a: 'Sohbet balonunun altındaki ya da hikaye ekranındaki "Bildir" seçeneğiyle nedenini seçip bize iletebilirsin. Bildirimleri inceliyoruz.',
+      },
+    ],
+  },
+];
+---
+<BaseLayout title="Destek" description="Octopus English hakkında sık sorulan sorular ve iletişim bilgileri.">
+  <PageHeader kicker="Destek" title="Sana nasıl yardımcı olabiliriz?" lead="Sık sorulan soruların cevapları aşağıda. Aradığını bulamazsan bize yazman yeterli." />
+
+  <div class="container support">
+    <ul class="quick">
+      {quick.map((c, i) => (
+        <li data-reveal style={`--d:${i * 0.08}s`}>
+          <a class="quick__card glass spot" href={c.href}>
+            <span class="quick__icon"><Icon name={c.icon} /></span>
+            <span class="quick__title">{c.title}</span>
+            <span class="quick__text">{c.text}</span>
+            <span class="quick__cta">{c.cta} <Icon name="arrow-forward-rounded" /></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    {groups.map((g) => (
+      <section class="faq" id={g.id} aria-labelledby={`${g.id}-title`}>
+        <h2 id={`${g.id}-title`} data-reveal>{g.title}</h2>
+        <div class="faq__list">
+          {g.items.map((it, i) => (
+            <details class="faq__item" data-reveal style={`--d:${i * 0.05}s`}>
+              <summary>
+                <span>{it.q}</span>
+                <Icon name="expand-more-rounded" class="faq__chev" />
+              </summary>
+              <p>{it.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+    ))}
+
+    <section class="contact glass" data-reveal aria-labelledby="contact-title">
+      <div>
+        <h2 id="contact-title">Hâlâ sorun mu var?</h2>
+        <p>Bize e-posta gönder; mümkünse telefon modelini ve sorunun ekran görüntüsünü de ekle.</p>
+      </div>
+      <a class="btn btn--gold" href={mailto}><Icon name="mail-rounded" /> {site.email}</a>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .support {
+    padding-bottom: 120px;
+    display: grid;
+    gap: 64px;
+  }
+
+  .quick {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+  @media (min-width: 820px) {
+    .quick {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .quick__card {
+    height: 100%;
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    padding: 24px;
+    transition: transform 0.5s var(--ease-out), border-color 0.5s;
+  }
+  .quick__card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(169, 150, 255, 0.35);
+  }
+  .quick__icon {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    margin-bottom: 6px;
+    border-radius: 14px;
+    background: rgba(124, 92, 245, 0.18);
+    color: var(--primary-light);
+    font-size: 24px;
+  }
+  .quick__title {
+    font: 650 1.25rem/1.2 var(--font-display);
+  }
+  .quick__text {
+    color: var(--text-2);
+    font-size: 15px;
+  }
+  .quick__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 14.5px;
+    word-break: break-word;
+  }
+
+  .faq {
+    scroll-margin-top: calc(var(--header-h) + 20px);
+  }
+  .faq h2 {
+    margin-bottom: 18px;
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+  }
+  .faq__list {
+    display: grid;
+    gap: 10px;
+    max-width: 860px;
+  }
+  .faq__item {
+    border-radius: 18px;
+    border: 1px solid var(--border-soft);
+    background: rgba(11, 21, 64, 0.55);
+    transition: border-color 0.3s, background-color 0.3s;
+  }
+  .faq__item[open] {
+    border-color: rgba(169, 150, 255, 0.35);
+    background: rgba(19, 30, 84, 0.6);
+  }
+  .faq__item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 20px;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .faq__item summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq__item :global(.faq__chev) {
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    color: var(--muted);
+    transition: transform 0.35s var(--ease-out), color 0.3s;
+  }
+  .faq__item[open] :global(.faq__chev) {
+    transform: rotate(180deg);
+    color: var(--accent);
+  }
+  .faq__item p {
+    padding: 0 20px 20px;
+    color: var(--text-2);
+    line-height: 1.75;
+  }
+
+  .contact {
+    display: grid;
+    gap: 22px;
+    align-items: center;
+    padding: clamp(24px, 4vw, 40px);
+  }
+  @media (min-width: 820px) {
+    .contact {
+      grid-template-columns: 1fr auto;
+    }
+  }
+  .contact h2 {
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+  }
+  .contact p {
+    margin-top: 8px;
+    color: var(--text-2);
+  }
+  .contact .btn {
+    word-break: break-all;
+  }
+</style>

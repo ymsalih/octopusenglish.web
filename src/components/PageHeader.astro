@@ -1,0 +1,45 @@
+---
+/** Alt sayfaların (destek, yasal) başlık alanı. */
+interface Props {
+  kicker: string;
+  title: string;
+  lead?: string;
+}
+const { kicker, title, lead } = Astro.props;
+---
+<header class="page-head">
+  <div class="container">
+    <p class="kicker" data-reveal>{kicker}</p>
+    <h1 class="title-lg" data-reveal style="--d:0.06s">{title}</h1>
+    {lead && <p class="lead" data-reveal style="--d:0.12s">{lead}</p>}
+    <slot />
+  </div>
+</header>
+
+<style>
+  .page-head {
+    position: relative;
+    padding: calc(var(--header-h) + clamp(56px, 9vw, 110px)) 0 clamp(40px, 6vw, 64px);
+    overflow: hidden;
+  }
+  .page-head::after {
+    content: '';
+    position: absolute;
+    right: -10%;
+    top: -30%;
+    width: min(720px, 90vw);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(124, 92, 245, 0.28), transparent);
+    pointer-events: none;
+    z-index: -1;
+  }
+  .page-head .container {
+    display: grid;
+    gap: 18px;
+    justify-items: start;
+  }
+  .page-head .lead {
+    max-width: 620px;
+  }
+</style>

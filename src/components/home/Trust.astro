@@ -1,0 +1,137 @@
+---
+/**
+ * Gizlilik vaatleri. Her madde uygulamanın koduyla doğrulandı:
+ * ai_consent.dart, camera_scanner_screen.dart (ML Kit, cihaz üstü),
+ * chat_screen.dart (_recordMessage yalnızca sayaç), settings_screen.dart (_deleteAccount).
+ */
+import Icon from '../Icon.astro';
+
+const items = [
+  {
+    icon: 'verified-user-rounded',
+    title: 'Önce senin iznin',
+    text: 'Yapay zeka ve çeviri özellikleri için yazdıkların, ancak açıkça izin verirsen ilgili servislere gönderilir. İznini Ayarlar’dan istediğin an geri alabilirsin.',
+  },
+  {
+    icon: 'photo-camera-rounded',
+    title: 'Kamera telefonunda kalır',
+    text: 'Taradığın görüntüler metne telefonunun içinde çevrilir; fotoğraf hiçbir yere gönderilmez.',
+  },
+  {
+    icon: 'forum-rounded',
+    title: 'Sohbetlerin saklanmaz',
+    text: 'Octopus AI ile yazışmaların veritabanımızda tutulmaz; yalnızca günlük kullanım hakkın sayılır.',
+  },
+  {
+    icon: 'delete-forever-rounded',
+    title: 'İstediğin an silebilirsin',
+    text: 'Hesabını, kelime havuzunu ve istatistiklerini uygulamanın içinden kalıcı olarak silebilirsin.',
+  },
+];
+---
+<section class="trust section" aria-labelledby="trust-title">
+  <div class="container trust__wrap">
+    <div class="trust__head">
+      <span class="trust__shield" data-reveal="scale"><Icon name="shield-rounded" /></span>
+      <p class="kicker" data-reveal>Gizlilik</p>
+      <h2 id="trust-title" class="title-lg" data-reveal style="--d:0.08s">Verilerin senin kontrolünde.</h2>
+      <a class="trust__link" href="/gizlilik-politikasi" data-reveal style="--d:0.16s">
+        Gizlilik Politikası’nı oku <Icon name="arrow-forward-rounded" />
+      </a>
+    </div>
+    <ul class="trust__list">
+      {items.map((it, i) => (
+        <li class="trust__item" data-reveal style={`--d:${i * 0.08}s`}>
+          <span class="trust__icon"><Icon name={it.icon} /></span>
+          <div>
+            <h3>{it.title}</h3>
+            <p>{it.text}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .trust__wrap {
+    display: grid;
+    gap: 48px;
+  }
+  @media (min-width: 960px) {
+    .trust__wrap {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 72px;
+      align-items: start;
+    }
+    .trust__head {
+      position: sticky;
+      top: calc(var(--header-h) + 48px);
+    }
+  }
+  .trust__head {
+    display: grid;
+    gap: 18px;
+    justify-items: start;
+  }
+  .trust__shield {
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 22px;
+    background: radial-gradient(circle at 30% 25%, rgba(79, 209, 165, 0.35), rgba(79, 209, 165, 0.08));
+    border: 1px solid rgba(79, 209, 165, 0.35);
+    color: var(--success);
+    font-size: 36px;
+    box-shadow: 0 20px 60px -20px rgba(79, 209, 165, 0.6);
+  }
+  .trust__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .trust__link :global(.icon) {
+    transition: transform 0.3s var(--ease-out);
+  }
+  .trust__link:hover :global(.icon) {
+    transform: translateX(4px);
+  }
+
+  .trust__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+  .trust__item {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 18px;
+    padding: 24px;
+    border-radius: 22px;
+    border: 1px solid var(--border-soft);
+    background: rgba(11, 21, 64, 0.55);
+  }
+  .trust__icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: rgba(79, 209, 165, 0.12);
+    color: var(--success);
+    font-size: 24px;
+  }
+  .trust__item h3 {
+    font-size: 1.2rem;
+  }
+  .trust__item p {
+    margin-top: 6px;
+    color: var(--text-2);
+    font-size: 15px;
+  }
+</style>

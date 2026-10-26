@@ -1,0 +1,355 @@
+/* Sitenin tasarım temeli: renkler uygulamanın koyu temasından (lib/theme/app_theme.dart)
+   alındı; vurgu rengi #F2C45A. Yazı tipleri BaseLayout.astro'da içe aktarılır. */
+
+:root {
+  color-scheme: dark;
+
+  --bg-top: #17245c;
+  --bg: #0b1540;
+  --bg-deep: #050920;
+  --abyss: #03061a;
+  --surface: #131e54;
+  --surface-high: #1b2868;
+  --border: #26357a;
+  --border-soft: rgba(159, 178, 255, 0.14);
+
+  --primary: #7c5cf5;
+  --primary-light: #a996ff;
+  --secondary: #9fb2ff;
+  --accent: #f2c45a;
+  --accent-soft: #ffe3a1;
+  --success: #4fd1a5;
+  --danger: #ff6b81;
+
+  --text: #f4f1ff;
+  --text-2: #b8c0ea;
+  --muted: #7d87bd;
+  --ink: #0b1540; /* altın zemin üzerindeki koyu yazı */
+
+  --grad-primary: linear-gradient(135deg, #6d4df0 0%, #8e7bff 55%, #9fb2ff 100%);
+  --grad-gold: linear-gradient(135deg, #ffd983 0%, #f2c45a 55%, #e0a63a 100%);
+
+  --font-display: 'Fredoka Variable', 'Fredoka', system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --gutter: 16px;
+  --max: 1180px;
+  --header-h: 68px;
+
+  --page-p: 0; /* sayfa kaydırma ilerlemesi (0–1), scripts/motion.ts yazar */
+}
+
+@media (min-width: 768px) {
+  :root { --gutter: 32px; }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 12px);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+img,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 650;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+::selection {
+  background: rgba(242, 196, 90, 0.35);
+  color: var(--text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Yerleşim yardımcıları ---------- */
+
+.container {
+  width: 100%;
+  max-width: calc(var(--max) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  position: relative;
+  padding-block: clamp(88px, 14vw, 168px);
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 700 12.5px/1 var(--font-body);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.kicker::before {
+  content: '';
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+.title-xl {
+  font-size: clamp(2.3rem, 6.2vw, 4.6rem);
+}
+.title-lg {
+  font-size: clamp(2rem, 4.6vw, 3.4rem);
+}
+.lead {
+  font-size: clamp(1.02rem, 1.6vw, 1.2rem);
+  color: var(--text-2);
+  line-height: 1.7;
+}
+
+.text-gold {
+  background: var(--grad-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.text-violet {
+  background: linear-gradient(120deg, #c9bcff 0%, #a996ff 40%, #9fb2ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font: 700 15px/1 var(--font-body);
+  cursor: pointer;
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out), background-color 0.3s;
+}
+.btn--gold {
+  background: var(--grad-gold);
+  color: var(--ink);
+  box-shadow: 0 10px 30px -12px rgba(242, 196, 90, 0.7);
+}
+.btn--gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -12px rgba(242, 196, 90, 0.85);
+}
+.btn--ghost {
+  border-color: var(--border);
+  background: rgba(19, 30, 84, 0.5);
+  color: var(--text);
+}
+.btn--ghost:hover {
+  border-color: var(--primary-light);
+  transform: translateY(-2px);
+}
+
+/* Cam efektli kart */
+.glass {
+  background: linear-gradient(180deg, rgba(27, 40, 104, 0.55), rgba(19, 30, 84, 0.35));
+  border: 1px solid var(--border-soft);
+  border-radius: 24px;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+/* Fareyi takip eden ışık (scripts/motion.ts --mx/--my yazar) */
+.spot {
+  position: relative;
+  isolation: isolate;
+}
+.spot::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, -40%),
+    rgba(169, 150, 255, 0.16),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.spot:hover::before {
+  opacity: 1;
+}
+
+/* ---------- Telefon ekranlarının ortak parçaları ----------
+   (components/phone/screens/*). Ölçüler telefon ekranı genişliğine göre (cqw). */
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  font-size: 4.3cqw;
+  line-height: 1.4;
+}
+.ph-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.2cqw;
+  padding: 1.5cqw 2.8cqw;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(27, 40, 104, 0.85);
+  color: var(--text-2);
+  font: 700 3.3cqw/1 var(--font-body);
+  white-space: nowrap;
+}
+.ph-pill .icon {
+  width: 3.8cqw;
+  height: 3.8cqw;
+}
+.ph-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 1.9cqw 3.8cqw;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  font: 700 3.4cqw/1 var(--font-body);
+  white-space: nowrap;
+}
+.ph-chip.is-on {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+.ph-card {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 4.6cqw;
+}
+.ph-overline {
+  font: 800 2.9cqw/1 var(--font-body);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.ph-caption {
+  font-size: 3.3cqw;
+  color: var(--muted);
+}
+
+/* Telefon animasyonları yalnızca ekran aktifken oynar; hareket azaltma
+   tercihinde hiç oynamaz ve ekran son haliyle durur. */
+@media (prefers-reduced-motion: reduce) {
+  .screen,
+  .screen * {
+    animation: none !important;
+  }
+}
+
+/* ---------- Kaydırınca beliren öğeler ----------
+   Yalnızca JS çalışıyorsa gizlenir (html.js); JS yoksa her şey görünür kalır. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 34px, 0);
+    filter: blur(8px);
+    transition:
+      opacity 1s var(--ease-out),
+      transform 1.1s var(--ease-out),
+      filter 1s var(--ease-out);
+    transition-delay: var(--d, 0s);
+    will-change: opacity, transform;
+  }
+  .js [data-reveal='scale'] {
+    transform: scale(0.92);
+  }
+  .js [data-reveal='left'] {
+    transform: translate3d(-40px, 0, 0);
+  }
+  .js [data-reveal='right'] {
+    transform: translate3d(40px, 0, 0);
+  }
+  .js [data-reveal='fade'] {
+    transform: none;
+  }
+  .js [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}

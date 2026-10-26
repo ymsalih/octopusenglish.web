@@ -1,0 +1,91 @@
+---
+import '@fontsource-variable/fredoka';
+import '@fontsource-variable/plus-jakarta-sans';
+import '../styles/global.css';
+import { getImage } from 'astro:assets';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Ocean from '../components/Ocean.astro';
+import appIcon from '../assets/app-icon.png';
+import { site } from '../data/site';
+
+interface Props {
+  /** Sekmede görünen başlık. Ana sayfa için boş bırakılır. */
+  title?: string;
+  description?: string;
+}
+
+const { title, description = site.description } = Astro.props;
+const fullTitle = title ? `${title} · ${site.name}` : `${site.name} — İngilizceyi yaşayarak öğren`;
+
+// Uygulama ikonundan sekme ve ana ekran ikonları derleme anında üretilir.
+const favicon = await getImage({ src: appIcon, width: 64, height: 64, format: 'png' });
+const touchIcon = await getImage({ src: appIcon, width: 180, height: 180, format: 'png' });
+const ogImage = await getImage({ src: appIcon, width: 512, height: 512, format: 'png' });
+
+// "/destek.html" → "/destek", "/index.html" → "/" (Firebase cleanUrls ile sunulan adres)
+const cleanPath = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/');
+const canonical = Astro.site ? new URL(cleanPath, Astro.site).href : undefined;
+const ogImageUrl = Astro.site ? new URL(ogImage.src, Astro.site).href : undefined;
+---
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0B1540" />
+    <link rel="icon" type="image/png" href={favicon.src} />
+    <link rel="apple-touch-icon" href={touchIcon.src} />
+    {canonical && <link rel="canonical" href={canonical} />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="tr_TR" />
+    {canonical && <meta property="og:url" content={canonical} />}
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta name="twitter:card" content="summary" />
+
+    <!-- JS çalışıyorsa kaydırma animasyonları için öğeler başta gizlenir. -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body>
+    <a class="skip" href="#icerik">İçeriğe geç</a>
+    <Ocean />
+    <Header />
+    <main id="icerik">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      import '../scripts/motion';
+    </script>
+  </body>
+</html>
+
+<style>
+  .skip {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--ink);
+    font-weight: 700;
+    transform: translateY(-160%);
+    transition: transform 0.2s;
+  }
+  .skip:focus {
+    transform: none;
+  }
+  main {
+    position: relative;
+    z-index: 1;
+  }
+</style>
