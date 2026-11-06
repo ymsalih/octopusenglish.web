@@ -1,5 +1,7 @@
 ---
 import '@fontsource-variable/fredoka';
+// Fredoka'da İ, ş, ğ, Ş, Ğ yok; bu harfler ona en çok benzeyen Baloo 2'den gelir.
+import '@fontsource-variable/baloo-2';
 import '@fontsource-variable/plus-jakarta-sans';
 import '../styles/global.css';
 import { getImage } from 'astro:assets';
@@ -13,20 +15,53 @@ interface Props {
   /** Sekmede görünen başlık. Ana sayfa için boş bırakılır. */
   title?: string;
   description?: string;
+  /** true ise Google bu sayfayı dizine eklemez (ör. 404). */
+  noindex?: boolean;
 }
 
-const { title, description = site.description } = Astro.props;
-const fullTitle = title ? `${title} · ${site.name}` : `${site.name} — İngilizceyi yaşayarak öğren`;
+const { title, description = site.description, noindex = false } = Astro.props;
+const fullTitle = title ? `${title} · ${site.name}` : site.seoTitle;
+const isHome = !title;
 
 // Uygulama ikonundan sekme ve ana ekran ikonları derleme anında üretilir.
 const favicon = await getImage({ src: appIcon, width: 64, height: 64, format: 'png' });
 const touchIcon = await getImage({ src: appIcon, width: 180, height: 180, format: 'png' });
-const ogImage = await getImage({ src: appIcon, width: 512, height: 512, format: 'png' });
+const logoImage = await getImage({ src: appIcon, width: 512, height: 512, format: 'png' });
 
 // "/destek.html" → "/destek", "/index.html" → "/" (Firebase cleanUrls ile sunulan adres)
 const cleanPath = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/');
-const canonical = Astro.site ? new URL(cleanPath, Astro.site).href : undefined;
-const ogImageUrl = Astro.site ? new URL(ogImage.src, Astro.site).href : undefined;
+const canonical = Astro.site && !noindex ? new URL(cleanPath, Astro.site).href : undefined;
+// Kare logo: Google'ın yapısal verisi için. Geniş görsel (public/og-image.jpg,
+// 1200×630): link paylaşıldığında WhatsApp, X, LinkedIn vb. önizlemesi için.
+const logoUrl = Astro.site ? new URL(logoImage.src, Astro.site).href : undefined;
+const shareImageUrl = Astro.site ? new URL('/og-image.jpg', Astro.site).href : undefined;
+
+// Google'ın siteyi ve uygulamayı tanıması için yapısal veri (yalnızca ana sayfada).
+const jsonLd =
+  isHome && Astro.site
+    ? [
+        { '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: Astro.site.href, inLanguage: 'tr' },
+        {
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          name: site.name,
+          url: Astro.site.href,
+          logo: logoUrl,
+          email: site.email,
+        },
+        {
+          '@context': 'https://schema.org',
+          '@type': 'MobileApplication',
+          name: site.name,
+          description,
+          operatingSystem: 'Android, iOS',
+          applicationCategory: 'EducationalApplication',
+          inLanguage: 'tr',
+          image: logoUrl,
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'TRY' },
+        },
+      ]
+    : null;
 ---
 <!doctype html>
 <html lang="tr">
@@ -39,6 +74,9 @@ const ogImageUrl = Astro.site ? new URL(ogImage.src, Astro.site).href : undefine
     <link rel="icon" type="image/png" href={favicon.src} />
     <link rel="apple-touch-icon" href={touchIcon.src} />
     {canonical && <link rel="canonical" href={canonical} />}
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
+    {site.googleSiteVerification && <meta name="google-site-verification" content={site.googleSiteVerification} />}
+    {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
@@ -46,8 +84,19 @@ const ogImageUrl = Astro.site ? new URL(ogImage.src, Astro.site).href : undefine
     <meta property="og:description" content={description} />
     <meta property="og:locale" content="tr_TR" />
     {canonical && <meta property="og:url" content={canonical} />}
-    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
-    <meta name="twitter:card" content="summary" />
+    {shareImageUrl && (
+      <>
+        <meta property="og:image" content={shareImageUrl} />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="Octopus English: mor ahtapot ve “İngilizceyi yaşayarak öğren.” sloganı" />
+        <meta name="twitter:image" content={shareImageUrl} />
+      </>
+    )}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
 
     <!-- JS çalışıyorsa kaydırma animasyonları için öğeler başta gizlenir. -->
     <script is:inline>document.documentElement.classList.add('js');</script>

@@ -7,10 +7,12 @@
 interface Props {
   class?: string;
   label?: string;
+  /** true ise içindeki düğmeler kullanılabilir (resim olarak işaretlenmez). */
+  interactive?: boolean;
 }
-const { class: className, label = 'Octopus English uygulamasından bir ekran' } = Astro.props;
+const { class: className, label = 'Octopus English uygulamasından bir ekran', interactive = false } = Astro.props;
 ---
-<div class:list={['phone', className]} role="img" aria-label={label}>
+<div class:list={['phone', className]} role={interactive ? 'group' : 'img'} aria-label={label}>
   <div class="phone__frame">
     <div class="phone__island" aria-hidden="true"></div>
     <div class="phone__screen">

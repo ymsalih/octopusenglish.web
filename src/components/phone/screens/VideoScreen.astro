@@ -1,0 +1,299 @@
+---
+/**
+ * Video ile Öğren (lib/screens/video_practice_screen.dart). Döngü (12 sn):
+ * liste kaydırılır → ikinci videoya dokunulur → oynatıcı açılır → telefon
+ * yan çevrilip video tam ekrana geçer → geri döner → listeye dönülür.
+ * Telefonun dönmesi bu ekranı saran Explore bölümündedir; ikisi de aynı
+ * .is-playing sınıfıyla aynı anda başlar, süreleri aynıdır (12 sn).
+ * Videolar temsilidir (VideoScene).
+ */
+import Icon from '../../Icon.astro';
+import StatusBar from '../StatusBar.astro';
+import AppBar from '../AppBar.astro';
+import VideoScene from '../VideoScene.astro';
+import { videos } from '../../../data/demo';
+
+const playing = videos[1];
+---
+<div class="screen vd">
+  <div class="vl">
+    <StatusBar />
+    <AppBar title="İngilizce Dinleme & Pratik" back />
+    <div class="vlist">
+      {videos.map((v, i) => (
+        <div class:list={['vc', { 'vc--pick': i === 1 }]}>
+          <div class="thumb">
+            <VideoScene tone={v.tone} />
+            <span class="shade"></span>
+            <span class="play">
+              <Icon name="play-arrow-rounded" />
+              {i === 1 && <span class="tap"></span>}
+            </span>
+          </div>
+          <div class="info">
+            <span class="yt"><Icon name="smart-display-rounded" /> YouTube</span>
+            <b>{v.title}</b>
+            <span class="desc">{v.desc}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="vp">
+    <StatusBar />
+    <div class="vp__bar">
+      <Icon name="arrow-back-rounded" />
+      <span>{playing.title}</span>
+    </div>
+    <div class="vp__body">
+      <div class="vp__video">
+        <VideoScene tone={playing.tone} live />
+        <span class="prog"><span></span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="vland">
+    <div class="vland__video">
+      <VideoScene tone={playing.tone} live />
+      <span class="ctl"><Icon name="pause-rounded" /></span>
+      <span class="prog prog--land"><span></span></span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .vl,
+  .vp {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .vl {
+    z-index: 1;
+  }
+  .vlist {
+    flex: 1;
+    overflow: hidden;
+    padding: 2cqw 5cqw 0;
+  }
+  .vlist > * + * {
+    margin-top: 5cqw;
+  }
+  .vc {
+    border-radius: 5.5cqw;
+    border: 1.5px solid var(--border);
+    background: rgba(19, 30, 84, 0.7);
+    overflow: hidden;
+  }
+  .thumb {
+    position: relative;
+  }
+  .shade {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+  }
+  .play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 14cqw;
+    height: 14cqw;
+    margin: -7cqw 0 0 -7cqw;
+    border-radius: 50%;
+    border: 1.5px solid var(--muted);
+    background: rgba(244, 241, 255, 0.15);
+    color: var(--text);
+  }
+  .play :global(.icon) {
+    width: 9cqw;
+    height: 9cqw;
+  }
+  .tap {
+    position: absolute;
+    inset: 1cqw;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.55);
+    opacity: 0;
+  }
+  .info {
+    display: grid;
+    gap: 1.4cqw;
+    padding: 3.6cqw 4.2cqw 4.4cqw;
+  }
+  .yt {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.2cqw;
+    color: var(--muted);
+    font: 700 2.7cqw/1 var(--font-body);
+    letter-spacing: 0.03em;
+  }
+  .yt :global(.icon) {
+    width: 3.6cqw;
+    height: 3.6cqw;
+    color: var(--danger);
+  }
+  .info b {
+    font-weight: 900;
+    font-size: 4.3cqw;
+    line-height: 1.15;
+  }
+  .desc {
+    color: rgba(169, 150, 255, 0.85);
+    font-size: 3.3cqw;
+    line-height: 1.35;
+  }
+
+  /* Oynatıcı (dikey) */
+  .vp {
+    z-index: 4;
+    background: #000;
+    color: #fff;
+    transform: translateX(100%);
+  }
+  .vp__bar {
+    display: flex;
+    align-items: center;
+    gap: 3cqw;
+    height: 13cqw;
+    padding: 0 5cqw;
+    font: 600 4.6cqw/1.1 var(--font-body);
+  }
+  .vp__bar span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .vp__bar :global(.icon) {
+    flex: none;
+    width: 6cqw;
+    height: 6cqw;
+  }
+  .vp__body {
+    flex: 1;
+    display: grid;
+    align-content: center;
+    padding-bottom: 20cqw;
+  }
+  .vp__video,
+  .vland__video {
+    position: relative;
+  }
+  .prog {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1cqw;
+    background: rgba(255, 255, 255, 0.25);
+  }
+  .prog span {
+    display: block;
+    width: 34%;
+    height: 100%;
+    background: var(--primary-light);
+  }
+
+  /* Tam ekran (yatay): telefon -90° döndüğünde bu katman +90° döner ve dik görünür. */
+  .vland {
+    position: absolute;
+    z-index: 30; /* durum çubuğunun (z-index 20) da üstünde */
+    left: 50%;
+    top: 50%;
+    width: 225cqw;
+    height: 100cqw;
+    display: grid;
+    place-items: center;
+    background: #000;
+    transform: translate(-50%, -50%) rotate(90deg);
+    opacity: 0;
+  }
+  .vland__video {
+    height: 100%;
+    aspect-ratio: 16 / 9;
+  }
+  .vland__video :global(.vs) {
+    height: 100%;
+  }
+  .prog--land {
+    left: 4%;
+    right: 4%;
+    bottom: 6%;
+    height: 1.4cqw;
+    border-radius: 1cqw;
+    overflow: hidden;
+  }
+  .ctl {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 18cqw;
+    height: 18cqw;
+    margin: -9cqw 0 0 -9cqw;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    opacity: 0;
+  }
+  .ctl :global(.icon) {
+    width: 11cqw;
+    height: 11cqw;
+  }
+
+  /* ---- Döngü (12 sn). Üstteki .is-playing başlatır. ---- */
+  :global(.is-playing) .vlist { animation: vd-scroll 12s var(--ease-in-out) infinite; }
+  :global(.is-playing) .tap { animation: vd-tap 12s var(--ease-out) infinite; }
+  :global(.is-playing) .vc--pick { animation: vd-press 12s var(--ease-out) infinite; }
+  :global(.is-playing) .vp { animation: vd-player 12s var(--ease-out) infinite; }
+  :global(.is-playing) .vland { animation: vd-land 12s linear infinite; }
+  :global(.is-playing) .prog span { animation: vd-prog 12s linear infinite; }
+  :global(.is-playing) .ctl { animation: vd-ctl 12s ease infinite; }
+
+  @keyframes vd-scroll {
+    0%, 3% { transform: none; }
+    10%, 93% { transform: translateY(-20cqw); }
+    99%, 100% { transform: none; }
+  }
+  @keyframes vd-tap {
+    0%, 12% { opacity: 0; transform: scale(0.3); }
+    13.5% { opacity: 1; transform: scale(1); }
+    17%, 100% { opacity: 0; transform: scale(1.5); }
+  }
+  @keyframes vd-press {
+    0%, 12.5% { transform: none; }
+    14% { transform: scale(0.97); }
+    16%, 100% { transform: none; }
+  }
+  @keyframes vd-player {
+    0%, 17% { transform: translateX(100%); opacity: 1; }
+    21% { transform: none; opacity: 1; }
+    34% { opacity: 1; }
+    37% { opacity: 0; }
+    77% { opacity: 0; }
+    80% { opacity: 1; }
+    89% { transform: none; }
+    94%, 100% { transform: translateX(100%); opacity: 1; }
+  }
+  @keyframes vd-land {
+    0%, 36% { opacity: 0; }
+    40%, 74% { opacity: 1; }
+    77%, 100% { opacity: 0; }
+  }
+  @keyframes vd-prog {
+    0%, 21% { width: 6%; }
+    89%, 100% { width: 72%; }
+  }
+  @keyframes vd-ctl {
+    0%, 50% { opacity: 0; transform: scale(0.8); }
+    53%, 61% { opacity: 1; transform: none; }
+    65%, 100% { opacity: 0; transform: scale(0.8); }
+  }
+</style>

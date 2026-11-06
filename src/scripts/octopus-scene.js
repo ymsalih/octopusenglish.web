@@ -8,10 +8,19 @@
  *  - look(x, y): gözler imleci takip eder (-1..1).
  *  - pause() / resume(): sahne ekrandan çıkınca çizim durur.
  *  - Çözünürlük en fazla 2x (telefonlarda pil ve ısınma için).
+ *  - introSpeed: giriş (yüzme + "O" oluşturma, ilk 4 sn) bu kat hızlı oynar;
+ *    sonrasındaki sakin hareket normal hızında devam eder.
  */
 export function createOctopusScene(canvas, opts) {
   opts = opts || {};
   var still = typeof opts.still === 'number' ? opts.still : null;
+  var introSpeed = opts.introSpeed || 1;
+  var INTRO_END = 4.0; // sahne zamanı (sn): bu noktadan sonra hız 1x
+  // Gerçek süreyi sahne zamanına çevirir; INTRO_END'de iki hız kesintisiz birleşir.
+  function sceneTime(real) {
+    var t = real * introSpeed;
+    return t < INTRO_END ? t : INTRO_END + (real - INTRO_END / introSpeed);
+  }
   var ctx = canvas.getContext('2d');
   var layer = document.createElement('canvas');
   var lx = layer.getContext('2d');
@@ -326,7 +335,7 @@ export function createOctopusScene(canvas, opts) {
       lookX += (lookTX - lookX) * 0.08;
       lookY += (lookTY - lookY) * 0.08;
       if (still != null) { if (!drawn) { frame(still); drawn = true; } }
-      else frame((now - start) / 1000);
+      else frame(sceneTime((now - start) / 1000));
     }
     raf = requestAnimationFrame(loop);
   }

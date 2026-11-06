@@ -3,11 +3,14 @@
  * IntersectionObserver ile çalışır; kütüphane kullanmaz.
  *
  *  data-reveal                 → görünür alana girince .is-visible alır (bir kez)
+ *  data-reveal="none"          → aynısı, ama öğenin kendisine stil verilmez
+ *                                (yalnızca içindeki animasyonları tetiklemek için)
  *  data-progress="exit"        → bölüm ekranın üstünden çıkarken --p: 0 → 1
  *  data-progress="through"     → bölüm ekrana girip tamamen çıkana kadar --p: 0 → 1
  *  data-progress="sticky"      → yapışkan (sticky) bölümün kaydırma payı boyunca --p: 0 → 1
  *  data-steps / data-step      → ekranın ortasındaki adım aktif olur; eşleşen
  *                                [data-screen] öğeleri .is-active alır
+ *  data-play                   → görünür alandayken .is-playing alır (animasyonları oynatır)
  *  data-count="6"              → görünür olunca 0'dan sayarak yazar
  *  .spot                       → imleç konumunu --mx / --my olarak yazar
  *  :root --page-p              → tüm sayfanın kaydırma ilerlemesi
@@ -142,6 +145,18 @@ document.querySelectorAll<HTMLElement>('[data-steps]').forEach((container) => {
   });
   viewObserver.observe(container);
 });
+
+/* ---------- Görünürken oynayan bölümler (data-play) ----------
+   Ekrana girince .is-playing alır, çıkınca kaybeder; içindeki CSS
+   animasyonları her girişte baştan başlar, ekran dışında hiç çalışmaz. */
+
+const playObserver = new IntersectionObserver(
+  (entries) => {
+    for (const e of entries) e.target.classList.toggle('is-playing', e.isIntersecting);
+  },
+  { rootMargin: '0px 0px -12% 0px', threshold: 0 },
+);
+document.querySelectorAll('[data-play]').forEach((el) => playObserver.observe(el));
 
 /* ---------- İmleci takip eden ışık ---------- */
 

@@ -33,6 +33,7 @@ Octopus English mobil uygulamasının tanıtım sitesi: derin denizde geçen, ka
 - [Sık yapılan değişiklikler](#-sık-yapılan-değişiklikler)
 - [Animasyon sistemi](#-animasyon-sistemi)
 - [Yayına alma](#-yayına-alma)
+- [SEO](#-seo)
 - [Performans ve erişilebilirlik](#-performans-ve-erişilebilirlik)
 - [Sorun giderme](#-sorun-giderme)
 - [Marka ve lisans](#-marka-ve-lisans)
@@ -44,11 +45,12 @@ Octopus English mobil uygulamasının tanıtım sitesi: derin denizde geçen, ka
 | | |
 |:--|:--|
 | 🐙 **Sinematik açılış** | Uygulamanın açılış animasyonu web'e taşındı: ahtapot yüzerek gelir, kollarıyla "O" harfini oluşturur, gözleriyle imleci takip eder. |
-| 📜 **Kelime kelime manifesto** | "Bir ahtapotun sekiz kolu, üç kalbi ve dokuz beyni vardır…" cümlesi kaydırdıkça aydınlanır. |
+| 📜 **Kelime kelime manifesto** | "Bir ahtapotun sekiz kolu, üç kalbi ve dokuz beyni vardır…" cümlesi ekrana girince kelime kelime akarak belirir. |
 | 📱 **Canlı telefon ekranları** | Uygulamanın altı ekranı HTML/CSS ile birebir çizildi ve kendi kendine oynar: kelime ekleme, kart kaydırmalı test, yapay zeka sohbeti, etkileşimli hikaye, kamerayla çeviri, telaffuz puanı. |
 | 🧲 **Yapışkan anlatım** | Masaüstünde telefon sabit kalır, sen kaydırdıkça ekranı değişir. Mobilde her özellik kendi telefonuyla gelir. |
 | 🦑 **Çizilen ahtapot kolu** | "Nasıl çalışır" bölümündeki dalgalı yol, kaydırmayla adım adım çizilir. |
-| 👑 **Premium paketleri** | Basic, Plus, Pro ve Max limitleri; Max kartının kenarında dönen altın ışık. |
+| 🎬 **Keşfet: paketler ve video** | Kelime Paketleri ve Video ile Öğren ekranları kendi kendine oynar; video telefonu döngü içinde yan çevrilip tam ekrana geçer. Kaydırdıkça telefonlar üç boyutlu döner. |
+| 🕹️ **Kendin dene** | Ziyaretçinin kullanabildiği çalışan telefon: kartı çevir ve kaydır, paketlerden kelime ekle, havuza bak, videoyu tam ekranda aç. Hiçbir şey kaydedilmez. |
 | 🌊 **Derinleşen okyanus** | Arka planda süzülen deniz karı ve biyolüminesans ışıklar; aşağı indikçe su koyulaşır. |
 
 ---
@@ -70,7 +72,7 @@ Octopus English mobil uygulamasının tanıtım sitesi: derin denizde geçen, ka
 | | Kullanılan | Neden |
 |:--|:--|:--|
 | Çatı | [Astro 7](https://astro.build) | Sayfalar derleme anında düz HTML'e dönüşür; tarayıcıya gereksiz JS gitmez. |
-| Yazı tipleri | Fredoka + Plus Jakarta Sans (Fontsource) | Sitenin kendi sunucusundan yüklenir; Google'a istek atılmaz. |
+| Yazı tipleri | Fredoka + Baloo 2 + Plus Jakarta Sans (Fontsource) | Sitenin kendi sunucusundan yüklenir. Fredoka'da Türkçe İ, ş, ğ, Ş, Ğ olmadığı için bu harfler ona benzeyen Baloo 2'den gelir. |
 | İkonlar | Material Symbols Rounded (Iconify) | Uygulamadaki ikonların aynısı; derleme anında SVG'ye çevrilir. |
 | Animasyon | Saf CSS + ~160 satır TypeScript | Kütüphane yok; tek kaydırma dinleyicisi ve `IntersectionObserver`. |
 | Görseller | `astro:assets` | 515 KB'lık logo, kullanıldığı boyuta göre 1–4 KB'lık WebP'ye iner. |
@@ -110,15 +112,15 @@ OctopusWebSitesi/
 │  │  └─ BaseLayout.astro       <head>, yazı tipleri, menü, alt bilgi, kaydırma motoru
 │  ├─ components/
 │  │  ├─ home/                  ana sayfa bölümleri
-│  │  │  ├─ Hero · Manifesto · FeatureStory · Stats · HowItWorks
-│  │  │  └─ MoreFeatures · Plans · Trust · FinalCta
-│  │  ├─ phone/                 telefon çerçevesi, durum çubuğu, alt menü
-│  │  │  └─ screens/            Words · Test · Chat · Story · Translate · Speak
+│  │  │  ├─ Hero · Manifesto · FeatureStory · Explore · Stats
+│  │  │  └─ HowItWorks · TryIt · MoreFeatures · Trust · FinalCta
+│  │  ├─ phone/                 telefon çerçevesi, durum çubuğu, alt menü, temsili video karesi
+│  │  │  └─ screens/            Words · Test · Chat · Story · Translate · Speak · Packs · Video
 │  │  ├─ Header · Footer · Ocean · StoreBadges · PageHeader · Icon
 │  ├─ content/yasal/          ← yasal metinler (düz Markdown)
 │  ├─ data/
 │  │  ├─ site.ts                site adı, e-posta, mağaza linkleri
-│  │  └─ plans.ts               paket limitleri
+│  │  └─ demo.ts                Keşfet ve Kendin dene için örnek kelimeler ve videolar
 │  ├─ scripts/
 │  │  ├─ motion.ts              kaydırma animasyonları
 │  │  └─ octopus-scene.js       açılış ahtapotu (uygulamadaki splash'in web uyarlaması)
@@ -139,20 +141,23 @@ OctopusWebSitesi/
 |:--|:--|
 | 🛒 App Store / Google Play linkleri | `src/data/site.ts` → `stores` |
 | ✉️ Destek e-postası | `src/data/site.ts` → `email` |
-| 👑 Paket limitleri | `src/data/plans.ts` |
+| 🕹️ Kendin dene / Keşfet örnek kelimeleri ve videoları | `src/data/demo.ts` |
 | ⚖️ Gizlilik Politikası / Kullanım Koşulları | `src/content/yasal/*.md` |
 | ❓ Destek sayfasındaki sorular | `src/pages/destek.astro` → `groups` |
 | 🌐 Sitenin adresi (kendi alan adın olursa) | `astro.config.mjs` → `site` |
+| 🔎 Google'daki başlık ve açıklama | `src/data/site.ts` → `seoTitle`, `description` |
+| ✅ Google Search Console doğrulama kodu | `src/data/site.ts` → `googleSiteVerification` |
+| 🖼️ Paylaşım önizleme görseli (1200×630) | `public/og-image.jpg` |
 | 🎨 Renkler | `src/styles/global.css` → `:root` |
 
-### Mağaza linklerini eklemek
+### Mağaza linklerini değiştirmek
 
-Link boş olduğu sürece rozet **"Yakında"** etiketiyle, tıklanamaz halde görünür. Linki yazıp kaydettiğin an tıklanabilir olur:
+İki rozet de mağazayı yeni sekmede açar. Link boş bırakılırsa rozet **"Yakında"** etiketiyle, tıklanamaz halde görünür:
 
 ```ts
 // src/data/site.ts
 stores: {
-  appStore: 'https://apps.apple.com/tr/app/octopus-english/id0000000000',
+  appStore: 'https://apps.apple.com/tr/app/octopus-i-ngilizce-%C3%B6%C4%9Fren/id6806376062?l=tr',
   googlePlay: 'https://play.google.com/store/apps/details?id=com.owlish.app',
 },
 ```
@@ -183,10 +188,12 @@ Animasyonlar HTML'deki birkaç işaretle çalışır; motor `src/scripts/motion.
 |:--|:--|
 | `data-reveal` | Öğe ekrana girince bulanıklıktan netleşerek belirir. `style="--d:0.2s"` ile gecikme verilir. |
 | `data-reveal="scale"` / `"left"` / `"right"` / `"fade"` | Belirme yönünü değiştirir. |
+| `data-reveal="none"` | Öğeye stil vermeden yalnızca `.is-visible` ekler; içindeki animasyonları tetikler (manifesto kelimeleri). |
 | `data-progress="exit"` | Bölüm ekranın üstünden çıkarken `--p` değişkeni 0 → 1 olur (açılış sahnesi). |
-| `data-progress="sticky"` | Yapışkan bölüm boyunca `--p` 0 → 1 olur (manifesto). |
+| `data-progress="sticky"` | Yapışkan bölüm boyunca `--p` 0 → 1 olur (şu an kullanılmıyor, ileride lazım olursa hazır). |
 | `data-progress="through"` | Bölüm ekrana girip çıkana kadar `--p` 0 → 1 olur (ahtapot kolu). |
 | `data-steps` / `data-step` / `data-screen` | Ekranın ortasındaki adım aktif olur; telefonda eşleşen ekran oynar. |
+| `data-play` | Bölüm ekrandayken `.is-playing` alır; içindeki animasyonlar oynar, ekrandan çıkınca durur (Keşfet). |
 | `data-count="6"` | Görünür olunca 0'dan sayarak yazar. |
 | `.spot` | Kartın üzerinde imleci takip eden ışık. |
 
@@ -257,6 +264,24 @@ Hosting URL: https://octopusenglish.web.app
 
 ---
 
+## 🔎 SEO
+
+| Ne | Nerede |
+|:--|:--|
+| Site haritası | `/sitemap.xml` (`src/pages/sitemap.xml.ts`, sayfalar eklendikçe güncelle) |
+| Tarama kuralları | `/robots.txt` (`src/pages/robots.txt.ts`) |
+| Yapısal veri (WebSite, Organization, MobileApplication) | `src/layouts/BaseLayout.astro` → `jsonLd` |
+| Kanonik adres, Open Graph, Twitter kartı | `src/layouts/BaseLayout.astro` |
+| 404 sayfası dizine eklenmez | `<BaseLayout noindex>` |
+
+**Google Search Console'a kayıt:**
+1. [search.google.com/search-console](https://search.google.com/search-console) → **Mülk ekle** → **URL öneki** → `https://octopusenglish.web.app`
+2. Doğrulama yöntemi olarak **HTML etiketi**'ni seç; etiketteki `content="…"` değerini `src/data/site.ts` → `googleSiteVerification` alanına yaz.
+3. Derle ve yayınla, ardından Search Console'da **Doğrula**'ya bas.
+4. **Site haritaları** bölümüne `sitemap.xml` yazıp gönder.
+
+---
+
 ## ⚡ Performans ve erişilebilirlik
 
 - **Hafif:** Tüm site yaklaşık 750 KB. JavaScript yalnızca ~10 KB'lık açılış sahnesi ve sayfaya gömülü birkaç küçük script.
@@ -291,7 +316,7 @@ Açık kalmış başka bir terminalde sunucu çalışıyor olabilir; onu `Ctrl +
 <details>
 <summary><b>Yayından sonra eski sürümü görüyorum</b></summary>
 
-Tarayıcı önbelleği olabilir: Firebase, HTML sayfalarını tarayıcıda en fazla **1 saat** önbellekte tutar. Sayfayı `Ctrl + F5` ile yenilersen yeni sürüm hemen gelir. Script ve görsellerin adı her derlemede değiştiği için onlarda eski sürüm kalmaz.
+HTML sayfaları tarayıcıda saklanmaz; her açılışta sunucuya "değişti mi?" diye sorulur (`firebase.json` → `max-age=0`). Script ve görsellerin adı her derlemede değiştiği için onlar bir yıl boyunca önbellekte kalabilir; eski sürüm sorunu yaratmaz. Yine de eski hali görüyorsan sayfayı `Ctrl + F5` ile yenile.
 </details>
 
 <details>

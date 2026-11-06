@@ -1,0 +1,288 @@
+---
+/**
+ * Kelime Paketleri (lib/screens/word_learning_screen.dart). Döngü (10 sn):
+ * B1'e dokunulur → paket yüklenir → kelimeler sırayla gelir → ilk kelimenin
+ * telaffuzu dinlenir → üçüncü kelime havuza eklenir → bildirim çıkar.
+ * Animasyon, üstteki bir öğe .is-playing aldığında oynar.
+ */
+import Icon from '../../Icon.astro';
+import StatusBar from '../StatusBar.astro';
+import AppBar from '../AppBar.astro';
+import { levels, packs } from '../../../data/demo';
+
+const words = packs.B1.slice(0, 7);
+---
+<div class="screen pk">
+  <StatusBar />
+  <AppBar title="Kelime Paketleri" back />
+
+  <div class="levels">
+    <span class="sel"></span>
+    {levels.map((l) => <span class:list={['lv', `lv--${l.toLowerCase()}`]}>{l}</span>)}
+    <span class="tap"></span>
+  </div>
+
+  <span class="spinner"></span>
+
+  <ul class="list">
+    {words.map((w, i) => (
+      <li class:list={['pc', { 'pc--add': i === 2, 'pc--speak': i === 0 }]} style={`--i:${i}`}>
+        <span class="badge">B1</span>
+        <span class="txt"><b>{w.eng}</b><span>{w.tr}</span></span>
+        <span class="act act--sp"><Icon name="volume-up-rounded" /><i></i><i></i></span>
+        <span class="act act--add"><Icon name="add-task-rounded" /></span>
+      </li>
+    ))}
+  </ul>
+
+  <div class="snack">
+    <Icon name="check-circle-rounded" />
+    <span>“{words[2].eng}” başarıyla havuza eklendi!</span>
+  </div>
+</div>
+
+<style>
+  .levels {
+    position: relative;
+    display: flex;
+    gap: 2cqw;
+    padding: 2cqw 5cqw 3cqw;
+  }
+  .lv {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 13cqw;
+    height: 8.6cqw;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    background: rgba(19, 30, 84, 0.6);
+    color: var(--muted);
+    font: 800 3.6cqw/1 var(--font-body);
+  }
+  .lv--b1 {
+    color: #fff;
+    border-color: transparent;
+    background: transparent;
+  }
+  .sel {
+    position: absolute;
+    z-index: 1;
+    left: 5cqw;
+    top: 2cqw;
+    width: 13cqw;
+    height: 8.6cqw;
+    border-radius: 99px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    box-shadow: 0 1.5cqw 4cqw -1cqw rgba(169, 150, 255, 0.7);
+    transform: translateX(30cqw);
+  }
+  .lv { z-index: 2; }
+  .tap {
+    position: absolute;
+    z-index: 3;
+    left: calc(5cqw + 30cqw + 6.5cqw - 4cqw);
+    top: calc(2cqw + 4.3cqw - 4cqw);
+    width: 8cqw;
+    height: 8cqw;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.45);
+    opacity: 0;
+  }
+
+  .spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 9cqw;
+    height: 9cqw;
+    margin: -4.5cqw 0 0 -4.5cqw;
+    border-radius: 50%;
+    border: 1cqw solid rgba(169, 150, 255, 0.2);
+    border-top-color: var(--primary-light);
+    opacity: 0;
+  }
+
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 1cqw 4.5cqw 0;
+    display: grid;
+    gap: 2.6cqw;
+    align-content: start;
+    flex: 1;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(180deg, #000 80%, transparent);
+    mask-image: linear-gradient(180deg, #000 80%, transparent);
+  }
+  .pc {
+    display: flex;
+    align-items: center;
+    gap: 3cqw;
+    padding: 3.2cqw 3.2cqw 3.2cqw 3.4cqw;
+    border-radius: 5cqw;
+    border: 1px solid var(--surface);
+    background: rgba(19, 30, 84, 0.6);
+  }
+  .badge {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 10.5cqw;
+    height: 10.5cqw;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #fff;
+    font: 900 3.5cqw/1 var(--font-body);
+  }
+  .txt {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    gap: 0.8cqw;
+  }
+  .txt b {
+    font-weight: 900;
+    font-size: 4.4cqw;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .txt span {
+    color: var(--primary-light);
+    font-size: 3.3cqw;
+    font-weight: 600;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .act {
+    position: relative;
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 8.8cqw;
+    height: 8.8cqw;
+    border-radius: 2.6cqw;
+  }
+  .act :global(.icon) {
+    width: 4.8cqw;
+    height: 4.8cqw;
+  }
+  .act--sp {
+    color: var(--secondary);
+    background: rgba(159, 178, 255, 0.15);
+    border: 1px solid rgba(159, 178, 255, 0.3);
+  }
+  .act--add {
+    color: var(--success);
+    background: rgba(79, 209, 165, 0.15);
+    border: 1px solid rgba(79, 209, 165, 0.3);
+  }
+  .act i {
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    border: 0.5cqw solid var(--secondary);
+    opacity: 0;
+  }
+
+  .snack {
+    position: absolute;
+    z-index: 5;
+    left: 4cqw;
+    right: 4cqw;
+    bottom: 8cqw;
+    display: flex;
+    align-items: center;
+    gap: 2.4cqw;
+    padding: 3.4cqw 3.6cqw;
+    border-radius: 3.6cqw;
+    border: 1.5px solid rgba(79, 209, 165, 0.5);
+    background: rgba(19, 30, 84, 0.96);
+    box-shadow: 0 3cqw 8cqw -2cqw rgba(0, 0, 0, 0.6);
+    font-size: 3.4cqw;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(6cqw);
+  }
+  .snack :global(.icon) {
+    flex: none;
+    width: 5.4cqw;
+    height: 5.4cqw;
+    color: var(--success);
+  }
+
+  /* ---- Döngü (10 sn). Üstteki .is-playing başlatır. ---- */
+  :global(.is-playing) .sel { animation: pk-sel 10s var(--ease-out) infinite; }
+  :global(.is-playing) .lv--a2 { animation: pk-a2 10s linear infinite; }
+  :global(.is-playing) .lv--b1 { animation: pk-b1 10s linear infinite; }
+  :global(.is-playing) .tap { animation: pk-tap 10s var(--ease-out) infinite; }
+  :global(.is-playing) .spinner { animation: pk-spin-show 10s linear infinite, pk-spin 0.8s linear infinite; }
+  :global(.is-playing) .pc {
+    animation: pk-card 10s var(--ease-out) infinite backwards;
+    animation-delay: calc(var(--i) * 0.09s);
+  }
+  :global(.is-playing) .pc--speak .act--sp { animation: pk-press 10s var(--ease-out) infinite; }
+  :global(.is-playing) .pc--speak .act i { animation: pk-ring 10s ease-out infinite backwards; }
+  :global(.is-playing) .pc--speak .act i + i { animation-delay: 0.25s; }
+  :global(.is-playing) .pc--add .act--add { animation: pk-add 10s var(--ease-out) infinite; }
+  :global(.is-playing) .snack { animation: pk-snack 10s var(--ease-out) infinite; }
+
+  @keyframes pk-sel {
+    0%, 6% { transform: translateX(15cqw); }
+    11%, 94% { transform: translateX(30cqw); }
+    99%, 100% { transform: translateX(15cqw); }
+  }
+  @keyframes pk-a2 {
+    0%, 7% { color: #fff; border-color: transparent; background: transparent; }
+    8%, 95% { color: var(--muted); border-color: var(--border); background: rgba(19, 30, 84, 0.6); }
+    97%, 100% { color: #fff; border-color: transparent; background: transparent; }
+  }
+  @keyframes pk-b1 {
+    0%, 7% { color: var(--muted); border-color: var(--border); background: rgba(19, 30, 84, 0.6); }
+    8%, 95% { color: #fff; border-color: transparent; background: transparent; }
+    97%, 100% { color: var(--muted); border-color: var(--border); background: rgba(19, 30, 84, 0.6); }
+  }
+  @keyframes pk-tap {
+    0%, 4% { opacity: 0; transform: scale(0.4); }
+    6% { opacity: 1; transform: scale(1); }
+    10%, 100% { opacity: 0; transform: scale(1.6); }
+  }
+  @keyframes pk-spin-show {
+    0%, 9% { opacity: 0; }
+    10%, 16% { opacity: 1; }
+    18%, 100% { opacity: 0; }
+  }
+  @keyframes pk-spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes pk-card {
+    0%, 16% { opacity: 0; transform: translateY(5cqw) scale(0.97); }
+    21%, 89% { opacity: 1; transform: none; }
+    94%, 100% { opacity: 0; transform: translateY(-2cqw); }
+  }
+  @keyframes pk-press {
+    0%, 27% { transform: scale(1); }
+    29% { transform: scale(0.86); }
+    32%, 100% { transform: scale(1); }
+  }
+  @keyframes pk-ring {
+    0%, 29% { opacity: 0; transform: scale(1); }
+    30% { opacity: 0.9; transform: scale(1); }
+    40%, 100% { opacity: 0; transform: scale(1.9); }
+  }
+  @keyframes pk-add {
+    0%, 45% { transform: scale(1); box-shadow: none; }
+    47% { transform: scale(0.84); }
+    50% { transform: scale(1.08); background: var(--success); color: var(--ink); box-shadow: 0 0 5cqw rgba(79, 209, 165, 0.7); }
+    60% { transform: scale(1); background: var(--success); color: var(--ink); box-shadow: 0 0 3cqw rgba(79, 209, 165, 0.5); }
+    72%, 100% { transform: scale(1); box-shadow: none; }
+  }
+  @keyframes pk-snack {
+    0%, 48% { opacity: 0; transform: translateY(6cqw); }
+    52%, 72% { opacity: 1; transform: none; }
+    77%, 100% { opacity: 0; transform: translateY(6cqw); }
+  }
+</style>

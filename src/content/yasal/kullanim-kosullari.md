@@ -4,7 +4,7 @@ description: Octopus English uygulamasını kullanırken geçerli olan koşullar
 updated: 2026-10-26
 ---
 
-Bu Kullanım Koşulları ("Koşullar"), Octopus English mobil uygulamasını ("Uygulama") kullanımını düzenler. Uygulamayı indirerek, hesap oluşturarak veya kullanarak bu Koşulları ve [Gizlilik Politikası](/gizlilik-politikasi)'nı kabul etmiş olursun.
+Bu Kullanım Koşulları, Octopus English mobil uygulamasının kullanımını düzenler. Uygulamayı indirerek, hesap oluşturarak veya kullanarak bu Kullanım Koşulları'nı ve [Gizlilik Politikası](/gizlilik-politikasi)'nı kabul etmiş olursun.
 
 ## 1. Hizmetin kapsamı
 
@@ -59,7 +59,7 @@ Uygulama "olduğu gibi" sunulur. Kesintisiz veya hatasız çalışacağını gar
 
 ## 10. Değişiklikler
 
-Bu Koşulları zaman zaman güncelleyebiliriz. Önemli değişiklikleri uygulama veya bu sayfa üzerinden duyururuz. Değişikliklerden sonra uygulamayı kullanmaya devam etmen, güncel Koşulları kabul ettiğin anlamına gelir.
+Bu koşulları zaman zaman güncelleyebiliriz. Önemli değişiklikleri uygulama veya bu sayfa üzerinden duyururuz. Değişikliklerden sonra uygulamayı kullanmaya devam etmen, güncel koşulları kabul ettiğin anlamına gelir.
 
 ## 11. İletişim
 

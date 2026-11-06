@@ -1,7 +1,7 @@
 ---
 /**
  * Destek ve SSS. Cevaplar uygulamanın gerçek davranışına göre yazıldı
- * (ayarlar, abonelik, izin ve limit ekranları).
+ * (ayarlar, izin ve limit ekranları).
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
@@ -12,7 +12,7 @@ const mailto = `mailto:${site.email}?subject=${encodeURIComponent('Octopus Engli
 
 const quick = [
   { icon: 'mail-rounded', title: 'Bize yaz', text: 'Sorun, öneri ya da şikayetin için e-posta gönder.', href: mailto, cta: site.email },
-  { icon: 'credit-card-rounded', title: 'Abonelik', text: 'Paketini yönetme, iptal etme ve geri yükleme.', href: '#abonelik', cta: 'Cevaplara git' },
+  { icon: 'shield-rounded', title: 'Gizlilik', text: 'Hangi verilerin kaydedildiği ve nasıl korunduğu.', href: '/gizlilik-politikasi', cta: 'Politikayı oku' },
   { icon: 'delete-forever-rounded', title: 'Hesap silme', text: 'Hesabını ve verilerini kalıcı olarak silme.', href: '#hesap', cta: 'Cevaplara git' },
 ];
 
@@ -40,28 +40,6 @@ const groups = [
     ],
   },
   {
-    id: 'abonelik',
-    title: 'Abonelik ve Premium',
-    items: [
-      {
-        q: 'Aboneliğimi nasıl iptal ederim?',
-        a: 'iPhone’da Ayarlar → Apple Kimliği → Abonelikler, Android’de Google Play → Ödemeler ve abonelikler → Abonelikler bölümünden iptal edebilirsin. Uygulamadaki Profil ekranında yer alan "Aboneliği Yönet / İptal Et" seçeneği de seni doğrudan bu sayfaya götürür. İptal, mevcut dönemin sonunda geçerli olur.',
-      },
-      {
-        q: 'Satın aldığım paket görünmüyor.',
-        a: 'Octopus Premium ekranındaki "Satın Alımları Geri Yükle" seçeneğine dokun. Ödemen bankanın onayını bekliyorsa paketin onay geldiğinde aktifleşir.',
-      },
-      {
-        q: 'Aboneliğimi başka bir telefonda kullanabilir miyim?',
-        a: 'Evet, aynı hesapla giriş yaptığında paketin geçerlidir. Yalnız paket değişikliklerini aboneliği satın aldığın platformun mağazasından (App Store veya Google Play) yapabilirsin.',
-      },
-      {
-        q: 'Paketler arasındaki fark nedir?',
-        a: 'Basic ücretsizdir. Plus, Pro ve Max; kelime havuzu kapasitesini ve günlük sohbet, hikaye, çeviri ve test haklarını artırır. Max’te kelime havuzu, çeviri ve test hakları sınırsızdır. Ayrıntılar ana sayfadaki Premium bölümünde.',
-      },
-    ],
-  },
-  {
     id: 'ozellikler',
     title: 'Özellikler',
     items: [
@@ -71,7 +49,7 @@ const groups = [
       },
       {
         q: 'Sohbet, hikaye veya çeviri çalışmıyor.',
-        a: 'Bu özellikler veri paylaşım izni gerektirir. Ayarlar → Gizlilik → "Yapay zeka ve çeviri veri paylaşımı" seçeneğinin açık olduğundan emin ol. Açıksa günlük hakkın dolmuş olabilir; ertesi gün yenilenir ya da paketini yükseltebilirsin.',
+        a: 'Bu özellikler veri paylaşım izni gerektirir. Ayarlar → Gizlilik → "Yapay zeka ve çeviri veri paylaşımı" seçeneğinin açık olduğundan emin ol. Açıksa günlük hakkın dolmuş olabilir; ertesi gün yenilenir.',
       },
       {
         q: 'Mikrofon veya kamera izni istiyor.',

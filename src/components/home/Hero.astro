@@ -19,8 +19,8 @@ import Icon from '../Icon.astro';
         İngilizceyi <span class="text-gold">yaşayarak</span> öğren.
       </h1>
       <p class="hero__lead">
-        Yapay zeka öğretmenin, etkileşimli hikayeler, kamerayla çeviri ve akıllı kelime kartları. Hepsi tek uygulamada,
-        A1’den C2’ye.
+        Kelimelerini kartlarla tekrar et, metinleri sesli oku, telaffuzunu anında puanla. Her gün birkaç dakikalık
+        İngilizce pratiğiyle A1’den C2’ye ilerle.
       </p>
       <div class="hero__badges">
         <StoreBadges size="lg" />
@@ -28,7 +28,7 @@ import Icon from '../Icon.astro';
       <p class="hero__note">
         <Icon name="check-circle-rounded" /> Ücretsiz başla
         <span></span>
-        <Icon name="check-circle-rounded" /> Türkçe açıklamalar
+        <Icon name="check-circle-rounded" /> Günde birkaç dakika
       </p>
     </div>
   </div>
@@ -64,6 +64,8 @@ import Icon from '../Icon.astro';
   const scene = createOctopusScene(canvas, {
     box: () => box,
     still: reduce ? 4.6 : undefined,
+    // Uygulamadaki açılıştan ~1,4 kat hızlı: "O" ~2,5 sn'de tamamlanır.
+    introSpeed: 1.4,
   });
 
   // Gözler imleci (dokunmatikte parmağı) takip eder.
@@ -217,7 +219,8 @@ import Icon from '../Icon.astro';
     to { top: 100%; }
   }
 
-  /* Açılış: yazılar ahtapot "O"yu oluştururken sırayla gelir. */
+  /* Açılış: yazılar ahtapot "O"yu oluştururken sırayla gelir
+     (ahtapot 1,4 kat hızlı; her şey ~2,6 sn'de tamamlanır). */
   @media (prefers-reduced-motion: no-preference) {
     .wordmark,
     .hero__title,
@@ -225,14 +228,14 @@ import Icon from '../Icon.astro';
     .hero__badges,
     .hero__note,
     .cue > * {
-      animation: hero-in 1.1s var(--ease-out) both;
+      animation: hero-in 0.9s var(--ease-out) both;
     }
-    .wordmark { animation-delay: 2.3s; }
-    .hero__title { animation-delay: 2.6s; }
-    .hero__lead { animation-delay: 2.8s; }
-    .hero__badges { animation-delay: 3s; }
-    .hero__note { animation-delay: 3.2s; }
-    .cue > * { animation-delay: 3.7s; }
+    .wordmark { animation-delay: 1.1s; }
+    .hero__title { animation-delay: 1.3s; }
+    .hero__lead { animation-delay: 1.45s; }
+    .hero__badges { animation-delay: 1.6s; }
+    .hero__note { animation-delay: 1.75s; }
+    .cue > * { animation-delay: 2.1s; }
     .is-skipped :is(.wordmark, .hero__title, .hero__lead, .hero__badges, .hero__note, .cue > *) {
       animation-delay: 0s;
       animation-duration: 0.6s;

@@ -29,7 +29,9 @@
   --grad-primary: linear-gradient(135deg, #6d4df0 0%, #8e7bff 55%, #9fb2ff 100%);
   --grad-gold: linear-gradient(135deg, #ffd983 0%, #f2c45a 55%, #e0a63a 100%);
 
-  --font-display: 'Fredoka Variable', 'Fredoka', system-ui, sans-serif;
+  /* Fredoka'da Türkçe İ, ş, ğ, Ş, Ğ harfleri yok; tarayıcı yalnızca bu harfleri
+     Baloo 2'den alır (o dosyayı da sadece bu harfler için indirir). */
+  --font-display: 'Fredoka Variable', 'Baloo 2 Variable', system-ui, sans-serif;
   --font-body: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -347,7 +349,8 @@ p {
   .js [data-reveal='fade'] {
     transform: none;
   }
-  .js [data-reveal].is-visible {
+  .js [data-reveal].is-visible,
+  .js [data-reveal='none'] {
     opacity: 1;
     transform: none;
     filter: none;

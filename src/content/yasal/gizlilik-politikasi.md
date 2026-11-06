@@ -4,7 +4,7 @@ description: Octopus English uygulamasının hangi verileri, hangi amaçla ve na
 updated: 2026-10-26
 ---
 
-Bu Gizlilik Politikası, Octopus English mobil uygulamasını ("Uygulama") ve bu web sitesini kullanırken kişisel verilerinin nasıl işlendiğini açıklar. Sorularını her zaman [octopusenglishh@gmail.com](mailto:octopusenglishh@gmail.com) adresine yazabilirsin.
+Bu Gizlilik Politikası, Octopus English mobil uygulamasını ve bu web sitesini kullanırken kişisel verilerinin nasıl işlendiğini açıklar. Sorularını her zaman [octopusenglishh@gmail.com](mailto:octopusenglishh@gmail.com) adresine yazabilirsin.
 
 ## Kısaca
 
@@ -26,15 +26,15 @@ E-posta ile kayıt olursan e-posta adresin, kullanıcı adın ve şifren işleni
 
 ### Öğrenme verileri
 
-Kelime havuzuna eklediğin kelimeler ve karşılıkları, öğrendiğin kelimeler, test sonuçların ve test geçmişin, doğru ve yanlış cevap istatistiklerin, günlük serin, seçtiğin İngilizce seviyesi ve günlük kullanım sayaçların (sohbet, çeviri, hikaye ve test hakları gibi).
+Kelime havuzuna eklediğin kelimeler ve karşılıkları, öğrendiğin kelimeler, test sonuçların ve test geçmişin, doğru ve yanlış cevap istatistiklerin, günlük serin, seçtiğin İngilizce seviyesi ve günlük kullanım sayaçların (sohbet, çeviri, hikaye ve test hakları gibi) hesabına kaydedilir.
 
 ### Abonelik bilgileri
 
-Hangi pakete sahip olduğun ve aboneliğinin durumu. Ödemeler Apple (App Store) veya Google (Google Play) tarafından alınır; kart bilgilerin bize ulaşmaz. Abonelik durumunu doğrulamak için RevenueCat hizmetini kullanırız.
+Hangi pakete sahip olduğun ve aboneliğinin durumu kaydedilir. Ödemeler Apple (App Store) veya Google (Google Play) tarafından alınır; kart bilgilerin bize ulaşmaz. Abonelik durumunu doğrulamak için RevenueCat hizmetini kullanırız.
 
 ### İçerik bildirimleri
 
-Yapay zekanın ürettiği bir cevabı ya da hikayeyi "Bildir" ile raporlarsan; bildirilen içerik, seçtiğin neden, varsa yazdığın açıklama ve kullanıcı kimliğin incelenmek üzere kaydedilir.
+Yapay zekanın ürettiği bir cevabı ya da hikayeyi "Bildir" ile raporlarsan, bildirilen içerik, seçtiğin neden, varsa yazdığın açıklama ve kullanıcı kimliğin incelenmek üzere kaydedilir.
 
 ### Yalnızca cihazında kalan tercihler
 

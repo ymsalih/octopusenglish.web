@@ -1,0 +1,1681 @@
+---
+/**
+ * Kendin dene: ziyaretçinin kullanabildiği çalışan bir telefon. Uygulamadaki
+ * kurallarla aynı davranır (lib/screens/test_screen.dart, word_learning_screen.dart,
+ * video_practice_screen.dart): kart dokununca çevrilir; sola kaydırma
+ * "Hatırladım", sağa "Unuttum", yukarı "Öğrendim". Paketten eklenen kelime
+ * havuza girer ve testte ilk sırada gelir. Hiçbir şey kaydedilmez; sayfa
+ * yenilenince her şey baştan başlar. Videolar temsilidir (VideoScene).
+ *
+ * Kartlar ve listeler JS ile üretildiği için stiller is:global ve hepsi
+ * .try / .demo önekiyle yazıldı.
+ */
+import Icon from '../Icon.astro';
+import Phone from '../phone/Phone.astro';
+import StatusBar from '../phone/StatusBar.astro';
+import VideoScene from '../phone/VideoScene.astro';
+import { levels, videos } from '../../data/demo';
+
+const tabs = [
+  {
+    id: 'test',
+    label: 'Test',
+    icon: 'quiz-rounded',
+    title: 'Kartı çevir, kaydır',
+    hint: 'Karta dokunup çevir. Hatırladıysan sola, unuttuysan sağa, tamamen öğrendiysen yukarı kaydır.',
+  },
+  {
+    id: 'packs',
+    label: 'Paketler',
+    icon: 'inventory-2-rounded',
+    title: 'Paketten kelime ekle',
+    hint: 'Bir seviye seç, kelimeyi dinle, yeşil düğmeyle havuzuna ekle. Testte ilk o gelir.',
+  },
+  {
+    id: 'words',
+    label: 'Kelimeler',
+    icon: 'style-rounded',
+    title: 'Havuzuna göz at',
+    hint: 'Eklediğin kelimeler burada birikir; hoparlöre dokunup telaffuzunu dinle.',
+  },
+  {
+    id: 'video',
+    label: 'Video',
+    icon: 'play-circle-rounded',
+    title: 'Video aç, yan çevir',
+    hint: 'Bir videoya dokun, sonra tam ekran düğmesiyle telefonu yan çevir.',
+  },
+];
+const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'check-circle-rounded', 'info-rounded', 'touch-app-rounded', 'school-rounded', 'close-rounded'];
+---
+<section class="try section" id="dene" aria-labelledby="try-title">
+  <div class="container try__grid">
+    <div class="try__head">
+      <p class="kicker" data-reveal>Kendin dene</p>
+      <h2 id="try-title" class="title-lg" data-reveal style="--d:0.08s">
+        Uygulamayı <span class="text-gold">elinde hisset.</span>
+      </h2>
+      <p class="lead" data-reveal style="--d:0.16s">
+        Bu telefon gerçekten çalışıyor. Kartları çevir ve kaydır, paketlerden kelime ekle, bir videoyu tam ekranda aç.
+      </p>
+    </div>
+
+    <div class="try__list" data-reveal style="--d:0.2s">
+      <ol class="try__tabs">
+        {tabs.map((t, i) => (
+          <li>
+            <button type="button" class="try__tab" data-go={t.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+              <span class="try__tab-icon"><Icon name={t.icon} /></span>
+              <span class="try__tab-text">
+                <b>{t.title}</b>
+                <span>{t.hint}</span>
+              </span>
+            </button>
+          </li>
+        ))}
+      </ol>
+      <p class="try__note">
+        <Icon name="info-rounded" />
+        <span>Bu bir tanıtım simülasyonudur: kelimeler uygulamadaki paketlerden örnektir, videolar temsilidir ve hiçbir şey kaydedilmez.</span>
+      </p>
+    </div>
+
+    <div class="try__stage" data-try-stage data-reveal="scale" style="--d:0.1s">
+      <span class="try__glow" aria-hidden="true"></span>
+      <div class="try__spin">
+        <Phone interactive label="Octopus English deneme telefonu">
+          <div class="demo is-paused" data-demo data-tab="test">
+            <StatusBar />
+
+            <div class="views">
+              {/* ---------- Test ---------- */}
+              <section class="view is-on" data-view="test" aria-label="Kelime testi">
+                <div class="d-ab"><span>Öğrenme Zamanı</span></div>
+                <div class="t-progress">
+                  <span class="t-bar"><span data-t-bar></span></span>
+                  <span class="t-count" data-t-count>1/5</span>
+                </div>
+                <div class="t-deck" data-deck></div>
+                <p class="t-hint">Karta dokun: çevir · Kaydır veya butonları kullan</p>
+                <div class="t-actions">
+                  <button type="button" class="t-act t-act--ok" data-verdict="remembered">
+                    <span><Icon name="check-rounded" /></span>Hatırladım
+                  </button>
+                  <button type="button" class="t-act t-act--gold" data-verdict="mastered">
+                    <span><Icon name="school-rounded" /></span>Öğrendim
+                  </button>
+                  <button type="button" class="t-act t-act--bad" data-verdict="forgot">
+                    <span><Icon name="close-rounded" /></span>Unuttum
+                  </button>
+                </div>
+
+                <div class="t-panel" data-result hidden>
+                  <div class="t-ring"><b data-r-rate>%0</b><span>BAŞARI</span></div>
+                  <p class="t-panel__title">Test Tamamlandı!</p>
+                  <p class="t-panel__sub">İşte bu çalışmadaki performans analizin</p>
+                  <ul class="t-stats">
+                    <li class="ok"><b data-r-ok>0</b>Hatırladım</li>
+                    <li class="gold"><b data-r-gold>0</b>Öğrendim</li>
+                    <li class="bad"><b data-r-bad>0</b>Unuttum</li>
+                  </ul>
+                  <button type="button" class="d-btn" data-restart>Tekrar Test Et</button>
+                </div>
+
+                <div class="t-panel" data-t-empty hidden>
+                  <span class="t-empty-icon"><Icon name="school-rounded" /></span>
+                  <p class="t-panel__title">Hepsini öğrendin!</p>
+                  <p class="t-panel__sub">Havuzunda tekrar edecek kelime kalmadı. Paketlerden yeni kelimeler ekle.</p>
+                  <button type="button" class="d-btn" data-go="packs">Kelime Paketleri</button>
+                </div>
+              </section>
+
+              {/* ---------- Kelime Paketleri ---------- */}
+              <section class="view" data-view="packs" aria-label="Kelime paketleri" inert>
+                <div class="d-ab"><span>Kelime Paketleri</span></div>
+                <div class="p-levels">
+                  {levels.map((l) => (
+                    <button type="button" class="p-lv" data-level={l} aria-pressed={l === 'B1' ? 'true' : 'false'}>{l}</button>
+                  ))}
+                </div>
+                <ul class="p-list" data-pack-list></ul>
+              </section>
+
+              {/* ---------- Kelime Havuzum ---------- */}
+              <section class="view" data-view="words" aria-label="Kelime havuzum" inert>
+                <div class="d-ab">
+                  <span>Kelime Havuzum</span>
+                  <span class="ph-pill"><Icon name="style-rounded" /> <span data-pool-count>6</span></span>
+                </div>
+                <p class="w-learned" data-learned hidden></p>
+                <ul class="w-list" data-pool-list></ul>
+              </section>
+
+              {/* ---------- Video ile Öğren ---------- */}
+              <section class="view" data-view="video" aria-label="Video ile öğren" inert>
+                <div class="d-ab"><span>İngilizce Dinleme & Pratik</span></div>
+                <div class="v-list">
+                  {videos.map((v, i) => (
+                    <button type="button" class="v-card" data-video={i} aria-label={`${v.title} videosunu aç`}>
+                      <span class="v-thumb">
+                        <VideoScene tone={v.tone} />
+                        <span class="v-shade"></span>
+                        <span class="v-play"><Icon name="play-arrow-rounded" /></span>
+                      </span>
+                      <span class="v-info">
+                        <span class="v-yt"><Icon name="smart-display-rounded" /> YouTube</span>
+                        <b>{v.title}</b>
+                        <span>{v.desc}</span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                <div class="v-player" data-player hidden>
+                  <div class="v-player__bar">
+                    <button type="button" class="v-icon-btn" data-close-player aria-label="Video listesine dön">
+                      <Icon name="arrow-back-rounded" />
+                    </button>
+                    <span data-player-title></span>
+                  </div>
+                  <div class="v-player__body">
+                    <div class="v-video">
+                      <VideoScene live class="is-paused" />
+                      <button type="button" class="v-big" data-toggle aria-label="Oynat veya duraklat">
+                        <Icon name="play-arrow-rounded" class="ic-play" />
+                        <Icon name="pause-rounded" class="ic-pause" />
+                      </button>
+                      <span class="v-prog"><span data-prog></span></span>
+                    </div>
+                    <div class="v-controls">
+                      <button type="button" class="v-icon-btn" data-toggle aria-label="Oynat veya duraklat">
+                        <Icon name="play-arrow-rounded" class="ic-play" />
+                        <Icon name="pause-rounded" class="ic-pause" />
+                      </button>
+                      <span class="v-time" data-time>0:00 / 0:00</span>
+                      <button type="button" class="v-icon-btn v-fs" data-fullscreen aria-label="Tam ekran: telefonu yan çevir">
+                        <Icon name="fullscreen-rounded" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <nav class="d-tabs" aria-label="Deneme telefonu menüsü">
+              {tabs.map((t, i) => (
+                <button type="button" class:list={['d-tab', { 'is-on': i === 0 }]} data-go={t.id}>
+                  <span class="d-tab__icon"><Icon name={t.icon} /></span>
+                  <span class="d-tab__label">{t.label}</span>
+                </button>
+              ))}
+              <span class="d-tabs__home"></span>
+            </nav>
+
+            <div class="d-snack" data-snack role="status" aria-live="polite"></div>
+
+            {/* Tam ekran (yatay). Telefon -90° döner, bu katman +90° döner. */}
+            <div class="d-land" data-land>
+              <div class="d-land__video">
+                <VideoScene live class="is-paused" />
+                <button type="button" class="v-big" data-toggle aria-label="Oynat veya duraklat">
+                  <Icon name="play-arrow-rounded" class="ic-play" />
+                  <Icon name="pause-rounded" class="ic-pause" />
+                </button>
+                <div class="d-land__ctl">
+                  <button type="button" class="v-icon-btn" data-toggle aria-label="Oynat veya duraklat">
+                    <Icon name="play-arrow-rounded" class="ic-play" />
+                    <Icon name="pause-rounded" class="ic-pause" />
+                  </button>
+                  <span class="v-prog v-prog--inline"><span data-prog></span></span>
+                  <span class="v-time" data-time>0:00 / 0:00</span>
+                  <button type="button" class="v-icon-btn" data-fullscreen-exit aria-label="Tam ekrandan çık">
+                    <Icon name="fullscreen-exit-rounded" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Phone>
+      </div>
+    </div>
+  </div>
+
+  <template data-icons>
+    {iconNames.map((n) => <span data-i={n}><Icon name={n} /></span>)}
+  </template>
+</section>
+
+<script>
+  import { packs, starterPool, videos, type Level, type DemoWord } from '../../data/demo';
+
+  type Word = DemoWord & { seen: number };
+  type Verdict = 'remembered' | 'mastered' | 'forgot';
+
+  const demo = document.querySelector<HTMLElement>('[data-demo]');
+  const stage = document.querySelector<HTMLElement>('[data-try-stage]');
+  const iconTpl = document.querySelector<HTMLTemplateElement>('template[data-icons]');
+
+  if (demo && stage && iconTpl) {
+    const $ = <T extends Element = HTMLElement>(sel: string, el: ParentNode = demo) => el.querySelector<T>(sel)!;
+    const $$ = <T extends Element = HTMLElement>(sel: string, el: ParentNode = demo) => Array.from(el.querySelectorAll<T>(sel));
+    const icon = (name: string) => iconTpl.content.querySelector(`[data-i="${name}"] svg`)!.cloneNode(true) as SVGElement;
+    const h = (tag: string, cls = '', text = '') => {
+      const el = document.createElement(tag);
+      if (cls) el.className = cls;
+      if (text) el.textContent = text;
+      return el;
+    };
+
+    // Havuz: "seen" küçük olan kelime testte önce gelir (uygulamada en uzun
+    // süredir tekrar edilmeyen önce gelir; yeni eklenen hiç tekrar edilmemiştir).
+    const pool: Word[] = starterPool.map((w, i) => ({ ...w, seen: i + 1 }));
+    let learned = 0;
+    const inPool = (eng: string) => pool.some((w) => w.eng.toLowerCase() === eng.toLowerCase());
+
+    /* ---------- Ortak: ses ve bildirim ---------- */
+
+    const speak = (text: string) => {
+      if (!('speechSynthesis' in window)) return;
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      u.rate = 0.9;
+      speechSynthesis.speak(u);
+    };
+
+    const snack = $('[data-snack]');
+    let snackTimer = 0;
+    const showSnack = (text: string, ok = true) => {
+      snack.replaceChildren(icon(ok ? 'check-circle-rounded' : 'info-rounded'), h('span', '', text));
+      snack.classList.toggle('is-info', !ok);
+      snack.classList.add('is-on');
+      clearTimeout(snackTimer);
+      snackTimer = window.setTimeout(() => snack.classList.remove('is-on'), 2000);
+    };
+
+    /* ---------- Sekmeler ---------- */
+
+    const go = (id: string) => {
+      if (demo.dataset.tab !== id) {
+        if (demo.dataset.tab === 'video') leaveVideo();
+        demo.dataset.tab = id;
+        $$('[data-view]').forEach((v) => {
+          const on = v.dataset.view === id;
+          v.classList.toggle('is-on', on);
+          v.toggleAttribute('inert', !on);
+        });
+        $$('.d-tab').forEach((t) => t.classList.toggle('is-on', t.dataset.go === id));
+      }
+      document.querySelectorAll<HTMLElement>('.try__tab').forEach((t) => t.setAttribute('aria-pressed', String(t.dataset.go === id)));
+      if (id === 'test' && (finished || !session.length)) startTest();
+      if (id === 'words') renderPool();
+    };
+    document.querySelectorAll<HTMLElement>('#dene [data-go]').forEach((b) => b.addEventListener('click', () => go(b.dataset.go!)));
+
+    /* ---------- Test ---------- */
+
+    const deck = $('[data-deck]');
+    const result = $('[data-result]');
+    const empty = $('[data-t-empty]');
+    let session: Word[] = [];
+    let index = 0;
+    let finished = false;
+    let busy = false;
+    let coached = false;
+    const counts: Record<Verdict, number> = { remembered: 0, mastered: 0, forgot: 0 };
+
+    const verdictUi: Record<Verdict, { label: string; icon: string; cls: string }> = {
+      remembered: { label: 'Hatırladım', icon: 'check-rounded', cls: 'ok' },
+      mastered: { label: 'Öğrendim', icon: 'school-rounded', cls: 'gold' },
+      forgot: { label: 'Unuttum', icon: 'close-rounded', cls: 'bad' },
+    };
+
+    function startTest() {
+      session = [...pool].sort((a, b) => a.seen - b.seen).slice(0, 5);
+      index = 0;
+      finished = false;
+      busy = false;
+      counts.remembered = counts.mastered = counts.forgot = 0;
+      result.hidden = true;
+      empty.hidden = session.length > 0;
+      demo.classList.toggle('t-done', session.length === 0);
+      renderDeck();
+    }
+
+    function renderDeck() {
+      deck.replaceChildren();
+      const total = session.length;
+      $('[data-t-count]').textContent = `${Math.min(index + 1, total)}/${total}`;
+      $('[data-t-bar]').style.width = `${total ? (index / total) * 100 : 0}%`;
+      for (let k = Math.min(index + 2, total - 1); k >= index; k--) deck.append(makeCard(session[k], k - index));
+    }
+
+    function makeCard(w: Word, depth: number) {
+      const card = h('div', 't-card');
+      card.style.setProperty('--depth', String(depth));
+      const inner = h('div', 't-card__inner');
+      const front = h('div', 't-face t-face--front');
+      const speakBtn = h('button', 't-speak');
+      speakBtn.setAttribute('type', 'button');
+      speakBtn.setAttribute('aria-label', `${w.eng} telaffuzunu dinle`);
+      speakBtn.append(icon('volume-up-rounded'));
+      speakBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        speak(w.eng);
+      });
+      speakBtn.addEventListener('pointerdown', (e) => e.stopPropagation());
+      const touch = h('span', 't-touch');
+      touch.append(icon('touch-app-rounded'));
+      front.append(h('span', 't-lang', 'İngilizce'), speakBtn, h('span', 't-word', w.eng), touch);
+      const back = h('div', 't-face t-face--back');
+      back.append(h('span', 't-lang', 'Türkçe'), h('span', 't-word', w.tr));
+      inner.append(front, back);
+      const overlay = h('div', 't-verdict');
+      card.append(inner, overlay);
+
+      if (depth === 0) {
+        card.tabIndex = 0;
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', `Kart: ${w.eng}. Çevirmek için dokun ya da Enter'a bas.`);
+        attachDrag(card, overlay);
+        card.addEventListener('keydown', (e) => {
+          const map: Record<string, Verdict> = { ArrowLeft: 'remembered', ArrowUp: 'mastered', ArrowRight: 'forgot' };
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            flip(card);
+          } else if (map[e.key]) {
+            e.preventDefault();
+            decide(map[e.key]);
+          }
+        });
+        if (!coached) {
+          const coach = h('span', 't-coach');
+          coach.append(icon('touch-app-rounded'));
+          card.append(coach);
+        }
+      }
+      return card;
+    }
+
+    const stopCoach = () => {
+      coached = true;
+      deck.querySelector('.t-coach')?.remove();
+    };
+
+    function flip(card: HTMLElement) {
+      stopCoach();
+      card.classList.toggle('is-flipped');
+    }
+
+    function setOverlay(overlay: HTMLElement, v: Verdict | null, strength: number) {
+      if (!v) {
+        overlay.style.opacity = '0';
+        return;
+      }
+      const ui = verdictUi[v];
+      if (overlay.dataset.v !== v) {
+        overlay.dataset.v = v;
+        overlay.className = `t-verdict t-verdict--${ui.cls}`;
+        overlay.replaceChildren(icon(ui.icon), h('span', '', ui.label));
+      }
+      overlay.style.opacity = String(Math.min(1, strength));
+    }
+
+    // Eşikler uygulamadakiyle aynı orandadır (göstermek 40/50, karar 80 birim),
+    // kart genişliğine göre ölçeklenir.
+    function readSwipe(dx: number, dy: number, unit: number): [Verdict | null, number, boolean] {
+      if (dy < -50 * unit && Math.abs(dy) > Math.abs(dx)) return ['mastered', Math.abs(dy) / (150 * unit), dy < -80 * unit];
+      if (dx > 40 * unit) return ['forgot', dx / (150 * unit), dx > 80 * unit];
+      if (dx < -40 * unit) return ['remembered', -dx / (150 * unit), dx < -80 * unit];
+      return [null, 0, false];
+    }
+
+    function attachDrag(card: HTMLElement, overlay: HTMLElement) {
+      let sx = 0;
+      let sy = 0;
+      let dx = 0;
+      let dy = 0;
+      let down = false;
+      let moved = false;
+      const unit = () => card.offsetWidth / 300;
+
+      card.addEventListener('pointerdown', (e) => {
+        if (busy) return;
+        down = true;
+        moved = false;
+        sx = e.clientX;
+        sy = e.clientY;
+        dx = dy = 0;
+        card.setPointerCapture(e.pointerId);
+        card.classList.add('is-dragging');
+        stopCoach();
+      });
+      card.addEventListener('pointermove', (e) => {
+        if (!down) return;
+        dx = e.clientX - sx;
+        dy = e.clientY - sy;
+        if (Math.hypot(dx, dy) > 6) moved = true;
+        card.style.transform = `translate(${dx}px, ${dy}px) rotate(${(25 * dx) / card.offsetWidth}deg)`;
+        const [v, s] = readSwipe(dx, dy, unit());
+        setOverlay(overlay, v, s);
+      });
+      const end = () => {
+        if (!down) return;
+        down = false;
+        card.classList.remove('is-dragging');
+        if (!moved) {
+          card.style.transform = '';
+          flip(card);
+          return;
+        }
+        const [v, , commit] = readSwipe(dx, dy, unit());
+        if (v && commit) {
+          decide(v);
+        } else {
+          card.style.transform = '';
+          setOverlay(overlay, null, 0);
+        }
+      };
+      card.addEventListener('pointerup', end);
+      card.addEventListener('pointercancel', end);
+    }
+
+    function decide(v: Verdict) {
+      const card = deck.querySelector<HTMLElement>('.t-card:last-child');
+      if (busy || finished || !card) return;
+      busy = true;
+      stopCoach();
+      const overlay = card.querySelector<HTMLElement>('.t-verdict')!;
+      setOverlay(overlay, v, 1);
+      const W = card.offsetWidth * 2.4;
+      const off = v === 'mastered' ? `translate(0, ${-card.offsetHeight * 2.4}px)` : `translate(${v === 'forgot' ? W : -W}px, 0) rotate(${v === 'forgot' ? 30 : -30}deg)`;
+      card.classList.add('is-leaving');
+      card.style.transform = off;
+
+      const w = session[index];
+      counts[v]++;
+      w.seen = Date.now() + index;
+      if (v === 'mastered') {
+        const at = pool.indexOf(w);
+        if (at >= 0) pool.splice(at, 1);
+        learned++;
+      }
+
+      window.setTimeout(() => {
+        index++;
+        busy = false;
+        if (index >= session.length) finish();
+        else renderDeck();
+      }, 360);
+    }
+
+    function finish() {
+      finished = true;
+      deck.replaceChildren();
+      $('[data-t-bar]').style.width = '100%';
+      const correct = counts.remembered + counts.mastered;
+      const rate = Math.round((correct / session.length) * 100);
+      $('[data-r-ok]').textContent = String(counts.remembered);
+      $('[data-r-gold]').textContent = String(counts.mastered);
+      $('[data-r-bad]').textContent = String(counts.forgot);
+      result.hidden = false;
+      demo.classList.add('t-done');
+      const ring = $('.t-ring', result);
+      const rateEl = $('[data-r-rate]', result);
+      const t0 = performance.now();
+      const tick = (now: number) => {
+        const p = Math.min(1, (now - t0) / 900);
+        const v = Math.round(rate * (1 - Math.pow(1 - p, 3)));
+        ring.style.setProperty('--v', String(v));
+        rateEl.textContent = `%${v}`;
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
+
+    $$('[data-verdict]').forEach((b) => b.addEventListener('click', () => decide(b.dataset.verdict as Verdict)));
+    $('[data-restart]').addEventListener('click', startTest);
+
+    /* ---------- Kelime Paketleri ---------- */
+
+    const packList = $('[data-pack-list]');
+    let level: Level = 'B1';
+
+    function renderPack() {
+      packList.replaceChildren();
+      packs[level].forEach((w, i) => {
+        const li = h('li', 'p-item');
+        li.style.setProperty('--i', String(i));
+        const txt = h('span', 'p-txt');
+        txt.append(h('b', '', w.eng), h('span', '', w.tr));
+        const sp = h('button', 'p-btn p-btn--sp');
+        sp.setAttribute('type', 'button');
+        sp.setAttribute('aria-label', `${w.eng} telaffuzunu dinle`);
+        sp.append(icon('volume-up-rounded'));
+        sp.addEventListener('click', () => speak(w.eng));
+        const add = h('button', 'p-btn p-btn--add');
+        add.setAttribute('type', 'button');
+        add.setAttribute('aria-label', `${w.eng} kelimesini havuza ekle`);
+        const added = inPool(w.eng);
+        add.classList.toggle('is-added', added);
+        add.append(icon(added ? 'check-rounded' : 'add-task-rounded'));
+        add.addEventListener('click', () => {
+          if (inPool(w.eng)) {
+            showSnack('Bu kelime zaten havuzunda.', false);
+            return;
+          }
+          pool.unshift({ ...w, seen: -Date.now() });
+          add.classList.add('is-added', 'is-pop');
+          add.replaceChildren(icon('check-rounded'));
+          showSnack(`“${w.eng}” başarıyla havuza eklendi!`);
+          if (finished) startTest();
+        });
+        li.append(h('span', 'p-badge', level), txt, sp, add);
+        packList.append(li);
+      });
+    }
+
+    $$('[data-level]').forEach((b) =>
+      b.addEventListener('click', () => {
+        level = b.dataset.level as Level;
+        $$('[data-level]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        renderPack();
+      }),
+    );
+
+    /* ---------- Kelime Havuzum ---------- */
+
+    function renderPool() {
+      const list = $('[data-pool-list]');
+      list.replaceChildren();
+      $('[data-pool-count]').textContent = String(pool.length);
+      const learnedEl = $('[data-learned]');
+      learnedEl.hidden = learned === 0;
+      learnedEl.textContent = `Öğrendiklerim: ${learned} kelime`;
+      if (!pool.length) {
+        list.append(h('li', 'w-empty', 'Havuzun boş. Paketlerden kelime ekle.'));
+        return;
+      }
+      pool.forEach((w) => {
+        const li = h('li', 'w-item');
+        const txt = h('span', 'w-txt');
+        txt.append(h('b', '', w.eng), h('span', '', w.tr));
+        const sp = h('button', 'w-sp');
+        sp.setAttribute('type', 'button');
+        sp.setAttribute('aria-label', `${w.eng} telaffuzunu dinle`);
+        sp.append(icon('volume-up-rounded'));
+        sp.addEventListener('click', () => speak(w.eng));
+        li.append(txt, sp);
+        list.append(li);
+      });
+    }
+
+    /* ---------- Video ---------- */
+
+    const player = $('[data-player]');
+    const scenes = $$('.v-video .vs, .d-land .vs');
+    let duration = 0;
+    let time = 0;
+    let playing = false;
+    let last = 0;
+
+    const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+    const paint = () => {
+      $$('[data-prog]').forEach((p) => (p.style.width = `${duration ? (time / duration) * 100 : 0}%`));
+      $$('[data-time]').forEach((t) => (t.textContent = `${fmt(time)} / ${fmt(duration)}`));
+    };
+    const loop = (now: number) => {
+      if (!playing) return;
+      time = Math.min(duration, time + (now - last) / 1000);
+      last = now;
+      paint();
+      if (time >= duration) setPlaying(false);
+      else requestAnimationFrame(loop);
+    };
+    function setPlaying(on: boolean) {
+      if (on && time >= duration) time = 0;
+      playing = on;
+      demo.classList.toggle('is-paused', !on);
+      scenes.forEach((s) => s.classList.toggle('is-paused', !on));
+      if (on) {
+        last = performance.now();
+        requestAnimationFrame(loop);
+      }
+    }
+
+    function openVideo(i: number) {
+      const v = videos[i];
+      $('[data-player-title]').textContent = v.title;
+      scenes.forEach((s) => {
+        s.classList.remove('vs--sunset', 'vs--ocean', 'vs--dawn');
+        s.classList.add(`vs--${v.tone}`);
+      });
+      duration = v.length;
+      time = 0;
+      paint();
+      player.hidden = false;
+      setPlaying(true);
+    }
+    function setLand(on: boolean) {
+      if (on) {
+        const phone = stage!.querySelector<HTMLElement>('.phone')!;
+        const scale = Math.min(0.92, (stage!.clientWidth - 12) / phone.offsetHeight);
+        stage!.style.setProperty('--land-scale', scale.toFixed(3));
+      }
+      stage!.classList.toggle('is-land', on);
+    }
+    function leaveVideo() {
+      setPlaying(false);
+      setLand(false);
+    }
+
+    $$('[data-video]').forEach((b) => b.addEventListener('click', () => openVideo(Number(b.dataset.video))));
+    $$('[data-toggle]').forEach((b) => b.addEventListener('click', () => setPlaying(!playing)));
+    $('[data-close-player]').addEventListener('click', () => {
+      leaveVideo();
+      player.hidden = true;
+    });
+    $('[data-fullscreen]').addEventListener('click', () => setLand(true));
+    $('[data-fullscreen-exit]').addEventListener('click', () => setLand(false));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && stage.classList.contains('is-land')) setLand(false);
+    });
+
+    // Bölüm ekrandan çıkınca video durur ve telefon dik konuma döner.
+    new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting && demo.dataset.tab === 'video') leaveVideo();
+    }).observe(stage);
+
+    startTest();
+    renderPack();
+    renderPool();
+  }
+</script>
+
+<style is:global>
+  /* ---------- Bölüm yerleşimi ---------- */
+  .try {
+    overflow-x: clip;
+  }
+  .try__grid {
+    display: grid;
+    gap: 36px;
+    grid-template-areas: 'head' 'stage' 'list';
+  }
+  .try__head {
+    grid-area: head;
+    display: grid;
+    gap: 18px;
+    justify-items: start;
+  }
+  .try__list {
+    grid-area: list;
+  }
+  .try__stage {
+    grid-area: stage;
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding-block: 10px;
+  }
+  .try__stage .phone {
+    --pw: min(300px, 78vw);
+    touch-action: manipulation;
+  }
+  .try__glow {
+    position: absolute;
+    width: min(620px, 140vw);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(242, 196, 90, 0.22), rgba(124, 92, 245, 0.32) 45%, transparent);
+    filter: blur(30px);
+    pointer-events: none;
+  }
+  .try__spin {
+    position: relative;
+    transition: transform 0.75s var(--ease-in-out);
+  }
+  .try__stage.is-land .try__spin {
+    transform: rotate(-90deg) scale(var(--land-scale, 0.6));
+  }
+
+  .try__tabs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .try__tab {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 18px;
+    border-radius: 20px;
+    border: 1px solid var(--border-soft);
+    background: rgba(19, 30, 84, 0.4);
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s, transform 0.4s var(--ease-out);
+  }
+  .try__tab:hover {
+    transform: translateX(4px);
+    border-color: rgba(169, 150, 255, 0.35);
+  }
+  .try__tab[aria-pressed='true'] {
+    border-color: rgba(242, 196, 90, 0.55);
+    background: linear-gradient(135deg, rgba(242, 196, 90, 0.12), rgba(124, 92, 245, 0.14));
+  }
+  .try__tab-icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: rgba(124, 92, 245, 0.18);
+    color: var(--primary-light);
+    font-size: 22px;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  .try__tab[aria-pressed='true'] .try__tab-icon {
+    background: var(--accent);
+    color: var(--ink);
+  }
+  .try__tab-text {
+    display: grid;
+    gap: 4px;
+  }
+  .try__tab-text b {
+    font: 650 1.12rem/1.2 var(--font-display);
+  }
+  .try__tab-text span {
+    color: var(--text-2);
+    font-size: 14.5px;
+    line-height: 1.55;
+  }
+  .try__note {
+    margin-top: 18px;
+    display: flex;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 13.5px;
+  }
+  .try__note .icon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+  }
+
+  @media (min-width: 1000px) {
+    .try__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-areas: 'head stage' 'list stage';
+      grid-template-rows: auto 1fr;
+      column-gap: clamp(40px, 6vw, 100px);
+      row-gap: 32px;
+    }
+    .try__stage {
+      align-self: center;
+      min-height: 720px;
+    }
+    .try__stage .phone {
+      --pw: 310px;
+    }
+  }
+
+  /* ---------- Telefonun içi ---------- */
+  .demo {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    font-size: 4.3cqw;
+    line-height: 1.4;
+  }
+  .demo button {
+    appearance: none;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .demo button:focus-visible,
+  .demo .t-card:focus-visible {
+    outline: 0.6cqw solid var(--accent);
+    outline-offset: 0.6cqw;
+  }
+  .demo [hidden] {
+    display: none !important;
+  }
+  .demo .views {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+  }
+  .demo .view {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(5cqw);
+    transition: opacity 0.35s var(--ease-out), transform 0.45s var(--ease-out), visibility 0.35s;
+  }
+  .demo .view.is-on {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+  .demo .d-ab {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3cqw;
+    height: 13cqw;
+    padding: 0 5cqw;
+    font: 650 6cqw/1.1 var(--font-display);
+  }
+  .demo .d-btn {
+    padding: 3.4cqw 6cqw;
+    border-radius: 999px;
+    background: var(--primary);
+    color: #fff;
+    font: 700 3.8cqw/1 var(--font-body);
+    box-shadow: 0 2cqw 6cqw -2cqw rgba(124, 92, 245, 0.8);
+  }
+
+  /* Alt menü */
+  .demo .d-tabs {
+    position: relative;
+    z-index: 10;
+    flex: none;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 2.2cqw 2cqw 7.5cqw;
+    border-top: 1px solid rgba(38, 53, 122, 0.8);
+    background: rgba(5, 9, 32, 0.92);
+  }
+  .demo .d-tab {
+    display: grid;
+    justify-items: center;
+    gap: 1cqw;
+    color: var(--muted);
+  }
+  .demo .d-tab__icon {
+    display: grid;
+    place-items: center;
+    width: 13cqw;
+    height: 7cqw;
+    border-radius: 999px;
+    font-size: 5.6cqw;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  .demo .d-tab__label {
+    font: 700 2.9cqw/1 var(--font-body);
+  }
+  .demo .d-tab.is-on {
+    color: var(--text);
+  }
+  .demo .d-tab.is-on .d-tab__icon {
+    background: rgba(124, 92, 245, 0.32);
+    color: #fff;
+  }
+  .demo .d-tabs__home {
+    position: absolute;
+    left: 50%;
+    bottom: 2.2cqw;
+    width: 34%;
+    height: 1.3cqw;
+    border-radius: 999px;
+    background: rgba(244, 241, 255, 0.75);
+    transform: translateX(-50%);
+  }
+
+  /* Bildirim */
+  .demo .d-snack {
+    position: absolute;
+    z-index: 30;
+    left: 4cqw;
+    right: 4cqw;
+    bottom: 25cqw;
+    display: flex;
+    align-items: center;
+    gap: 2.4cqw;
+    padding: 3.4cqw 3.6cqw;
+    border-radius: 3.6cqw;
+    border: 1.5px solid rgba(79, 209, 165, 0.5);
+    background: rgba(19, 30, 84, 0.97);
+    box-shadow: 0 3cqw 8cqw -2cqw rgba(0, 0, 0, 0.7);
+    font-size: 3.5cqw;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(5cqw);
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.4s var(--ease-out);
+  }
+  .demo .d-snack.is-on {
+    opacity: 1;
+    transform: none;
+  }
+  .demo .d-snack .icon {
+    flex: none;
+    width: 5.4cqw;
+    height: 5.4cqw;
+    color: var(--success);
+  }
+  .demo .d-snack.is-info {
+    border-color: rgba(242, 196, 90, 0.5);
+  }
+  .demo .d-snack.is-info .icon {
+    color: var(--accent);
+  }
+
+  /* ---------- Test ---------- */
+  .demo .t-progress {
+    display: flex;
+    align-items: center;
+    gap: 3cqw;
+    padding: 0 5cqw;
+  }
+  .demo .t-bar {
+    flex: 1;
+    height: 2.2cqw;
+    border-radius: 2cqw;
+    background: var(--surface-high);
+    overflow: hidden;
+  }
+  .demo .t-bar span {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--primary-light);
+    transition: width 0.4s var(--ease-out);
+  }
+  .demo .t-count {
+    color: var(--text-2);
+    font-weight: 700;
+    font-size: 3.6cqw;
+  }
+  .demo .t-deck {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    perspective: 220cqw;
+  }
+  .demo .t-card {
+    --depth: 0;
+    position: absolute;
+    left: 10cqw;
+    right: 10cqw;
+    top: 6cqw;
+    bottom: 6cqw;
+    max-height: 92cqw;
+    margin: auto 0;
+    transform-origin: 50% 100%;
+    transform: translateY(calc(var(--depth) * 4.5cqw)) scale(calc(1 - var(--depth) * 0.06));
+    filter: brightness(calc(1 - var(--depth) * 0.26));
+    transition: transform 0.45s var(--ease-out), filter 0.45s, opacity 0.35s;
+    touch-action: none;
+    cursor: grab;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .demo .t-card.is-dragging {
+    transition: none;
+    cursor: grabbing;
+  }
+  .demo .t-card.is-leaving {
+    transition: transform 0.36s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.36s;
+    opacity: 0;
+  }
+  .demo .t-card__inner {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transition: transform 0.55s var(--ease-out);
+  }
+  .demo .t-card.is-flipped .t-card__inner {
+    transform: rotateY(180deg);
+  }
+  .demo .t-face {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 6cqw;
+    border: 1px solid var(--border);
+    background: linear-gradient(160deg, #1f2c74, #131e54 60%);
+    box-shadow: 0 4cqw 10cqw -4cqw rgba(0, 0, 0, 0.7);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .demo .t-face--back {
+    transform: rotateY(180deg);
+    background: linear-gradient(160deg, #3b2a8c, #24196a 60%);
+    border-color: rgba(169, 150, 255, 0.4);
+  }
+  .demo .t-lang {
+    position: absolute;
+    top: 5cqw;
+    left: 5cqw;
+    font: 800 2.9cqw/1 var(--font-body);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .demo .t-word {
+    padding: 0 5cqw;
+    text-align: center;
+    font: 650 7.6cqw/1.15 var(--font-display);
+  }
+  .demo .t-speak {
+    position: absolute;
+    top: 3cqw;
+    right: 3cqw;
+    display: grid;
+    place-items: center;
+    width: 10cqw;
+    height: 10cqw;
+    border-radius: 50%;
+    color: var(--primary-light);
+    font-size: 5.6cqw;
+  }
+  .demo .t-touch {
+    position: absolute;
+    bottom: 5cqw;
+    color: var(--muted);
+    font-size: 6cqw;
+    line-height: 0;
+  }
+  .demo .t-verdict {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 2cqw;
+    border-radius: 6cqw;
+    color: #fff;
+    font: 800 5cqw/1 var(--font-body);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .demo .t-verdict .icon {
+    width: 12cqw;
+    height: 12cqw;
+  }
+  .demo .t-verdict--ok { background: rgba(37, 160, 120, 0.88); }
+  .demo .t-verdict--bad { background: rgba(214, 70, 95, 0.88); }
+  .demo .t-verdict--gold { background: rgba(214, 160, 50, 0.9); }
+
+  .demo .t-coach {
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    top: 66%;
+    color: #fff;
+    font-size: 11cqw;
+    line-height: 0;
+    filter: drop-shadow(0 1cqw 2cqw rgba(0, 0, 0, 0.6));
+    pointer-events: none;
+    animation: t-coach 2.6s var(--ease-in-out) infinite;
+  }
+  @keyframes t-coach {
+    0% { transform: translate(-50%, 0) scale(1); opacity: 0; }
+    12% { opacity: 1; }
+    25% { transform: translate(-50%, 0) scale(0.85); }
+    35% { transform: translate(-50%, 0) scale(1); }
+    70% { transform: translate(-180%, -10%) rotate(-12deg); opacity: 1; }
+    90%, 100% { transform: translate(-180%, -10%) rotate(-12deg); opacity: 0; }
+  }
+
+  .demo .t-hint {
+    text-align: center;
+    color: var(--muted);
+    font-size: 3cqw;
+    padding: 0 4cqw;
+  }
+  .demo .t-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2cqw;
+    padding: 3cqw 5cqw 3.5cqw;
+  }
+  .demo .t-act {
+    display: grid;
+    justify-items: center;
+    gap: 1.4cqw;
+    font: 700 3cqw/1 var(--font-body);
+    color: var(--text-2);
+  }
+  .demo .t-act > span {
+    display: grid;
+    place-items: center;
+    width: 12.5cqw;
+    height: 12.5cqw;
+    border-radius: 50%;
+    font-size: 6cqw;
+    transition: transform 0.25s var(--ease-out);
+  }
+  .demo .t-act:active > span {
+    transform: scale(0.88);
+  }
+  .demo .t-act--ok > span { color: var(--success); background: rgba(79, 209, 165, 0.15); border: 1.5px solid rgba(79, 209, 165, 0.45); }
+  .demo .t-act--gold > span { color: var(--accent); background: rgba(242, 196, 90, 0.15); border: 1.5px solid rgba(242, 196, 90, 0.45); }
+  .demo .t-act--bad > span { color: var(--danger); background: rgba(255, 107, 129, 0.15); border: 1.5px solid rgba(255, 107, 129, 0.45); }
+  .demo.t-done .t-actions,
+  .demo.t-done .t-hint,
+  .demo.t-done .t-progress {
+    visibility: hidden;
+  }
+
+  .demo .t-panel {
+    position: absolute;
+    inset: 13cqw 0 0;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: 3cqw;
+    padding: 0 7cqw;
+    text-align: center;
+    animation: t-panel 0.5s var(--ease-out);
+  }
+  @keyframes t-panel {
+    from { opacity: 0; transform: scale(0.94); }
+  }
+  .demo .t-ring {
+    --v: 0;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    width: 40cqw;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+      radial-gradient(closest-side, var(--bg) 82%, transparent 83%),
+      conic-gradient(var(--accent) calc(var(--v) * 1%), var(--surface-high) 0);
+  }
+  .demo .t-ring b {
+    font: 650 10cqw/1 var(--font-display);
+  }
+  .demo .t-ring span {
+    margin-top: 1cqw;
+    font: 800 2.8cqw/1 var(--font-body);
+    letter-spacing: 0.14em;
+    color: var(--muted);
+  }
+  .demo .t-panel__title {
+    margin-top: 2cqw;
+    font: 650 6.4cqw/1.15 var(--font-display);
+  }
+  .demo .t-panel__sub {
+    color: var(--text-2);
+    font-size: 3.5cqw;
+  }
+  .demo .t-stats {
+    list-style: none;
+    margin: 1cqw 0 2cqw;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2cqw;
+    width: 100%;
+  }
+  .demo .t-stats li {
+    display: grid;
+    gap: 1cqw;
+    padding: 2.6cqw 1cqw;
+    border-radius: 3.6cqw;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 2.8cqw;
+    font-weight: 700;
+    color: var(--text-2);
+  }
+  .demo .t-stats b {
+    font: 650 6cqw/1 var(--font-display);
+  }
+  .demo .t-stats .ok b { color: var(--success); }
+  .demo .t-stats .gold b { color: var(--accent); }
+  .demo .t-stats .bad b { color: var(--danger); }
+  .demo .t-empty-icon {
+    display: grid;
+    place-items: center;
+    width: 22cqw;
+    height: 22cqw;
+    border-radius: 50%;
+    background: rgba(242, 196, 90, 0.15);
+    color: var(--accent);
+    font-size: 11cqw;
+  }
+
+  /* ---------- Kelime Paketleri ---------- */
+  .demo .p-levels {
+    display: flex;
+    gap: 2cqw;
+    padding: 1cqw 5cqw 3cqw;
+  }
+  .demo .p-lv {
+    flex: 1;
+    height: 8.6cqw;
+    border-radius: 999px;
+    border: 1px solid var(--border) !important;
+    background: rgba(19, 30, 84, 0.6) !important;
+    color: var(--muted) !important;
+    font: 800 3.5cqw/1 var(--font-body) !important;
+    transition: all 0.3s var(--ease-out);
+  }
+  .demo .p-lv[aria-pressed='true'] {
+    border-color: transparent !important;
+    background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+    color: #fff !important;
+    box-shadow: 0 1.5cqw 4cqw -1cqw rgba(169, 150, 255, 0.7);
+  }
+  .demo .p-list,
+  .demo .w-list {
+    list-style: none;
+    margin: 0;
+    padding: 1cqw 4.5cqw 6cqw;
+    display: grid;
+    gap: 2.6cqw;
+    align-content: start;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+  .demo .p-list::-webkit-scrollbar,
+  .demo .w-list::-webkit-scrollbar {
+    display: none;
+  }
+  .demo .p-item {
+    display: flex;
+    align-items: center;
+    gap: 3cqw;
+    padding: 3cqw;
+    border-radius: 5cqw;
+    border: 1px solid var(--surface);
+    background: rgba(19, 30, 84, 0.6);
+    animation: p-in 0.5s var(--ease-out) backwards;
+    animation-delay: calc(var(--i) * 45ms);
+  }
+  @keyframes p-in {
+    from { opacity: 0; transform: translateY(4cqw); }
+  }
+  .demo .p-badge {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 10.5cqw;
+    height: 10.5cqw;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #fff;
+    font: 900 3.4cqw/1 var(--font-body);
+  }
+  .demo .p-txt,
+  .demo .w-txt {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    gap: 0.8cqw;
+  }
+  .demo .p-txt b,
+  .demo .w-txt b {
+    font-weight: 900;
+    font-size: 4.3cqw;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .demo .p-txt span,
+  .demo .w-txt span {
+    color: var(--primary-light);
+    font-size: 3.3cqw;
+    font-weight: 600;
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .demo .p-btn {
+    flex: none;
+    display: grid !important;
+    place-items: center;
+    width: 9cqw;
+    height: 9cqw;
+    border-radius: 2.6cqw;
+    font-size: 4.8cqw;
+    transition: transform 0.2s var(--ease-out), background-color 0.3s, color 0.3s;
+  }
+  .demo .p-btn:active {
+    transform: scale(0.86);
+  }
+  .demo .p-btn--sp {
+    color: var(--secondary) !important;
+    background: rgba(159, 178, 255, 0.15) !important;
+    border: 1px solid rgba(159, 178, 255, 0.3) !important;
+  }
+  .demo .p-btn--add {
+    color: var(--success) !important;
+    background: rgba(79, 209, 165, 0.15) !important;
+    border: 1px solid rgba(79, 209, 165, 0.3) !important;
+  }
+  .demo .p-btn--add.is-added {
+    color: var(--ink) !important;
+    background: var(--success) !important;
+  }
+  .demo .p-btn--add.is-pop {
+    animation: p-pop 0.5s var(--ease-out);
+  }
+  @keyframes p-pop {
+    0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(79, 209, 165, 0.7); }
+    60% { transform: scale(1.12); }
+    100% { transform: none; box-shadow: 0 0 0 4cqw rgba(79, 209, 165, 0); }
+  }
+
+  /* ---------- Kelime Havuzum ---------- */
+  .demo .w-learned {
+    margin: 0 5cqw 2cqw;
+    padding: 2cqw 3cqw;
+    border-radius: 3cqw;
+    background: rgba(242, 196, 90, 0.12);
+    color: var(--accent);
+    font-size: 3.3cqw;
+    font-weight: 700;
+  }
+  .demo .w-item {
+    display: flex;
+    align-items: center;
+    padding: 3cqw 3.4cqw 3cqw 4.2cqw;
+    border-radius: 3.6cqw;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    animation: p-in 0.4s var(--ease-out) backwards;
+  }
+  .demo .w-sp {
+    flex: none;
+    display: grid !important;
+    place-items: center;
+    width: 9cqw;
+    height: 9cqw;
+    border-radius: 50%;
+    color: var(--primary-light) !important;
+    font-size: 5.6cqw;
+  }
+  .demo .w-empty {
+    padding: 10cqw 4cqw;
+    text-align: center;
+    color: var(--muted);
+    font-size: 3.6cqw;
+  }
+
+  /* ---------- Video ---------- */
+  .demo .v-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    padding: 1cqw 5cqw 6cqw;
+    display: grid;
+    gap: 5cqw;
+    align-content: start;
+  }
+  .demo .v-list::-webkit-scrollbar {
+    display: none;
+  }
+  .demo .v-card {
+    display: block !important;
+    width: 100%;
+    text-align: left;
+    border-radius: 5.5cqw !important;
+    border: 1.5px solid var(--border) !important;
+    background: rgba(19, 30, 84, 0.7) !important;
+    overflow: hidden;
+    transition: transform 0.3s var(--ease-out), border-color 0.3s;
+  }
+  .demo .v-card:hover {
+    border-color: var(--primary-light) !important;
+  }
+  .demo .v-card:active {
+    transform: scale(0.97);
+  }
+  .demo .v-thumb {
+    position: relative;
+    display: block;
+  }
+  .demo .v-shade {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+  }
+  .demo .v-play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 14cqw;
+    height: 14cqw;
+    margin: -7cqw 0 0 -7cqw;
+    border-radius: 50%;
+    border: 1.5px solid var(--muted);
+    background: rgba(244, 241, 255, 0.15);
+    font-size: 9cqw;
+  }
+  .demo .v-info {
+    display: grid;
+    gap: 1.4cqw;
+    padding: 3.6cqw 4.2cqw 4.4cqw;
+  }
+  .demo .v-yt {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.2cqw;
+    color: var(--muted);
+    font: 700 2.7cqw/1 var(--font-body);
+  }
+  .demo .v-yt .icon {
+    width: 3.6cqw;
+    height: 3.6cqw;
+    color: var(--danger);
+  }
+  .demo .v-info b {
+    font-weight: 900;
+    font-size: 4.3cqw;
+    line-height: 1.15;
+  }
+  .demo .v-info > span:last-child {
+    color: rgba(169, 150, 255, 0.85);
+    font-size: 3.3cqw;
+    line-height: 1.35;
+  }
+
+  .demo .v-player {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    background: #000;
+    color: #fff;
+    animation: v-in 0.4s var(--ease-out);
+  }
+  @keyframes v-in {
+    from { transform: translateX(100%); }
+  }
+  .demo .v-player__bar {
+    display: flex;
+    align-items: center;
+    gap: 2cqw;
+    height: 13cqw;
+    padding: 0 3cqw;
+    font: 600 4.4cqw/1.1 var(--font-body);
+  }
+  .demo .v-player__bar span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .demo .v-icon-btn {
+    flex: none;
+    display: grid !important;
+    place-items: center;
+    width: 10cqw;
+    height: 10cqw;
+    border-radius: 50%;
+    font-size: 6.4cqw;
+  }
+  .demo .v-player__body {
+    flex: 1;
+    display: grid;
+    align-content: center;
+    gap: 3cqw;
+    padding-bottom: 8cqw;
+  }
+  .demo .v-video,
+  .demo .d-land__video {
+    position: relative;
+  }
+  .demo .v-big {
+    position: absolute;
+    inset: 0;
+    display: grid !important;
+    place-items: center;
+  }
+  .demo .v-big .icon {
+    width: 15cqw;
+    height: 15cqw;
+    padding: 2.4cqw;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.45);
+    transition: opacity 0.3s;
+  }
+  .demo:not(.is-paused) .v-big .icon {
+    opacity: 0;
+  }
+  .demo .ic-pause {
+    display: none;
+  }
+  .demo:not(.is-paused) .ic-pause {
+    display: block;
+  }
+  .demo:not(.is-paused) .ic-play {
+    display: none;
+  }
+  .demo .v-prog {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1cqw;
+    background: rgba(255, 255, 255, 0.25);
+  }
+  .demo .v-prog span {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: var(--primary-light);
+  }
+  .demo .v-controls {
+    display: flex;
+    align-items: center;
+    gap: 2cqw;
+    padding: 0 3cqw;
+  }
+  .demo .v-time {
+    flex: 1;
+    font: 600 3.3cqw/1 var(--font-body);
+    color: rgba(255, 255, 255, 0.75);
+    font-variant-numeric: tabular-nums;
+  }
+  .demo .v-fs {
+    background: rgba(242, 196, 90, 0.18) !important;
+    color: var(--accent) !important;
+    animation: v-fs 2s ease-in-out infinite;
+  }
+  @keyframes v-fs {
+    50% { box-shadow: 0 0 0 2cqw rgba(242, 196, 90, 0.15); }
+  }
+
+  /* Tam ekran katmanı */
+  .demo .d-land {
+    position: absolute;
+    z-index: 40;
+    left: 50%;
+    top: 50%;
+    width: 225cqw;
+    height: 100cqw;
+    display: grid;
+    place-items: center;
+    background: #000;
+    color: #fff;
+    transform: translate(-50%, -50%) rotate(90deg);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s, visibility 0.35s;
+  }
+  .is-land .demo .d-land {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0.3s;
+  }
+  .demo .d-land__video {
+    height: 100%;
+    aspect-ratio: 16 / 9;
+  }
+  .demo .d-land__video .vs {
+    height: 100%;
+  }
+  .demo .d-land__ctl {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 3cqw;
+    padding: 6cqw 5cqw 4cqw;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  }
+  .demo .v-prog--inline {
+    position: relative;
+    flex: 1;
+    height: 1.2cqw;
+    border-radius: 1cqw;
+    overflow: hidden;
+  }
+  .demo .d-land__ctl .v-time {
+    flex: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .try__spin,
+    .demo .view,
+    .demo .t-card,
+    .demo .t-card__inner {
+      transition-duration: 0.01s !important;
+    }
+    .demo .t-coach,
+    .demo .p-item,
+    .demo .w-item,
+    .demo .v-fs {
+      animation: none !important;
+    }
+  }
+</style>

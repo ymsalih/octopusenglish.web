@@ -28,31 +28,30 @@ const steps = [
     id: 'test',
     Screen: TestScreen,
     icon: 'quiz-rounded',
-    kicker: 'Kendini Test Et',
+    kicker: 'Kelime Tekrarı',
     title: 'Kaydır, hatırla, kalıcı öğren.',
-    text: 'Kartı çevir; hatırladıysan sola, unuttuysan sağa, tamamen öğrendiysen yukarı kaydır. En uzun süredir tekrar etmediğin kelimeler önce gelir, testin sonunda başarı oranını görürsün.',
+    text: 'Kelimelerini kartlarla tekrar et. Kartı çevir; hatırladıysan sola, unuttuysan sağa, tamamen öğrendiysen yukarı kaydır. En uzun süredir tekrar etmediğin kelimeler önce gelir, her testin sonunda başarı oranını görürsün.',
     chips: ['Akıllı tekrar sırası', '10 · 20 · 50 kelime', 'Sonuç raporu'],
     label: 'Kelime testi ekranı: kartlar kaydırılıyor',
   },
   {
-    id: 'chat',
-    Screen: ChatScreen,
-    icon: 'forum-rounded',
-    kicker: 'Octopus AI',
-    title: 'Hatalarından korkmadan konuş.',
-    text: 'Yapay zeka öğretmeninle seviyene uygun İngilizce sohbet et. Bir gramer hatası yaptığında doğrusunu Türkçe açıklamasıyla hemen gösterir; her cevabı dinleyebilir, tek dokunuşla çevirebilirsin.',
-    chips: ['Serbest', 'Gramer', 'Kelime', 'Günlük', 'İş', 'Seyahat'],
-    chipsLabel: '6 sohbet modu',
-    label: 'Octopus AI sohbet ekranı: gramer düzeltmesi gösteriliyor',
+    id: 'speak',
+    Screen: SpeakScreen,
+    icon: 'mic-rounded',
+    kicker: 'Okuma & Telaffuz',
+    title: 'Sesli oku, anında puanını gör.',
+    text: 'Seviyene uygun bir metni sesli oku. Doğru okuduğun kelimeler yeşile, tekrar etmen gerekenler kırmızıya döner; kırmızı kelimeye dokunup doğrusunu dinle. Metni dilersen önce dinleyip sonra kendin okuyabilirsin.',
+    chips: ['7 kategori', 'A1–C2', 'Kelime kelime geri bildirim'],
+    label: 'Telaffuz ekranı: kelimeler doğru ve yanlış olarak işaretleniyor',
   },
   {
     id: 'story',
     Screen: StoryScreen,
     icon: 'auto-stories-rounded',
-    kicker: 'Etkileşimli Hikayeler',
-    title: 'Hikayenin kahramanı sen ol.',
-    text: 'Macera, Gizem, Bilim Kurgu, Günlük Yaşam ya da Fantastik. Her bölümün sonunda gidişata sen karar verirsin; bilmediğin kelimeye dokununca çevirisi açılır. Hikaye bitince okuma anlama testi seni bekler.',
-    chips: ['5 tür', 'A1–C2', '3 bölüm + test'],
+    kicker: 'Okuma Pratiği',
+    title: 'Hikayelerle okuma alışkanlığı kazan.',
+    text: 'Macera, Gizem, Bilim Kurgu, Günlük Yaşam ya da Fantastik. Her bölümün sonunda gidişata sen karar verirsin; bilmediğin kelimeye dokununca çevirisi açılır. Hikaye bitince okuma anlama testiyle ne kadar anladığını görürsün.',
+    chips: ['5 tür', 'A1–C2', '3 bölüm + okuma testi'],
     label: 'Etkileşimli hikaye ekranı: kelime çevirisi ve seçim',
   },
   {
@@ -61,30 +60,31 @@ const steps = [
     icon: 'photo-camera-rounded',
     kicker: 'Akıllı Çeviri',
     title: 'Etrafındaki İngilizceyi yakala.',
-    text: 'Bir tabelayı, menüyü ya da kitap sayfasını kamerayla tara; metin telefonunda okunur. Çevirinin yanında sözcük türü, bağlam içinde örnek cümleler ve kelimeye uygun bir görsel gelir.',
+    text: 'Bir tabelayı, menüyü ya da kitap sayfasını kamerayla tara; metin telefonunda okunur. Çevirinin yanında sözcük türü, bağlam içinde örnek cümleler ve kelimeye uygun bir görsel gelir; kelimeyi tek dokunuşla tekrar etmek üzere havuzuna ekle.',
     chips: ['Kamera ve galeri', 'Sesle yazma', 'Örnek cümleler'],
     label: 'Kamerayla tarama ve akıllı çeviri ekranı',
   },
   {
-    id: 'speak',
-    Screen: SpeakScreen,
-    icon: 'mic-rounded',
-    kicker: 'Okuma & Telaffuz',
-    title: 'Sesli oku, anında puanını gör.',
-    text: 'Seviyene uygun bir metni sesli oku. Doğru okuduğun kelimeler yeşile, tekrar etmen gerekenler kırmızıya döner; kırmızı kelimeye dokunup doğrusunu dinle.',
-    chips: ['7 kategori', 'A1–C2', 'Kelime kelime geri bildirim'],
-    label: 'Telaffuz ekranı: kelimeler doğru ve yanlış olarak işaretleniyor',
+    id: 'chat',
+    Screen: ChatScreen,
+    icon: 'forum-rounded',
+    kicker: 'Sohbet Pratiği',
+    title: 'Hatalarından korkmadan konuş.',
+    text: 'Öğrendiklerini gerçek cümlelerde kullan: Octopus AI ile seviyene uygun İngilizce sohbet et. Bir gramer hatası yaptığında doğrusunu Türkçe açıklamasıyla hemen gösterir; her cevabı dinleyebilir, tek dokunuşla çevirebilirsin.',
+    chips: ['Serbest', 'Gramer', 'Kelime', 'Günlük', 'İş', 'Seyahat'],
+    chipsLabel: '6 sohbet modu',
+    label: 'Octopus AI sohbet ekranı: gramer düzeltmesi gösteriliyor',
   },
 ];
 ---
 <section class="features section" id="ozellikler" aria-labelledby="features-title">
   <div class="container features__head">
-    <p class="kicker" data-reveal>Özellikler</p>
+    <p class="kicker" data-reveal>Pratikler</p>
     <h2 id="features-title" class="title-lg" data-reveal style="--d:0.08s">
-      Öğrenmenin her hali, <span class="text-violet">tek uygulamada.</span>
+      Her gün biraz pratik, <span class="text-violet">kalıcı İngilizce.</span>
     </h2>
     <p class="lead" data-reveal style="--d:0.16s">
-      Kelime havuzundan yapay zeka sohbetine, uygulamanın kalbindeki altı özelliği ekran ekran keşfet.
+      Kelime tekrarından sesli okumaya, telaffuzdan sohbete; uygulamadaki altı pratik yolunu ekran ekran keşfet.
     </p>
   </div>
 
