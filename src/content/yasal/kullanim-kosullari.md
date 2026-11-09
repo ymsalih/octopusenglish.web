@@ -1,14 +1,14 @@
 ---
 title: Kullanım Koşulları
 description: Octopus English uygulamasını kullanırken geçerli olan koşullar, abonelik ve iptal kuralları.
-updated: 2026-10-26
+updated: 2026-11-09
 ---
 
 Bu Kullanım Koşulları, Octopus English mobil uygulamasının kullanımını düzenler. Uygulamayı indirerek, hesap oluşturarak veya kullanarak bu Kullanım Koşulları'nı ve [Gizlilik Politikası](/gizlilik-politikasi)'nı kabul etmiş olursun.
 
 ## 1. Hizmetin kapsamı
 
-Octopus English; kelime havuzu, kelime testleri, hazır kelime paketleri, yapay zeka destekli sohbet ve hikayeler, akıllı çeviri, kamerayla metin tarama, okuma ve telaffuz pratiği, videolar ve haber bağlantıları gibi araçlarla İngilizce öğrenmeyi destekleyen bir uygulamadır. Özellikler ve içerikler zaman içinde değişebilir, eklenebilir veya kaldırılabilir.
+Octopus English; kelime havuzu, kelime testleri, hazır kelime paketleri, yapay zeka destekli sohbet ve hikayeler, dinleme ve yazma pratiği, akıllı çeviri, kamerayla metin tarama, okuma ve telaffuz pratiği, videolar ve haber bağlantıları gibi araçlarla İngilizce öğrenmeyi destekleyen bir uygulamadır. Özellikler ve içerikler zaman içinde değişebilir, eklenebilir veya kaldırılabilir.
 
 ## 2. Hesabın
 

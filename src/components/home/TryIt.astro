@@ -15,6 +15,19 @@ import Phone from '../phone/Phone.astro';
 import StatusBar from '../phone/StatusBar.astro';
 import VideoScene from '../phone/VideoScene.astro';
 import { levels, videos } from '../../data/demo';
+import listenData from '../../data/listen-texts.json';
+
+// Seviye adları ve tür simgeleri uygulamayla aynı (level_category_picker.dart, listen_write_screen.dart).
+const levelNames: Record<string, string> = { A1: 'Başlangıç', A2: 'Temel', B1: 'Orta', B2: 'Orta üstü', C1: 'İleri', C2: 'Uzman' };
+const topicIcons: Record<string, string> = {
+  daily: 'coffee-rounded',
+  technology: 'devices-rounded',
+  science: 'science-rounded',
+  travel: 'flight-takeoff-rounded',
+  business: 'work-rounded',
+  health: 'favorite-rounded',
+  education: 'school-rounded',
+};
 
 const tabs = [
   {
@@ -23,6 +36,13 @@ const tabs = [
     icon: 'quiz-rounded',
     title: 'Kartı çevir, kaydır',
     hint: 'Karta dokunup çevir. Hatırladıysan sola, unuttuysan sağa, tamamen öğrendiysen yukarı kaydır.',
+  },
+  {
+    id: 'listen',
+    label: 'Dinle',
+    icon: 'hearing-rounded',
+    title: 'Dinle ve yaz',
+    hint: 'Seviyeni ve konunu seç, metni dinle, duyduğunu yaz. Doğrular yeşil, hatalar renkli görünür.',
   },
   {
     id: 'packs',
@@ -56,7 +76,7 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
         Uygulamayı <span class="text-gold">elinde hisset.</span>
       </h2>
       <p class="lead" data-reveal style="--d:0.16s">
-        Bu telefon gerçekten çalışıyor. Kartları çevir ve kaydır, paketlerden kelime ekle, bir videoyu tam ekranda aç.
+        Bu telefon gerçekten çalışıyor. Kartları çevir ve kaydır, bir metni dinleyip yaz, paketlerden kelime ekle, bir videoyu tam ekranda aç.
       </p>
     </div>
 
@@ -126,6 +146,91 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
                   <p class="t-panel__title">Hepsini öğrendin!</p>
                   <p class="t-panel__sub">Havuzunda tekrar edecek kelime kalmadı. Paketlerden yeni kelimeler ekle.</p>
                   <button type="button" class="d-btn" data-go="packs">Kelime Paketleri</button>
+                </div>
+              </section>
+
+              {/* ---------- Dinle ve Yaz ---------- */}
+              <section class="view" data-view="listen" aria-label="Dinle ve Yaz" inert>
+                <div class="d-ab"><span>Dinle ve Yaz</span></div>
+                <div class="lw" data-lw>
+                  <div class="lw-step" data-lw-step="level">
+                    <p class="lw-title">Seviyeni seç</p>
+                    <div class="lw-levels">
+                      {Object.entries(levelNames).map(([l, name]) => (
+                        <button type="button" class="lw-lv" data-lw-level={l} aria-label={`${l} ${name}${l === 'B1' ? ', senin seviyen' : ''}`}>
+                          <b>{l}</b>
+                          <span>{name}</span>
+                          {l === 'B1' && <Icon name="star-rounded" class="lw-star" />}
+                        </button>
+                      ))}
+                    </div>
+                    <p class="lw-note"><Icon name="star-rounded" /> Senin seviyen. Başka bir seviye seçmek kayıtlı seviyeni değiştirmez.</p>
+                  </div>
+
+                  <div class="lw-step" data-lw-step="topic" hidden>
+                    <div class="lw-card lw-row">
+                      <span class="lw-pill" data-lw-lvl>B1</span>
+                      <b class="lw-grow" data-lw-lvl-name>Orta</b>
+                      <button type="button" class="lw-link" data-lw-to="level">Değiştir</button>
+                    </div>
+                    <p class="lw-title">Türünü seç</p>
+                    <div class="lw-topics">
+                      {listenData.categories.map((c) => (
+                        <button type="button" class="lw-topic" data-lw-topic={c.id} aria-pressed="false">
+                          <Icon name={topicIcons[c.id] ?? 'article-rounded'} />
+                          <span>{c.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                    <button type="button" class="d-btn lw-wide" data-lw-fetch disabled>
+                      <Icon name="refresh-rounded" /> Metin getir
+                    </button>
+                  </div>
+
+                  <div class="lw-step" data-lw-step="ex" hidden>
+                    <div class="lw-card">
+                      <div class="lw-row">
+                        <span class="lw-pill" data-lw-lvl>B1</span>
+                        <span class="lw-ic" data-lw-topic-icon></span>
+                        <b class="lw-grow" data-lw-topic-name></b>
+                        <button type="button" class="lw-link" data-lw-to="topic">Değiştir</button>
+                      </div>
+                      <button type="button" class="lw-link lw-new" data-lw-new><Icon name="refresh-rounded" /> Yeni metin getir</button>
+                    </div>
+
+                    <div class="lw-card lw-listen">
+                      <div class="lw-btns">
+                        <button type="button" class="lw-play" data-lw-play><Icon name="volume-up-rounded" /> Dinle</button>
+                        <button type="button" class="lw-play lw-play--soft" data-lw-slow><Icon name="slow-motion-video-rounded" /> Yavaş dinle</button>
+                      </div>
+                      <p class="lw-cap">Cümle cümle dinle</p>
+                      <div class="lw-sents" data-lw-sents></div>
+                      <p class="lw-cap" data-lw-count></p>
+                    </div>
+
+                    <p class="lw-over">1. Duyduğunu yaz</p>
+                    <textarea class="lw-input" data-lw-input rows="4" maxlength="2000" placeholder="Duyduğun metni buraya yaz" autocomplete="off" autocapitalize="sentences" spellcheck="false"></textarea>
+                    <button type="button" class="d-btn lw-wide" data-lw-check disabled>Kontrol et</button>
+
+                    <div class="lw-card lw-result" data-lw-result hidden>
+                      <div class="lw-score"><b data-lw-pct>%0</b><span data-lw-sub></span></div>
+                      <ul class="lw-legend" data-lw-legend></ul>
+                      <p class="lw-over">Metin</p>
+                      <p class="lw-text" data-lw-text></p>
+                    </div>
+
+                    <div class="lw-tr" data-lw-tr hidden>
+                      <p class="lw-over">2. Şimdi Türkçesini yaz</p>
+                      <p class="lw-cap lw-cap--left">Metnin anlamını Türkçe yaz. Uygulamada yapay zeka çevirini değerlendirip Türkçe açıklar; burada doğru çeviriyle karşılaştırabilirsin.</p>
+                      <textarea class="lw-input" data-lw-tr-input rows="3" maxlength="1500" placeholder="Türkçe çevirini buraya yaz" autocomplete="off" spellcheck="false"></textarea>
+                      <button type="button" class="d-btn lw-wide lw-soft" data-lw-show-tr>Doğru çeviriyi göster</button>
+                      <div class="lw-card" data-lw-tr-box hidden>
+                        <p class="lw-over">Doğru çeviri</p>
+                        <p class="lw-text" data-lw-tr-text></p>
+                      </div>
+                      <button type="button" class="d-btn lw-wide" data-lw-new><Icon name="refresh-rounded" /> Yeni metin getir</button>
+                    </div>
+                  </div>
                 </div>
               </section>
 
@@ -309,6 +414,8 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
       document.querySelectorAll<HTMLElement>('.try__tab').forEach((t) => t.setAttribute('aria-pressed', String(t.dataset.go === id)));
       if (id === 'test' && (finished || !session.length)) startTest();
       if (id === 'words') renderPool();
+      if (id === 'listen') openListen();
+      else if ('speechSynthesis' in window) speechSynthesis.cancel();
     };
     document.querySelectorAll<HTMLElement>('#dene [data-go]').forEach((b) => b.addEventListener('click', () => go(b.dataset.go!)));
 
@@ -536,6 +643,223 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
     $$('[data-verdict]').forEach((b) => b.addEventListener('click', () => decide(b.dataset.verdict as Verdict)));
     $('[data-restart]').addEventListener('click', startTest);
 
+    /* ---------- Dinle ve Yaz ----------
+       Metinler uygulamanın metin bankasından bir seçkidir; sekme ilk açıldığında
+       ayrı bir dosya olarak yüklenir. Puanlama lib/services/dictation_check.dart
+       ve listen_write.dart ile aynıdır. */
+
+    type LwText = { level: string; category: string; en: string; tr: string };
+    type Mistake = { kind: 'wrong' | 'missing' | 'extra'; position?: number; typed?: string; before?: number };
+    let lwData: { categories: { id: string; label: string }[]; texts: LwText[] } | null = null;
+    let lwLevel = 'B1';
+    let lwTopic = '';
+    let lwText: LwText | null = null;
+    const lw = $('[data-lw]');
+    const lwInput = $<HTMLTextAreaElement>('[data-lw-input]');
+    const lwCheckBtn = $<HTMLButtonElement>('[data-lw-check]');
+    const lwFetchBtn = $<HTMLButtonElement>('[data-lw-fetch]');
+    const lwResult = $('[data-lw-result]');
+    const lwTr = $('[data-lw-tr]');
+
+    async function openListen() {
+      if (!lwData) lwData = (await import('../../data/listen-texts.json')).default;
+    }
+
+    function lwStep(step: 'level' | 'topic' | 'ex') {
+      $$('[data-lw-step]').forEach((el) => (el.hidden = el.dataset.lwStep !== step));
+      lw.scrollTop = 0;
+    }
+
+    function lwSpeak(text: string, slow = false) {
+      if (!('speechSynthesis' in window)) {
+        showSnack('Tarayıcın sesli okumayı desteklemiyor.', false);
+        return;
+      }
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      u.rate = slow ? 0.55 : 0.9;
+      speechSynthesis.speak(u);
+    }
+
+    // Karşılaştırma biçimi: küçük harf; kesme işareti dışındaki noktalama boşluk olur.
+    const lwWords = (text: string) =>
+      text
+        .toLowerCase()
+        .replace(/[‘’ʼ`]/g, "'")
+        .replace(/[^a-z0-9' ]+/g, ' ')
+        .replace(/(^'+|'+$)/g, '')
+        .split(/\s+/)
+        .map((w) => w.replace(/^'+|'+$/g, ''))
+        .filter(Boolean);
+
+    // Kelime düzeyinde en az değişiklikle eşleştirme (Levenshtein).
+    function dictation(expected: string, typedText: string) {
+      const a = lwWords(expected);
+      const b = lwWords(typedText);
+      const n = a.length;
+      const m = b.length;
+      const d = Array.from({ length: n + 1 }, (_, i) => Array.from({ length: m + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0)));
+      for (let i = 1; i <= n; i++) {
+        for (let j = 1; j <= m; j++) {
+          d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+        }
+      }
+      const mistakes: Mistake[] = [];
+      let i = n;
+      let j = m;
+      while (i > 0 || j > 0) {
+        if (i > 0 && j > 0 && a[i - 1] === b[j - 1] && d[i][j] === d[i - 1][j - 1]) {
+          i--;
+          j--;
+        } else if (i > 0 && j > 0 && d[i][j] === d[i - 1][j - 1] + 1) {
+          mistakes.push({ kind: 'wrong', position: i - 1, typed: b[j - 1] });
+          i--;
+          j--;
+        } else if (i > 0 && d[i][j] === d[i - 1][j] + 1) {
+          mistakes.push({ kind: 'missing', position: i - 1 });
+          i--;
+        } else {
+          mistakes.push({ kind: 'extra', typed: b[j - 1], before: i });
+          j--;
+        }
+      }
+      return { total: n, mistakes: mistakes.reverse() };
+    }
+
+    function lwLoad(avoidCurrent = false) {
+      if (!lwData) return;
+      const pool = lwData.texts.filter((t) => t.level === lwLevel && t.category === lwTopic);
+      const fresh = pool.filter((t) => !avoidCurrent || t !== lwText);
+      const list = fresh.length ? fresh : pool;
+      lwText = list[Math.floor(Math.random() * list.length)] ?? null;
+      if (!lwText) return;
+      $$('[data-lw-lvl]').forEach((el) => (el.textContent = lwLevel));
+      $('[data-lw-topic-name]').textContent = lwData.categories.find((c) => c.id === lwTopic)?.label ?? '';
+      $('[data-lw-topic-icon]').replaceChildren($(`[data-lw-topic="${lwTopic}"] svg`).cloneNode(true));
+      const sents = $('[data-lw-sents]');
+      sents.replaceChildren();
+      lwText.en
+        .split(/(?<=[.?!])\s+/)
+        .filter((x) => x.trim())
+        .forEach((sentence, k) => {
+          const chip = h('button', 'lw-sent');
+          chip.setAttribute('type', 'button');
+          chip.setAttribute('aria-label', `${k + 1}. cümleyi dinle`);
+          chip.append(icon('volume-up-rounded'), h('span', '', `${k + 1}. cümle`));
+          chip.addEventListener('click', () => lwSpeak(sentence));
+          sents.append(chip);
+        });
+      $('[data-lw-count]').textContent = `${lwText.en.split(' ').length} kelime · Ses gelmiyorsa cihazının sesini aç.`;
+      lwInput.value = '';
+      lwCheckBtn.disabled = true;
+      lwCheckBtn.hidden = false;
+      lwResult.hidden = true;
+      lwTr.hidden = true;
+      $<HTMLTextAreaElement>('[data-lw-tr-input]').value = '';
+      $('[data-lw-tr-box]').hidden = true;
+      lwStep('ex');
+    }
+
+    function lwCheck() {
+      if (!lwText || !lwInput.value.trim()) return;
+      const { total, mistakes } = dictation(lwText.en, lwInput.value);
+      const wrongAt = new Map<number, string>();
+      const missing = new Set<number>();
+      const extrasBefore = new Map<number, string[]>();
+      for (const mk of mistakes) {
+        if (mk.kind === 'wrong') wrongAt.set(mk.position!, mk.typed!);
+        else if (mk.kind === 'missing') missing.add(mk.position!);
+        else extrasBefore.set(mk.before!, [...(extrasBefore.get(mk.before!) ?? []), mk.typed!]);
+      }
+      // Yüzde: doğru kelimeler / (metindeki kelimeler + fazladan yazılanlar).
+      const extras = mistakes.filter((mk) => mk.kind === 'extra').length;
+      const wrongCount = wrongAt.size + missing.size;
+      const pct = total ? Math.round((100 * (total - wrongCount)) / (total + extras)) : 0;
+      const pctEl = $('[data-lw-pct]');
+      pctEl.textContent = `%${pct}`;
+      pctEl.className = pct >= 90 ? 'is-ok' : pct >= 60 ? 'is-mid' : 'is-low';
+      $('[data-lw-sub]').textContent = pct === 100 ? 'Harika, hepsini doğru yazdın!' : `${total} kelimeden ${total - wrongCount} doğru`;
+
+      // Metin, hatalar yerinde: doğru yeşil, yanlış kırmızı (önünde üstü çizili
+      // yazılan), eksik turuncu, fazladan yazılan üstü çizili lila.
+      const out = $('[data-lw-text]');
+      out.replaceChildren();
+      const add = (el: HTMLElement) => {
+        if (out.childNodes.length) out.append(' ');
+        out.append(el);
+      };
+      const addExtras = (k: number) => (extrasBefore.get(k) ?? []).forEach((x) => add(h('s', 'lw-x', x)));
+      const words = lwText.en.split(' ');
+      words.forEach((w, k) => {
+        addExtras(k);
+        if (wrongAt.has(k)) {
+          add(h('s', 'lw-typed', wrongAt.get(k)));
+          add(h('span', 'lw-bad', w));
+        } else if (missing.has(k)) add(h('span', 'lw-miss', w));
+        else add(h('span', 'lw-ok', w));
+      });
+      addExtras(words.length);
+
+      const legend = $('[data-lw-legend]');
+      legend.replaceChildren();
+      const kinds = new Set(mistakes.map((mk) => mk.kind));
+      const item = (cls: string, label: string) => {
+        const li = h('li');
+        li.append(h('i', `lw-dot ${cls}`), h('span', '', label));
+        legend.append(li);
+      };
+      if (kinds.has('wrong')) item('lw-dot--bad', 'Yanlış yazdın (üstü çizili olan senin yazdığın)');
+      if (kinds.has('missing')) item('lw-dot--miss', 'Eksik, yazmadın');
+      if (kinds.has('extra')) item('lw-dot--x', 'Fazla yazdın, metinde yok');
+
+      lwCheckBtn.hidden = true;
+      lwResult.hidden = false;
+      lwTr.hidden = false;
+      $('[data-lw-tr-text]').textContent = lwText.tr;
+      window.setTimeout(() => lwResult.scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 50);
+    }
+
+    $$('[data-lw-level]').forEach((b) =>
+      b.addEventListener('click', () => {
+        lwLevel = b.dataset.lwLevel!;
+        $$('[data-lw-level]').forEach((x) => x.classList.toggle('is-on', x === b));
+        $$('[data-lw-lvl]').forEach((el) => (el.textContent = lwLevel));
+        $('[data-lw-lvl-name]').textContent = b.querySelector('span')!.textContent;
+        lwStep('topic');
+      }),
+    );
+    $$('[data-lw-topic]').forEach((b) =>
+      b.addEventListener('click', () => {
+        lwTopic = b.dataset.lwTopic!;
+        $$('[data-lw-topic]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        lwFetchBtn.disabled = false;
+      }),
+    );
+    lwFetchBtn.addEventListener('click', async () => {
+      await openListen();
+      lwLoad();
+    });
+    $$('[data-lw-to]').forEach((b) => b.addEventListener('click', () => lwStep(b.dataset.lwTo as 'level' | 'topic')));
+    $$('[data-lw-new]').forEach((b) => b.addEventListener('click', () => lwLoad(true)));
+    $('[data-lw-play]').addEventListener('click', () => lwText && lwSpeak(lwText.en));
+    $('[data-lw-slow]').addEventListener('click', () => lwText && lwSpeak(lwText.en, true));
+    lwInput.addEventListener('input', () => {
+      lwCheckBtn.disabled = !lwInput.value.trim();
+      // Yazı değişince eski sonuç geçersiz olur; "Kontrol et" geri gelir.
+      if (!lwResult.hidden) {
+        lwResult.hidden = true;
+        lwTr.hidden = true;
+        lwCheckBtn.hidden = false;
+      }
+    });
+    lwCheckBtn.addEventListener('click', lwCheck);
+    $('[data-lw-show-tr]').addEventListener('click', () => {
+      const box = $('[data-lw-tr-box]');
+      box.hidden = false;
+      window.setTimeout(() => box.scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 50);
+    });
+
     /* ---------- Kelime Paketleri ---------- */
 
     const packList = $('[data-pack-list]');
@@ -683,7 +1007,9 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
 
     // Bölüm ekrandan çıkınca video durur ve telefon dik konuma döner.
     new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting && demo.dataset.tab === 'video') leaveVideo();
+      if (e.isIntersecting) return;
+      if (demo.dataset.tab === 'video') leaveVideo();
+      if ('speechSynthesis' in window) speechSynthesis.cancel();
     }).observe(stage);
 
     startTest();
@@ -900,8 +1226,8 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
     z-index: 10;
     flex: none;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    padding: 2.2cqw 2cqw 7.5cqw;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 2.2cqw 1cqw 7.5cqw;
     border-top: 1px solid rgba(38, 53, 122, 0.8);
     background: rgba(5, 9, 32, 0.92);
   }
@@ -914,10 +1240,10 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
   .demo .d-tab__icon {
     display: grid;
     place-items: center;
-    width: 13cqw;
+    width: 12cqw;
     height: 7cqw;
     border-radius: 999px;
-    font-size: 5.6cqw;
+    font-size: 5.4cqw;
     transition: background-color 0.3s, color 0.3s;
   }
   .demo .d-tab__label {
@@ -1259,6 +1585,322 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
     background: rgba(242, 196, 90, 0.15);
     color: var(--accent);
     font-size: 11cqw;
+  }
+
+  /* ---------- Dinle ve Yaz ---------- */
+  .demo .lw {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    padding: 1cqw 5cqw 8cqw;
+  }
+  .demo .lw::-webkit-scrollbar {
+    display: none;
+  }
+  .demo .lw-step {
+    display: grid;
+    gap: 3cqw;
+    animation: p-in 0.4s var(--ease-out);
+  }
+  .demo .lw-title {
+    font: 650 5cqw/1.1 var(--font-display);
+  }
+  .demo .lw-levels,
+  .demo .lw-topics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.6cqw;
+  }
+  .demo .lw-lv,
+  .demo .lw-topic {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: border-color 0.25s, background-color 0.25s, transform 0.25s var(--ease-out);
+  }
+  .demo .lw-lv:active,
+  .demo .lw-topic:active,
+  .demo .lw-play:active,
+  .demo .lw-sent:active {
+    transform: scale(0.95);
+  }
+  .demo .lw-lv {
+    position: relative;
+    display: grid;
+    justify-items: start;
+    gap: 1cqw;
+    padding: 3.4cqw 3.6cqw;
+    border-radius: 4cqw;
+    text-align: left;
+  }
+  .demo .lw-lv b {
+    font: 650 6.4cqw/1 var(--font-display);
+  }
+  .demo .lw-lv span {
+    color: var(--muted);
+    font-size: 3cqw;
+    font-weight: 700;
+  }
+  .demo .lw-lv.is-on {
+    border-color: var(--primary-light);
+  }
+  .demo .lw-lv.is-on b {
+    color: var(--primary-light);
+  }
+  .demo .lw-star {
+    position: absolute;
+    top: 2.6cqw;
+    right: 2.6cqw;
+    width: 4.6cqw;
+    height: 4.6cqw;
+    color: var(--accent);
+  }
+  .demo .lw-note {
+    display: flex;
+    gap: 1.6cqw;
+    color: var(--muted);
+    font-size: 3cqw;
+  }
+  .demo .lw-note .icon {
+    flex: none;
+    width: 4cqw;
+    height: 4cqw;
+    color: var(--accent);
+  }
+  .demo .lw-topic {
+    display: flex;
+    align-items: center;
+    gap: 2.2cqw;
+    padding: 3.4cqw;
+    border-radius: 4cqw;
+    font-size: 3.5cqw;
+    font-weight: 700;
+    text-align: left;
+  }
+  .demo .lw-topic .icon {
+    flex: none;
+    width: 5cqw;
+    height: 5cqw;
+    color: var(--primary-light);
+  }
+  .demo .lw-topic[aria-pressed='true'] {
+    border-color: var(--primary-light);
+    background: rgba(124, 92, 245, 0.22);
+  }
+  .demo .lw-card {
+    padding: 3cqw 3.4cqw;
+    border-radius: 4cqw;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .demo .lw-row {
+    display: flex;
+    align-items: center;
+    gap: 2.2cqw;
+    font-size: 3.8cqw;
+  }
+  .demo .lw-grow {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .demo .lw-pill {
+    padding: 1.2cqw 2.6cqw;
+    border-radius: 99px;
+    background: rgba(169, 150, 255, 0.18);
+    color: var(--primary-light);
+    font: 800 3.3cqw/1 var(--font-body);
+  }
+  .demo .lw-ic {
+    color: var(--primary-light);
+    font-size: 4.4cqw;
+    line-height: 0;
+  }
+  .demo .lw-ic svg {
+    width: 4.4cqw;
+    height: 4.4cqw;
+  }
+  .demo .lw-link {
+    color: var(--primary-light);
+    font-weight: 700;
+    font-size: 3.4cqw;
+  }
+  .demo .lw-new {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.4cqw;
+    width: 100%;
+    margin-top: 2.6cqw;
+    padding-top: 2.6cqw;
+    border-top: 1px solid var(--border);
+  }
+  .demo .lw-new .icon,
+  .demo .lw-wide .icon {
+    width: 4.6cqw;
+    height: 4.6cqw;
+  }
+  .demo .lw-wide {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.6cqw;
+    width: 100%;
+  }
+  .demo .d-btn:disabled {
+    opacity: 0.45;
+    box-shadow: none;
+    cursor: default;
+  }
+  .demo .lw-soft {
+    background: rgba(124, 92, 245, 0.18);
+    color: var(--primary-light);
+    box-shadow: none;
+  }
+  .demo .lw-listen {
+    display: grid;
+    gap: 2.2cqw;
+  }
+  .demo .lw-btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.4cqw;
+  }
+  .demo .lw-play {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.4cqw;
+    padding: 3cqw 1cqw;
+    border-radius: 99px;
+    background: #f0922b;
+    color: #fff;
+    font: 700 3.4cqw/1 var(--font-body);
+    white-space: nowrap;
+    transition: transform 0.2s var(--ease-out);
+  }
+  .demo .lw-play--soft {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--primary-light);
+  }
+  .demo .lw-play .icon {
+    width: 4.6cqw;
+    height: 4.6cqw;
+  }
+  .demo .lw-cap {
+    text-align: center;
+    color: var(--muted);
+    font-size: 3cqw;
+  }
+  .demo .lw-cap--left {
+    text-align: left;
+  }
+  .demo .lw-sents {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.8cqw;
+  }
+  .demo .lw-sent {
+    display: inline-flex;
+    align-items: center;
+    gap: 1cqw;
+    padding: 1.8cqw 3cqw;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    background: rgba(11, 21, 64, 0.6);
+    color: var(--text-2);
+    font: 700 3.1cqw/1 var(--font-body);
+    transition: transform 0.2s var(--ease-out);
+  }
+  .demo .lw-sent .icon {
+    width: 3.6cqw;
+    height: 3.6cqw;
+    color: var(--primary-light);
+  }
+  .demo .lw-over {
+    margin-top: 1cqw;
+    font: 800 2.9cqw/1 var(--font-body);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  /* iOS, 16 pikselden küçük yazılı bir alana odaklanınca sayfayı yakınlaştırır. */
+  .demo .lw-input {
+    width: 100%;
+    resize: none;
+    padding: 3cqw 3.4cqw;
+    border-radius: 3.6cqw;
+    border: 1px solid var(--border);
+    background: rgba(11, 21, 64, 0.75);
+    color: var(--text);
+    font: 500 16px/1.45 var(--font-body);
+    outline: none;
+  }
+  .demo .lw-input:focus {
+    border-color: var(--primary-light);
+  }
+  .demo .lw-input::placeholder {
+    color: var(--muted);
+  }
+  .demo .lw-result {
+    display: grid;
+    gap: 2.2cqw;
+    animation: p-in 0.45s var(--ease-out);
+  }
+  .demo .lw-score {
+    display: flex;
+    align-items: baseline;
+    gap: 2.6cqw;
+  }
+  .demo .lw-score b {
+    font: 650 8.4cqw/1 var(--font-display);
+  }
+  .demo .lw-score b.is-ok { color: var(--success); }
+  .demo .lw-score b.is-mid { color: var(--accent); }
+  .demo .lw-score b.is-low { color: var(--danger); }
+  .demo .lw-score span {
+    color: var(--text-2);
+    font-size: 3.3cqw;
+  }
+  .demo .lw-legend {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.2cqw;
+    color: var(--muted);
+    font-size: 2.9cqw;
+  }
+  .demo .lw-legend li {
+    display: flex;
+    align-items: center;
+    gap: 1.6cqw;
+  }
+  .demo .lw-dot {
+    flex: none;
+    width: 2.4cqw;
+    height: 2.4cqw;
+    border-radius: 50%;
+  }
+  .demo .lw-dot--bad { background: var(--danger); }
+  .demo .lw-dot--miss { background: var(--accent); }
+  .demo .lw-dot--x { background: var(--secondary); }
+  .demo .lw-text {
+    font-size: 3.7cqw;
+    line-height: 1.6;
+  }
+  .demo .lw-ok { color: var(--success); font-weight: 600; }
+  .demo .lw-bad { color: var(--danger); font-weight: 800; text-decoration: underline; }
+  .demo .lw-typed { color: rgba(255, 107, 129, 0.7); font-size: 3.2cqw; }
+  .demo .lw-miss { color: var(--accent); font-weight: 800; text-decoration: underline; }
+  .demo .lw-x { color: var(--secondary); font-size: 3.2cqw; }
+  .demo .lw-tr {
+    display: grid;
+    gap: 2.6cqw;
   }
 
   /* ---------- Kelime Paketleri ---------- */

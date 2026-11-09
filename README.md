@@ -46,11 +46,11 @@ Octopus English mobil uygulamasının tanıtım sitesi: derin denizde geçen, ka
 |:--|:--|
 | 🐙 **Sinematik açılış** | Uygulamanın açılış animasyonu web'e taşındı: ahtapot yüzerek gelir, kollarıyla "O" harfini oluşturur, gözleriyle imleci takip eder. |
 | 📜 **Kelime kelime manifesto** | "Bir ahtapotun sekiz kolu, üç kalbi ve dokuz beyni vardır…" cümlesi ekrana girince kelime kelime akarak belirir. |
-| 📱 **Canlı telefon ekranları** | Uygulamanın altı ekranı HTML/CSS ile birebir çizildi ve kendi kendine oynar: kelime ekleme, kart kaydırmalı test, yapay zeka sohbeti, etkileşimli hikaye, kamerayla çeviri, telaffuz puanı. |
+| 📱 **Canlı telefon ekranları** | Uygulamanın yedi ekranı HTML/CSS ile birebir çizildi ve kendi kendine oynar: kelime ekleme, kart kaydırmalı test, Dinle ve Yaz, telaffuz puanı, etkileşimli hikaye, kamerayla çeviri, yapay zeka sohbeti. |
 | 🧲 **Yapışkan anlatım** | Masaüstünde telefon sabit kalır, sen kaydırdıkça ekranı değişir. Mobilde her özellik kendi telefonuyla gelir. |
 | 🦑 **Çizilen ahtapot kolu** | "Nasıl çalışır" bölümündeki dalgalı yol, kaydırmayla adım adım çizilir. |
-| 🎬 **Keşfet: paketler ve video** | Kelime Paketleri ve Video ile Öğren ekranları kendi kendine oynar; video telefonu döngü içinde yan çevrilip tam ekrana geçer. Kaydırdıkça telefonlar üç boyutlu döner. |
-| 🕹️ **Kendin dene** | Ziyaretçinin kullanabildiği çalışan telefon: kartı çevir ve kaydır, paketlerden kelime ekle, havuza bak, videoyu tam ekranda aç. Hiçbir şey kaydedilmez. |
+| 🎬 **Keşfet: paketler, video, rapor** | Kelime Paketleri, Video ile Öğren ve Gelişim Raporu ekranları kendi kendine oynar; video telefonu döngü içinde yan çevrilip tam ekrana geçer, raporda haftanın günleri alevle dolar ve test grafiği yükselir. Kaydırdıkça telefonlar üç boyutlu döner. |
+| 🕹️ **Kendin dene** | Ziyaretçinin kullanabildiği çalışan telefon: kartı çevir ve kaydır; Dinle ve Yaz'da seviye ve konu seç, metni dinle, yaz ve uygulamadakiyle aynı kurallarla puanını gör; paketlerden kelime ekle, havuza bak, videoyu tam ekranda aç. Hiçbir şey kaydedilmez. |
 | 🌊 **Derinleşen okyanus** | Arka planda süzülen deniz karı ve biyolüminesans ışıklar; aşağı indikçe su koyulaşır. |
 
 ---
@@ -115,12 +115,13 @@ OctopusWebSitesi/
 │  │  │  ├─ Hero · Manifesto · FeatureStory · Explore · Stats
 │  │  │  └─ HowItWorks · TryIt · MoreFeatures · Trust · FinalCta
 │  │  ├─ phone/                 telefon çerçevesi, durum çubuğu, alt menü, temsili video karesi
-│  │  │  └─ screens/            Words · Test · Chat · Story · Translate · Speak · Packs · Video
+│  │  │  └─ screens/            Words · Test · Listen · Speak · Story · Translate · Chat · Packs · Video · Report
 │  │  ├─ Header · Footer · Ocean · StoreBadges · PageHeader · Icon
 │  ├─ content/yasal/          ← yasal metinler (düz Markdown)
 │  ├─ data/
 │  │  ├─ site.ts                site adı, e-posta, mağaza linkleri
-│  │  └─ demo.ts                Keşfet ve Kendin dene için örnek kelimeler ve videolar
+│  │  ├─ demo.ts                Keşfet ve Kendin dene için örnek kelimeler ve videolar
+│  │  └─ listen-texts.json      Dinle ve Yaz metinlerinden seçki (uygulamanın metin bankasından)
 │  ├─ scripts/
 │  │  ├─ motion.ts              kaydırma animasyonları
 │  │  └─ octopus-scene.js       açılış ahtapotu (uygulamadaki splash'in web uyarlaması)
@@ -142,6 +143,7 @@ OctopusWebSitesi/
 | 🛒 App Store / Google Play linkleri | `src/data/site.ts` → `stores` |
 | ✉️ Destek e-postası | `src/data/site.ts` → `email` |
 | 🕹️ Kendin dene / Keşfet örnek kelimeleri ve videoları | `src/data/demo.ts` |
+| 🎧 Kendin dene'deki Dinle ve Yaz metinleri | `src/data/listen-texts.json` |
 | ⚖️ Gizlilik Politikası / Kullanım Koşulları | `src/content/yasal/*.md` |
 | ❓ Destek sayfasındaki sorular | `src/pages/destek.astro` → `groups` |
 | 🌐 Sitenin adresi (kendi alan adın olursa) | `astro.config.mjs` → `site` |

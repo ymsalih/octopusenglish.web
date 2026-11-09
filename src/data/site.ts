@@ -10,7 +10,7 @@ export const site = {
 
   /** Arama sonuçlarında başlığın altında görünen metin (~155 karakter). */
   description:
-    'Kelimelerini kartlarla tekrar et, sesli okuyup telaffuzunu anında puanla, hikayelerle okuma ve sohbetle konuşma pratiği yap. A1’den C2’ye ücretsiz.',
+    'Kelimelerini kartlarla tekrar et, dinlediğini yaz, sesli okuyup telaffuzunu puanla; hikayelerle okuma ve sohbetle konuşma pratiği yap. A1’den C2’ye ücretsiz.',
 
   email: 'octopusenglishh@gmail.com',
 

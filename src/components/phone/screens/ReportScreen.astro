@@ -1,0 +1,281 @@
+---
+/**
+ * Gelişim Raporun (lib/screens/progress_report_screen.dart ve
+ * widgets/week_streak_card.dart). Döngü (10 sn): haftanın günleri alevle
+ * sırayla dolar, özet kartları belirir, son 10 testin çubukları yükselir.
+ * Animasyon, üstteki bir öğe .is-playing aldığında oynar. Sayılar örnektir.
+ */
+import Icon from '../../Icon.astro';
+import StatusBar from '../StatusBar.astro';
+import AppBar from '../AppBar.astro';
+
+const days = ['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pz'];
+const done = [false, true, true, true, true, false, false]; // Cuma bugün
+const today = 4;
+const stats = [
+  { icon: 'trophy-rounded', tone: 'gold', value: '48', label: 'Öğrenilen' },
+  { icon: 'style-rounded', tone: 'violet', value: '126', label: 'Havuzda' },
+  { icon: 'quiz-rounded', tone: 'blue', value: '37', label: 'Çözülen test' },
+  { icon: 'check-circle-rounded', tone: 'green', value: '%82', label: 'Doğru oranı' },
+];
+const rates = [55, 62, 48, 70, 66, 78, 74, 85, 80, 92];
+const average = Math.round(rates.reduce((a, b) => a + b, 0) / rates.length);
+const tone = (r: number) => (r >= 80 ? 'ok' : r >= 50 ? 'mid' : 'low');
+---
+<div class="screen rp">
+  <StatusBar />
+  <AppBar title="Gelişim Raporun" back />
+
+  <div class="body">
+    <div class="ph-card week">
+      <div class="week__head">
+        <span class="ph-overline">Bu hafta</span>
+        <span class="week__streak"><Icon name="local-fire-department-rounded" /> 4 gün seri</span>
+      </div>
+      <ol class="days">
+        {days.map((d, i) => (
+          <li class:list={['day', { 'day--done': done[i], 'day--today': i === today }]} style={`--i:${i}`}>
+            <span class="day__dot">{done[i] && <Icon name="local-fire-department-rounded" />}</span>
+            <span class="day__lbl">{d}</span>
+          </li>
+        ))}
+      </ol>
+      <p class="week__msg">Bugünü tamamladın, serin güvende. Harika gidiyorsun!</p>
+      <p class="week__foot">%82 test başarısı · En uzun serin 9 gün</p>
+    </div>
+
+    <p class="sec">Özet</p>
+    <ul class="stats">
+      {stats.map((s, i) => (
+        <li class:list={['ph-card', 'st', `st--${s.tone}`]} style={`--i:${i}`}>
+          <Icon name={s.icon} />
+          <span><b>{s.value}</b><span>{s.label}</span></span>
+        </li>
+      ))}
+    </ul>
+
+    <div class="ph-card chart">
+      <div class="chart__head">
+        <span class="ph-overline">Son {rates.length} test</span>
+        <span class="chart__avg"><Icon name="trending-up-rounded" /> Ortalama %{average}</span>
+      </div>
+      <div class="bars">
+        {rates.map((r, i) => <span class:list={['bar', `bar--${tone(r)}`]} style={`--h:${r};--i:${i}`}></span>)}
+      </div>
+      <div class="chart__axis"><span>Eski</span><span>Yeni</span></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3cqw;
+    padding: 1cqw 5cqw 8cqw;
+  }
+
+  .week {
+    padding: 3.6cqw;
+    display: grid;
+    gap: 2.6cqw;
+  }
+  .week__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .week__streak {
+    display: inline-flex;
+    align-items: center;
+    gap: 1cqw;
+    color: var(--accent);
+    font: 800 3.4cqw/1 var(--font-body);
+  }
+  .week__streak :global(.icon) {
+    width: 4.4cqw;
+    height: 4.4cqw;
+  }
+  .days {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1cqw;
+  }
+  .day {
+    display: grid;
+    justify-items: center;
+    gap: 1.2cqw;
+  }
+  .day__dot {
+    display: grid;
+    place-items: center;
+    width: 8cqw;
+    height: 8cqw;
+    border-radius: 50%;
+    background: var(--surface-high);
+    color: #fff;
+  }
+  .day__dot :global(.icon) {
+    width: 4.6cqw;
+    height: 4.6cqw;
+  }
+  .day--done .day__dot {
+    background: linear-gradient(160deg, #ffb347, #f0922b);
+    box-shadow: 0 0 3cqw -0.5cqw rgba(240, 146, 43, 0.8);
+  }
+  .day--today .day__dot {
+    outline: 0.6cqw solid var(--accent);
+    outline-offset: 0.6cqw;
+  }
+  .day__lbl {
+    color: var(--muted);
+    font: 700 2.7cqw/1 var(--font-body);
+  }
+  .day--today .day__lbl {
+    color: var(--text);
+  }
+  .week__msg {
+    font-size: 3.5cqw;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  .week__foot {
+    color: var(--text-2);
+    font-size: 3cqw;
+  }
+
+  .sec {
+    font: 650 4.6cqw/1 var(--font-display);
+  }
+  .stats {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.4cqw;
+  }
+  .st {
+    display: flex;
+    align-items: center;
+    gap: 2.4cqw;
+    padding: 3cqw;
+    border-radius: 3.6cqw;
+  }
+  .st > :global(.icon) {
+    flex: none;
+    width: 6cqw;
+    height: 6cqw;
+  }
+  .st > span {
+    display: grid;
+    gap: 0.6cqw;
+    min-width: 0;
+  }
+  .st b {
+    font: 650 5cqw/1 var(--font-display);
+  }
+  .st span span {
+    color: var(--muted);
+    font-size: 2.8cqw;
+    white-space: nowrap;
+  }
+  .st--gold > :global(.icon) { color: var(--accent); }
+  .st--violet > :global(.icon) { color: var(--primary-light); }
+  .st--blue > :global(.icon) { color: var(--secondary); }
+  .st--green > :global(.icon) { color: var(--success); }
+
+  .chart {
+    padding: 3.6cqw;
+    display: grid;
+    gap: 2.6cqw;
+  }
+  .chart__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .chart__avg {
+    display: inline-flex;
+    align-items: center;
+    gap: 1cqw;
+    color: var(--success);
+    font: 800 3cqw/1 var(--font-body);
+  }
+  .chart__avg :global(.icon) {
+    width: 4.2cqw;
+    height: 4.2cqw;
+  }
+  .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.8cqw;
+    height: 20cqw;
+  }
+  .bar {
+    flex: 1;
+    height: calc(1cqw + var(--h) * 0.19cqw);
+    border-radius: 1.2cqw 1.2cqw 0.4cqw 0.4cqw;
+    transform-origin: bottom;
+  }
+  .bar--ok { background: var(--success); }
+  .bar--mid { background: var(--accent); }
+  .bar--low { background: var(--danger); }
+  .chart__axis {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 2.7cqw;
+  }
+
+  /* ---- Döngü (10 sn). Üstteki .is-playing başlatır. ---- */
+  :global(.is-playing) .day__dot {
+    animation: r-day 10s var(--ease-out) infinite backwards;
+    animation-delay: calc(var(--i) * 0.14s);
+  }
+  :global(.is-playing) .day--done .day__dot {
+    animation-name: r-day-done;
+  }
+  :global(.is-playing) .week__msg,
+  :global(.is-playing) .week__foot { animation: r-fade 10s var(--ease-out) infinite; }
+  :global(.is-playing) .st {
+    animation: r-stat 10s var(--ease-out) infinite backwards;
+    animation-delay: calc(var(--i) * 0.12s);
+  }
+  :global(.is-playing) .bar {
+    animation: r-bar 10s var(--ease-out) infinite backwards;
+    animation-delay: calc(var(--i) * 0.07s);
+  }
+
+  @keyframes r-day {
+    0%, 3% { transform: scale(0.6); opacity: 0; }
+    8%, 94% { transform: none; opacity: 1; }
+    99%, 100% { transform: scale(0.6); opacity: 0; }
+  }
+  @keyframes r-day-done {
+    0%, 3% { transform: scale(0.6); opacity: 0; background: var(--surface-high); box-shadow: none; }
+    8% { transform: scale(1.18); opacity: 1; }
+    12%, 94% { transform: none; opacity: 1; }
+    99%, 100% { transform: scale(0.6); opacity: 0; }
+  }
+  @keyframes r-fade {
+    0%, 14% { opacity: 0; transform: translateY(1.5cqw); }
+    20%, 94% { opacity: 1; transform: none; }
+    99%, 100% { opacity: 0; }
+  }
+  @keyframes r-stat {
+    0%, 20% { opacity: 0; transform: translateY(3cqw) scale(0.96); }
+    26%, 94% { opacity: 1; transform: none; }
+    99%, 100% { opacity: 0; }
+  }
+  @keyframes r-bar {
+    0%, 32% { transform: scaleY(0); }
+    42%, 94% { transform: scaleY(1); }
+    99%, 100% { transform: scaleY(0); }
+  }
+</style>

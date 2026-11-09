@@ -3,7 +3,7 @@
 import Icon from '../Icon.astro';
 
 interface Props {
-  active: 'home' | 'words' | 'test' | 'speak' | 'chat';
+  active: 'home' | 'words' | 'test' | 'story' | 'chat';
 }
 const { active } = Astro.props;
 
@@ -11,7 +11,7 @@ const tabs = [
   { id: 'home', label: 'Ana Sayfa', icon: 'home-rounded' },
   { id: 'words', label: 'Kelimeler', icon: 'style-rounded' },
   { id: 'test', label: 'Test', icon: 'quiz-rounded' },
-  { id: 'speak', label: 'Telaffuz', icon: 'mic-rounded' },
+  { id: 'story', label: 'Hikaye', icon: 'auto-stories-rounded' },
   { id: 'chat', label: 'Sohbet', icon: 'forum-rounded' },
 ];
 ---

@@ -7,7 +7,6 @@
 import Icon from '../../Icon.astro';
 import StatusBar from '../StatusBar.astro';
 import AppBar from '../AppBar.astro';
-import BottomBar from '../BottomBar.astro';
 
 interface Props {
   inline?: boolean;
@@ -18,18 +17,17 @@ const text =
   'Every morning, Ayla takes the ferry across the Bosphorus. She drinks hot tea and watches the seagulls follow the boat.';
 const missed = new Set([8, 16]); // "Bosphorus." ve "seagulls"
 const words = text.split(' ');
-const categories = ['Daily Life', 'Technology', 'Science', 'Travel'];
-const levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 ---
 <div class="screen" data-screen="speak" data-screen-inline={inline ? '' : undefined}>
   <StatusBar />
-  <AppBar title="Okuma & Telaffuz" />
+  <AppBar title="Okuma & Telaffuz" back />
 
-  <div class="row">
-    {categories.map((c, i) => <span class:list={['ph-chip', { 'is-on': i === 0 }]}>{c}</span>)}
-  </div>
-  <div class="row row--lv">
-    {levels.map((l) => <span class:list={['lv', { 'is-on': l === 'B1' }]}>{l}</span>)}
+  <!-- Metin gelince seviye ve konu seçimi tek satırlık özete döner. -->
+  <div class="ph-card pick">
+    <span class="pick__lvl">B1</span>
+    <Icon name="coffee-rounded" class="pick__ic" />
+    <b>Günlük Hayat</b>
+    <span class="pick__chg">Değiştir</span>
   </div>
 
   <div class="body">
@@ -75,41 +73,43 @@ const levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
     </div>
   </div>
 
-  <BottomBar active="speak" />
 </div>
 
 <style>
-  .row {
+  .pick {
+    margin: 0 5cqw;
     display: flex;
-    gap: 2cqw;
-    padding: 0 5cqw;
-    overflow: hidden;
-    -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent);
-    mask-image: linear-gradient(90deg, #000 85%, transparent);
+    align-items: center;
+    gap: 2.2cqw;
+    padding: 2.6cqw 3.6cqw;
+    font-size: 3.8cqw;
   }
-  .row--lv {
-    margin-top: 2.4cqw;
+  .pick__lvl {
+    padding: 1.2cqw 2.6cqw;
+    border-radius: 99px;
+    background: rgba(169, 150, 255, 0.18);
+    color: var(--primary-light);
+    font: 800 3.3cqw/1 var(--font-body);
   }
-  .lv {
-    padding: 1.6cqw 3.4cqw;
-    border-radius: 3cqw;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text-2);
-    font: 700 3.3cqw/1 var(--font-body);
+  .pick :global(.pick__ic) {
+    width: 4.4cqw;
+    height: 4.4cqw;
+    color: var(--primary-light);
   }
-  .lv.is-on {
-    border-color: var(--secondary);
-    background: rgba(159, 178, 255, 0.2);
-    color: var(--secondary);
+  .pick b {
+    flex: 1;
   }
-
+  .pick__chg {
+    color: var(--primary-light);
+    font-weight: 700;
+    font-size: 3.4cqw;
+  }
   .body {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 3cqw;
-    padding: 4cqw 5cqw 3cqw;
+    padding: 4cqw 5cqw 9cqw; /* alt menü yok: ekran Ana Sayfa'dan açılır */
     min-height: 0;
   }
   .head {

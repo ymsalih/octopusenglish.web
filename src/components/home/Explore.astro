@@ -1,6 +1,6 @@
 ---
 /**
- * Keşfet: Kelime Paketleri ve Video ile Öğren. Her satır görünür alana
+ * Keşfet: Kelime Paketleri, Video ile Öğren ve Gelişim Raporu. Her satır görünür alana
  * girince data-play → .is-playing alır ve telefon ekranı oynar; kaydırdıkça
  * telefon hafifçe döner (data-progress="through" → --p). Video satırında
  * telefon döngü içinde yan çevrilir ve video tam ekrana geçer.
@@ -9,6 +9,7 @@ import Icon from '../Icon.astro';
 import Phone from '../phone/Phone.astro';
 import PacksScreen from '../phone/screens/PacksScreen.astro';
 import VideoScreen from '../phone/screens/VideoScreen.astro';
+import ReportScreen from '../phone/screens/ReportScreen.astro';
 
 const rows = [
   {
@@ -31,6 +32,16 @@ const rows = [
     chips: ['Seçilmiş videolar', 'Uygulama içinde izle', 'Yan çevir, tam ekran'],
     label: 'Video ile Öğren ekranı: video açılıyor ve tam ekrana geçiyor',
   },
+  {
+    id: 'report',
+    Screen: ReportScreen,
+    icon: 'insights',
+    kicker: 'Gelişim Raporu',
+    title: 'Gelişimini her hafta daha net gör.',
+    text: '“Bu hafta” kartında çalıştığın günler alevle işaretlenir, serini ve en uzun serini görürsün. Altında öğrendiğin kelimeler, havuzundakiler, çözdüğün testler ve doğru oranın; en altta son 10 testinin başarı grafiği var. Geçmiş testlerini sıralayabilir, istemediğini kaydırarak silebilirsin.',
+    chips: ['Haftalık seri', '4 özet kartı', 'Son 10 test grafiği'],
+    label: 'Gelişim Raporu ekranı: haftalık seri, özet kartları ve test grafiği',
+  },
 ];
 ---
 <section class="explore section" id="kesfet" aria-labelledby="explore-title">
@@ -41,7 +52,7 @@ const rows = [
         Hazır kelimeler, <span class="text-gold">gerçek İngilizce.</span>
       </h2>
       <p class="lead" data-reveal style="--d:0.16s">
-        Seviyene göre hazırlanmış paketlerle kelime havuzunu doldur, seçilmiş videolarla kulağını İngilizceye alıştır.
+        Seviyene göre hazırlanmış paketlerle kelime havuzunu doldur, seçilmiş videolarla kulağını İngilizceye alıştır, gelişimini haftadan haftaya izle.
       </p>
     </div>
 
@@ -75,6 +86,18 @@ const rows = [
               </span>
               <span class="fl fl--4" style="--depth:-1.1" aria-hidden="true">
                 <span class="fl__lvl fl__lvl--sm">A2</span>
+              </span>
+            </>
+          ) : r.id === 'report' ? (
+            <>
+              <span class="fl fl--1" style="--depth:1.1" aria-hidden="true">
+                <span class="fl__pill fl__pill--fire"><Icon name="local-fire-department-rounded" /> 4 gün seri</span>
+              </span>
+              <span class="fl fl--2" style="--depth:-0.9" aria-hidden="true">
+                <span class="fl__lvl">%82</span>
+              </span>
+              <span class="fl fl--3" style="--depth:0.8" aria-hidden="true">
+                <span class="fl__pill fl__pill--ok"><Icon name="trending-up-rounded" /> Ortalama yükseliyor</span>
               </span>
             </>
           ) : (
@@ -186,6 +209,9 @@ const rows = [
     background: radial-gradient(closest-side, rgba(124, 92, 245, 0.5), transparent);
     filter: blur(30px);
     pointer-events: none;
+  }
+  .ex--report .ex__glow {
+    background: radial-gradient(closest-side, rgba(240, 146, 43, 0.3), rgba(79, 209, 165, 0.2) 55%, transparent);
   }
   .ex--video .ex__glow {
     background: radial-gradient(closest-side, rgba(255, 140, 120, 0.38), rgba(124, 92, 245, 0.22) 55%, transparent);
@@ -302,6 +328,12 @@ const rows = [
     height: 18px;
     color: var(--accent);
   }
+  .fl__pill--fire {
+    border-color: rgba(240, 146, 43, 0.5);
+  }
+  .fl__pill--fire :global(.icon) {
+    color: #f0922b;
+  }
   .fl__pill--ok {
     border-color: rgba(79, 209, 165, 0.45);
   }
@@ -347,6 +379,9 @@ const rows = [
   .ex--packs .fl--2 { right: 2%; top: 10%; }
   .ex--packs .fl--3 { right: 0; bottom: 16%; }
   .ex--packs .fl--4 { left: 6%; bottom: 10%; }
+  .ex--report .fl--1 { left: 2%; top: 14%; }
+  .ex--report .fl--2 { right: 4%; top: 24%; }
+  .ex--report .fl--3 { right: 0; bottom: 14%; }
   .ex--video .fl--1 { right: 0; top: 12%; }
   .ex--video .fl--2 { left: 2%; top: 30%; }
   .ex--video .fl--3 { left: 0; bottom: 14%; }

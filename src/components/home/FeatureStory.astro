@@ -12,6 +12,7 @@ import ChatScreen from '../phone/screens/ChatScreen.astro';
 import StoryScreen from '../phone/screens/StoryScreen.astro';
 import TranslateScreen from '../phone/screens/TranslateScreen.astro';
 import SpeakScreen from '../phone/screens/SpeakScreen.astro';
+import ListenScreen from '../phone/screens/ListenScreen.astro';
 
 const steps = [
   {
@@ -35,13 +36,23 @@ const steps = [
     label: 'Kelime testi ekranı: kartlar kaydırılıyor',
   },
   {
+    id: 'listen',
+    Screen: ListenScreen,
+    icon: 'hearing-rounded',
+    kicker: 'Dinle ve Yaz',
+    title: 'Dinlediğini yaz, nerede takıldığını gör.',
+    text: 'Önce seviyeni, sonra sevdiğin konuyu seç; sana uygun kısa bir metin gelsin. İstediğin kadar dinle, istersen yavaş ya da cümle cümle. Duyduğunu yazıp kontrol et: doğrular yeşil, yanlışlar kırmızı, eksikler turuncu görünür. Sonra metnin Türkçesini yaz, yapay zeka çevirini değerlendirip sana Türkçe açıklasın.',
+    chips: ['336 metin', '7 konu', 'Yavaş ve cümle cümle', 'Çeviri değerlendirmesi'],
+    label: 'Dinle ve Yaz ekranı: dinlenen metin yazılıyor ve hatalar renkli gösteriliyor',
+  },
+  {
     id: 'speak',
     Screen: SpeakScreen,
     icon: 'mic-rounded',
     kicker: 'Okuma & Telaffuz',
     title: 'Sesli oku, anında puanını gör.',
-    text: 'Seviyene uygun bir metni sesli oku. Doğru okuduğun kelimeler yeşile, tekrar etmen gerekenler kırmızıya döner; kırmızı kelimeye dokunup doğrusunu dinle. Metni dilersen önce dinleyip sonra kendin okuyabilirsin.',
-    chips: ['7 kategori', 'A1–C2', 'Kelime kelime geri bildirim'],
+    text: 'Seviyeni ve konunu seç, sana uygun metni sesli oku. Doğru okuduğun kelimeler yeşile, tekrar etmen gerekenler kırmızıya döner; kırmızı kelimeye dokunup doğrusunu dinle. Metni dilersen önce dinleyip sonra kendin okuyabilirsin.',
+    chips: ['7 konu', 'A1–C2', 'Kelime kelime geri bildirim'],
     label: 'Telaffuz ekranı: kelimeler doğru ve yanlış olarak işaretleniyor',
   },
   {
@@ -50,7 +61,7 @@ const steps = [
     icon: 'auto-stories-rounded',
     kicker: 'Okuma Pratiği',
     title: 'Hikayelerle okuma alışkanlığı kazan.',
-    text: 'Macera, Gizem, Bilim Kurgu, Günlük Yaşam ya da Fantastik. Her bölümün sonunda gidişata sen karar verirsin; bilmediğin kelimeye dokununca çevirisi açılır. Hikaye bitince okuma anlama testiyle ne kadar anladığını görürsün.',
+    text: 'Seviyeni seç, sonra türünü: Macera, Gizem, Bilim Kurgu, Günlük Yaşam ya da Fantastik. Her bölümün sonunda gidişata sen karar verirsin; bilmediğin kelimeye dokununca çevirisi açılır. Hikaye bitince okuma anlama testiyle ne kadar anladığını görürsün.',
     chips: ['5 tür', 'A1–C2', '3 bölüm + okuma testi'],
     label: 'Etkileşimli hikaye ekranı: kelime çevirisi ve seçim',
   },
@@ -84,7 +95,7 @@ const steps = [
       Her gün biraz pratik, <span class="text-violet">kalıcı İngilizce.</span>
     </h2>
     <p class="lead" data-reveal style="--d:0.16s">
-      Kelime tekrarından sesli okumaya, telaffuzdan sohbete; uygulamadaki altı pratik yolunu ekran ekran keşfet.
+      Kelime tekrarından dinleyip yazmaya, telaffuzdan sohbete; uygulamadaki yedi pratik yolunu ekran ekran keşfet.
     </p>
   </div>
 
@@ -162,6 +173,7 @@ const steps = [
   .story[data-active='story'] { --glow: rgba(242, 196, 90, 0.42); }
   .story[data-active='translate'] { --glow: rgba(70, 200, 230, 0.42); }
   .story[data-active='speak'] { --glow: rgba(255, 107, 129, 0.42); }
+  .story[data-active='listen'] { --glow: rgba(240, 146, 43, 0.42); }
 
   /* ---------- Adım metni ---------- */
   .step__text {
@@ -349,7 +361,8 @@ const steps = [
     .story[data-active='chat'] [data-dot='chat'] a,
     .story[data-active='story'] [data-dot='story'] a,
     .story[data-active='translate'] [data-dot='translate'] a,
-    .story[data-active='speak'] [data-dot='speak'] a {
+    .story[data-active='speak'] [data-dot='speak'] a,
+    .story[data-active='listen'] [data-dot='listen'] a {
       border-color: var(--accent);
       background: var(--accent);
       color: var(--ink);

@@ -1,7 +1,7 @@
 ---
 title: Gizlilik Politikası
 description: Octopus English uygulamasının hangi verileri, hangi amaçla ve nasıl işlediği.
-updated: 2026-10-26
+updated: 2026-11-09
 ---
 
 Bu Gizlilik Politikası, Octopus English mobil uygulamasını ve bu web sitesini kullanırken kişisel verilerinin nasıl işlendiğini açıklar. Sorularını her zaman [octopusenglishh@gmail.com](mailto:octopusenglishh@gmail.com) adresine yazabilirsin.
@@ -51,6 +51,7 @@ Uygulamayı ilk açtığında hangi verilerin nereye gittiği sana gösterilir v
 - **Octopus AI sohbet:** Yazdığın mesajlar, sohbetin son mesajları, seçtiğin sohbet modu ve seviyen, cevap üretilmesi için sunucumuz üzerinden Google Gemini'ye gönderilir.
 - **Hikaye üretme:** Seçtiğin hikaye türü ve seviye, sunucumuz üzerinden Google Gemini'ye gönderilir.
 - **Çeviri ve sözlük:** Çevirmek ya da anlamına bakmak istediğin metin veya kelime; DeepL, Google Translate ve dictionaryapi.dev servislerine gönderilir.
+- **Dinle ve Yaz çeviri değerlendirmesi:** Yazdığın Türkçe çeviri ve hangi metne ait olduğu, değerlendirilmesi için sunucumuz üzerinden Google Gemini'ye gönderilir. Çevirin kaydedilmez; yalnızca günlük kullanım sayın tutulur. Dinlediğini yazdığın metin ise telefonunda kontrol edilir, hiçbir yere gönderilmez.
 - **Kelime görseli:** Görseli aranan kelime Pexels'e iletilir.
 
 Sohbet mesajların veritabanımızda saklanmaz; sunucumuz yalnızca günlük kullanım sayını tutar. Bu servislerin verileri nasıl işlediği kendi gizlilik politikalarına tabidir.

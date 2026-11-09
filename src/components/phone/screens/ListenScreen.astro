@@ -1,0 +1,411 @@
+---
+/**
+ * Dinle ve Yaz (lib/screens/listen_write_screen.dart). Döngü (12 sn):
+ * "Dinle"ye dokunulur → ses çalar → duyulan metin kelime kelime yazılır →
+ * "Kontrol et" → sonuç: doğrular yeşil, yanlış yazılan kırmızı (önünde üstü
+ * çizili yazılan), eksik turuncu → Türkçesi yazılır ve çeviri değerlendirmesi
+ * gelir (örnek değerlendirme). Metin uygulamanın metin bankasından
+ * (assets/listen_write/texts.json, a2-travel-6).
+ */
+import Icon from '../../Icon.astro';
+import StatusBar from '../StatusBar.astro';
+import AppBar from '../AppBar.astro';
+
+interface Props {
+  inline?: boolean;
+}
+const { inline = false } = Astro.props;
+
+const text = 'Next month I am going to visit my cousin in a big city. I want to see the old castle and try the local food.';
+const words = text.split(' ');
+// Kullanıcının yazdığı: "a" eksik, "castle" yerine "castel".
+const missing = new Set([10]);
+const wrong = new Map([[19, 'castel']]);
+const typed = words.flatMap((w, i) => (missing.has(i) ? [] : [wrong.get(i) ?? w]));
+const correct = words.length - missing.size - wrong.size;
+const percent = Math.round((100 * correct) / words.length);
+---
+<div class="screen" data-screen="listen" data-screen-inline={inline ? '' : undefined}>
+  <StatusBar />
+  <AppBar title="Dinle ve Yaz" back />
+
+  <div class="body">
+    <div class="ph-card sum">
+      <span class="sum__lvl">A2</span>
+      <Icon name="flight-takeoff-rounded" class="sum__ic" />
+      <b>Seyahat</b>
+      <span class="sum__chg">Değiştir</span>
+    </div>
+
+    <div class="ph-card listen">
+      <div class="listen__btns">
+        <span class="lb lb--main"><Icon name="volume-up-rounded" /> Dinle<span class="eq"><i></i><i></i><i></i></span></span>
+        <span class="lb"><Icon name="slow-motion-video-rounded" /> Yavaş dinle</span>
+      </div>
+      <p class="ph-caption cap">Cümle cümle dinle</p>
+      <div class="listen__chips">
+        <span class="ph-chip"><Icon name="volume-up-rounded" /> 1. cümle</span>
+        <span class="ph-chip"><Icon name="volume-up-rounded" /> 2. cümle</span>
+      </div>
+    </div>
+
+    <div class="slot">
+      <div class="write">
+        <p class="ph-overline">1. Duyduğunu yaz</p>
+        <div class="field">
+          <span class="ph">Duyduğun metni buraya yaz</span>
+          {typed.map((w, i) => <span class="tw" style={`--i:${i}`}>{w} </span>)}
+          <span class="caret"></span>
+        </div>
+        <span class="check">Kontrol et</span>
+      </div>
+
+      <div class="after">
+      <div class="ph-card result">
+        <div class="result__head">
+          <b>%{percent}</b>
+          <span>{words.length} kelimeden {correct} doğru</span>
+        </div>
+        <p class="result__text">
+          {words.map((w, i) =>
+            wrong.has(i) ? (
+              <><s class="r-typed">{wrong.get(i)}</s> <span class="r-wrong">{w}</span> </>
+            ) : missing.has(i) ? (
+              <><span class="r-miss">{w}</span> </>
+            ) : (
+              <><span class="r-ok">{w}</span> </>
+            ),
+          )}
+        </p>
+        <ul class="legend">
+          <li><i class="dot dot--bad"></i>Yanlış yazdın (üstü çizili olan senin yazdığın)</li>
+          <li><i class="dot dot--miss"></i>Eksik, yazmadın</li>
+        </ul>
+      </div>
+
+      <!-- 2. adım: Türkçesini yaz, yapay zeka değerlendirsin (örnek değerlendirme). -->
+      <div class="tr">
+        <p class="ph-overline">2. Şimdi Türkçesini yaz</p>
+        <div class="field field--tr">Gelecek ay büyük bir şehirdeki kuzenimi ziyaret edeceğim. Eski kaleyi görmek ve yerel yemekleri denemek istiyorum.</div>
+        <div class="ph-card eval">
+          <div class="result__head"><b>%96</b><span>çeviri doğruluğu</span></div>
+          <p>Harika! Anlamı eksiksiz aktarmışsın; “yerel yemekler” de doğru bir karşılık.</p>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3cqw;
+    padding: 1cqw 5cqw 6cqw;
+    min-height: 0;
+  }
+  .sum {
+    display: flex;
+    align-items: center;
+    gap: 2.2cqw;
+    padding: 2.6cqw 3.6cqw;
+    font-size: 3.8cqw;
+  }
+  .sum__lvl {
+    padding: 1.2cqw 2.6cqw;
+    border-radius: 99px;
+    background: rgba(169, 150, 255, 0.18);
+    color: var(--primary-light);
+    font: 800 3.3cqw/1 var(--font-body);
+  }
+  .sum :global(.sum__ic) {
+    width: 4.4cqw;
+    height: 4.4cqw;
+    color: var(--primary-light);
+  }
+  .sum b {
+    flex: 1;
+  }
+  .sum__chg {
+    color: var(--primary-light);
+    font-weight: 700;
+    font-size: 3.4cqw;
+  }
+
+  .listen {
+    padding: 3.4cqw;
+    display: grid;
+    gap: 2cqw;
+  }
+  .listen__btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.4cqw;
+  }
+  .lb {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.4cqw;
+    padding: 3cqw 1cqw;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    color: var(--primary-light);
+    font: 700 3.4cqw/1 var(--font-body);
+    white-space: nowrap;
+  }
+  .lb :global(.icon) {
+    width: 4.6cqw;
+    height: 4.6cqw;
+  }
+  .lb--main {
+    border-color: transparent;
+    background: #f0922b;
+    color: #fff;
+  }
+  .eq {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 0.6cqw;
+    width: 0;
+    height: 3.2cqw;
+    overflow: hidden;
+    opacity: 0;
+  }
+  .eq i {
+    width: 0.7cqw;
+    height: 100%;
+    border-radius: 1cqw;
+    background: #fff;
+    transform-origin: bottom;
+    transform: scaleY(0.35);
+  }
+  .cap {
+    text-align: center;
+  }
+  .listen__chips {
+    display: flex;
+    justify-content: center;
+    gap: 2cqw;
+  }
+  .listen__chips :global(.icon) {
+    width: 3.6cqw;
+    height: 3.6cqw;
+    margin-right: 1cqw;
+  }
+
+  .slot {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+  }
+  .write,
+  .after {
+    position: absolute;
+    inset: 0 0 auto;
+  }
+  .after {
+    display: grid;
+    gap: 3cqw;
+    opacity: 0;
+  }
+  .write {
+    display: grid;
+    gap: 2.4cqw;
+  }
+  .field {
+    position: relative;
+    min-height: 38cqw;
+    padding: 3cqw 3.4cqw;
+    border-radius: 3.6cqw;
+    border: 1px solid var(--primary-light);
+    background: rgba(11, 21, 64, 0.7);
+    font-size: 3.6cqw;
+    line-height: 1.5;
+  }
+  .ph {
+    position: absolute;
+    color: var(--muted);
+  }
+  .tw {
+    opacity: 0;
+  }
+  .caret {
+    display: inline-block;
+    width: 0.4cqw;
+    height: 4cqw;
+    vertical-align: -0.6cqw;
+    background: var(--primary-light);
+    opacity: 0;
+  }
+  .check {
+    justify-self: stretch;
+    padding: 3.2cqw;
+    border-radius: 99px;
+    background: var(--primary);
+    color: #fff;
+    text-align: center;
+    font: 700 3.8cqw/1 var(--font-body);
+  }
+
+  .result {
+    padding: 3.6cqw;
+    display: grid;
+    gap: 2.4cqw;
+  }
+  .tr {
+    display: grid;
+    gap: 2.4cqw;
+  }
+  .field--tr {
+    min-height: 0;
+    border-color: var(--border);
+    color: var(--text);
+  }
+  .eval {
+    padding: 3cqw 3.6cqw;
+    display: grid;
+    gap: 1.6cqw;
+    border-color: rgba(79, 209, 165, 0.4);
+  }
+  .eval .result__head b {
+    font-size: 6.4cqw;
+  }
+  .eval p {
+    color: var(--text-2);
+    font-size: 3.2cqw;
+    line-height: 1.45;
+  }
+  .result__head {
+    display: flex;
+    align-items: baseline;
+    gap: 2.6cqw;
+  }
+  .result__head b {
+    font: 650 8.4cqw/1 var(--font-display);
+    color: var(--success);
+  }
+  .result__head span {
+    color: var(--text-2);
+    font-size: 3.4cqw;
+  }
+  .result__text {
+    font-size: 3.6cqw;
+    line-height: 1.6;
+  }
+  .r-ok {
+    color: var(--success);
+    font-weight: 600;
+  }
+  .r-wrong {
+    color: var(--danger);
+    font-weight: 800;
+    text-decoration: underline;
+  }
+  .r-typed {
+    color: rgba(255, 107, 129, 0.7);
+    font-size: 3.1cqw;
+  }
+  .r-miss {
+    color: var(--accent);
+    font-weight: 800;
+    text-decoration: underline;
+  }
+  .legend {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.2cqw;
+    color: var(--muted);
+    font-size: 2.9cqw;
+  }
+  .legend li {
+    display: flex;
+    align-items: center;
+    gap: 1.6cqw;
+  }
+  .dot {
+    flex: none;
+    width: 2.4cqw;
+    height: 2.4cqw;
+    border-radius: 50%;
+  }
+  .dot--bad { background: var(--danger); }
+  .dot--miss { background: var(--accent); }
+
+  /* ---- Döngü (12 sn) ---- */
+  .screen.is-active .lb--main { animation: l-press 12s var(--ease-out) infinite; }
+  .screen.is-active .eq { animation: l-eq-show 12s steps(1) infinite; }
+  .screen.is-active .eq i { animation: l-eq 0.5s ease-in-out infinite alternate; }
+  .screen.is-active .eq i:nth-child(2) { animation-delay: -0.2s; }
+  .screen.is-active .eq i:nth-child(3) { animation-delay: -0.35s; }
+  .screen.is-active .ph { animation: l-ph 12s steps(1) infinite; }
+  .screen.is-active .tw {
+    animation: l-word 12s linear infinite backwards;
+    animation-delay: calc(var(--i) * 0.13s);
+  }
+  .screen.is-active .caret { animation: l-caret 12s steps(1) infinite, l-blink 0.8s steps(1) infinite; }
+  .screen.is-active .check { animation: l-check 12s var(--ease-out) infinite; }
+  .screen.is-active .write { animation: l-write 12s var(--ease-out) infinite; }
+  .screen.is-active .after { animation: l-result 12s var(--ease-out) infinite; }
+  .screen.is-active .tr { animation: l-tr 12s var(--ease-out) infinite; }
+  .screen.is-active .eval { animation: l-eval 12s var(--ease-out) infinite; }
+
+  @keyframes l-press {
+    0%, 5% { transform: scale(1); }
+    6.5% { transform: scale(0.92); }
+    8%, 100% { transform: scale(1); }
+  }
+  @keyframes l-eq-show {
+    0%, 6% { width: 0; opacity: 0; }
+    7%, 22% { width: 3.4cqw; opacity: 1; }
+    23%, 100% { width: 0; opacity: 0; }
+  }
+  @keyframes l-eq {
+    to { transform: scaleY(1); }
+  }
+  @keyframes l-ph {
+    0%, 23% { opacity: 1; }
+    24%, 100% { opacity: 0; }
+  }
+  @keyframes l-word {
+    0%, 23% { opacity: 0; }
+    23.5%, 92% { opacity: 1; }
+    93%, 100% { opacity: 0; }
+  }
+  @keyframes l-caret {
+    0%, 23% { opacity: 0; }
+    24%, 52% { opacity: 1; }
+    53%, 100% { opacity: 0; }
+  }
+  @keyframes l-blink {
+    50% { visibility: hidden; }
+  }
+  @keyframes l-check {
+    0%, 52% { transform: scale(1); filter: none; }
+    54% { transform: scale(0.95); filter: brightness(1.25); }
+    57%, 100% { transform: scale(1); filter: none; }
+  }
+  @keyframes l-write {
+    0%, 57% { opacity: 1; transform: none; }
+    61%, 95% { opacity: 0; transform: translateY(-3cqw); }
+    99%, 100% { opacity: 1; transform: none; }
+  }
+  @keyframes l-tr {
+    0%, 69% { opacity: 0; transform: translateY(4cqw); }
+    73%, 100% { opacity: 1; transform: none; }
+  }
+  @keyframes l-eval {
+    0%, 77% { opacity: 0; transform: scale(0.94); }
+    81%, 100% { opacity: 1; transform: none; }
+  }
+  @keyframes l-result {
+    0%, 59% { opacity: 0; transform: translateY(4cqw); }
+    64%, 93% { opacity: 1; transform: none; }
+    97%, 100% { opacity: 0; transform: translateY(4cqw); }
+  }
+</style>
