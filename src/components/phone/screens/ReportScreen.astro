@@ -91,7 +91,7 @@ const tone = (r: number) => (r >= 80 ? 'ok' : r >= 50 ? 'mid' : 'low');
     display: inline-flex;
     align-items: center;
     gap: 1cqw;
-    color: var(--accent);
+    color: var(--accent-text);
     font: 800 3.4cqw/1 var(--font-body);
   }
   .week__streak :global(.icon) {
@@ -185,7 +185,7 @@ const tone = (r: number) => (r >= 80 ? 'ok' : r >= 50 ? 'mid' : 'low');
     font-size: 2.8cqw;
     white-space: nowrap;
   }
-  .st--gold > :global(.icon) { color: var(--accent); }
+  .st--gold > :global(.icon) { color: var(--accent-text); }
   .st--violet > :global(.icon) { color: var(--primary-light); }
   .st--blue > :global(.icon) { color: var(--secondary); }
   .st--green > :global(.icon) { color: var(--success); }

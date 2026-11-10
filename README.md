@@ -52,6 +52,7 @@ Octopus English mobil uygulamasının tanıtım sitesi: derin denizde geçen, ka
 | 🎬 **Keşfet: paketler, video, rapor** | Kelime Paketleri, Video ile Öğren ve Gelişim Raporu ekranları kendi kendine oynar; video telefonu döngü içinde yan çevrilip tam ekrana geçer, raporda haftanın günleri alevle dolar ve test grafiği yükselir. Kaydırdıkça telefonlar üç boyutlu döner. |
 | 🕹️ **Kendin dene** | Ziyaretçinin kullanabildiği çalışan telefon: kartı çevir ve kaydır; Dinle ve Yaz'da seviye ve konu seç, metni dinle, yaz ve uygulamadakiyle aynı kurallarla puanını gör; paketlerden kelime ekle, havuza bak, videoyu tam ekranda aç. Hiçbir şey kaydedilmez. |
 | 🌊 **Derinleşen okyanus** | Arka planda süzülen deniz karı ve biyolüminesans ışıklar; aşağı indikçe su koyulaşır. |
+| 🌗 **Koyu ve açık tema** | Varsayılan koyu; üst menüdeki güneş/ay düğmesiyle açık temaya geçilir, seçim tarayıcıda saklanır. Açık temada açılış sahnesi de aydınlanır, telefon maketleri uygulamadaki gibi koyu kalır. |
 
 ---
 
@@ -150,7 +151,7 @@ OctopusWebSitesi/
 | 🔎 Google'daki başlık ve açıklama | `src/data/site.ts` → `seoTitle`, `description` |
 | ✅ Google Search Console doğrulama kodu | `src/data/site.ts` → `googleSiteVerification` |
 | 🖼️ Paylaşım önizleme görseli (1200×630) | `public/og-image.jpg` |
-| 🎨 Renkler | `src/styles/global.css` → `:root` |
+| 🎨 Renkler | `src/styles/global.css` → `:root, .phone` (koyu tema ve telefonlar), `:root[data-theme='light']` (açık tema) |
 
 ### Mağaza linklerini değiştirmek
 

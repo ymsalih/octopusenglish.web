@@ -140,7 +140,7 @@ const groups = [
   }
   .quick__card:hover {
     transform: translateY(-4px);
-    border-color: rgba(169, 150, 255, 0.35);
+    border-color: var(--hover-border);
   }
   .quick__icon {
     display: grid;
@@ -149,7 +149,7 @@ const groups = [
     height: 46px;
     margin-bottom: 6px;
     border-radius: 14px;
-    background: rgba(124, 92, 245, 0.18);
+    background: var(--icon-bg);
     color: var(--primary-light);
     font-size: 24px;
   }
@@ -165,7 +165,7 @@ const groups = [
     align-items: center;
     gap: 6px;
     margin-top: 6px;
-    color: var(--accent);
+    color: var(--accent-text);
     font-weight: 700;
     font-size: 14.5px;
     word-break: break-word;
@@ -186,12 +186,12 @@ const groups = [
   .faq__item {
     border-radius: 18px;
     border: 1px solid var(--border-soft);
-    background: rgba(11, 21, 64, 0.55);
+    background: var(--panel-deep);
     transition: border-color 0.3s, background-color 0.3s;
   }
   .faq__item[open] {
-    border-color: rgba(169, 150, 255, 0.35);
-    background: rgba(19, 30, 84, 0.6);
+    border-color: var(--hover-border);
+    background: var(--panel);
   }
   .faq__item summary {
     display: flex;
@@ -216,7 +216,7 @@ const groups = [
   }
   .faq__item[open] :global(.faq__chev) {
     transform: rotate(180deg);
-    color: var(--accent);
+    color: var(--accent-text);
   }
   .faq__item p {
     padding: 0 20px 20px;

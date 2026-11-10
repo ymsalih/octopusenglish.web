@@ -58,11 +58,11 @@ const stats = [
   }
   .stat__num {
     font: 700 clamp(56px, 8vw, 88px) / 1 var(--font-display);
-    background: var(--grad-gold);
+    background: var(--grad-text-gold);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    filter: drop-shadow(0 8px 30px rgba(242, 196, 90, 0.25));
+    filter: drop-shadow(0 8px 30px rgba(242, 196, 90, calc(0.25 * var(--glow-mul))));
     font-variant-numeric: tabular-nums;
   }
   .stat__label {

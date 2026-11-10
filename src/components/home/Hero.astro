@@ -66,7 +66,9 @@ import Icon from '../Icon.astro';
     still: reduce ? 4.6 : undefined,
     // Uygulamadaki açılıştan ~1,4 kat hızlı: "O" ~2,5 sn'de tamamlanır.
     introSpeed: 1.4,
+    light: document.documentElement.dataset.theme === 'light',
   });
+  document.addEventListener('themechange', (e) => scene.setTheme((e as CustomEvent<{ light: boolean }>).detail.light));
 
   // Gözler imleci (dokunmatikte parmağı) takip eder.
   const look = (x: number, y: number) => {
@@ -203,7 +205,7 @@ import Icon from '../Icon.astro';
     width: 1px;
     height: 40px;
     overflow: hidden;
-    background: rgba(159, 178, 255, 0.2);
+    background: var(--border-soft);
   }
   .cue__line::after {
     content: '';

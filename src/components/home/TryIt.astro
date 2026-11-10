@@ -1055,6 +1055,7 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
     border-radius: 50%;
     background: radial-gradient(closest-side, rgba(242, 196, 90, 0.22), rgba(124, 92, 245, 0.32) 45%, transparent);
     filter: blur(30px);
+    opacity: var(--glow-mul);
     pointer-events: none;
   }
   .try__spin {
@@ -1080,7 +1081,7 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
     padding: 16px 18px;
     border-radius: 20px;
     border: 1px solid var(--border-soft);
-    background: rgba(19, 30, 84, 0.4);
+    background: var(--panel);
     color: var(--text);
     text-align: left;
     cursor: pointer;
@@ -1088,7 +1089,7 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
   }
   .try__tab:hover {
     transform: translateX(4px);
-    border-color: rgba(169, 150, 255, 0.35);
+    border-color: var(--hover-border);
   }
   .try__tab[aria-pressed='true'] {
     border-color: rgba(242, 196, 90, 0.55);
@@ -1101,7 +1102,7 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
     width: 44px;
     height: 44px;
     border-radius: 14px;
-    background: rgba(124, 92, 245, 0.18);
+    background: var(--icon-bg);
     color: var(--primary-light);
     font-size: 22px;
     transition: background-color 0.3s, color 0.3s;
@@ -1303,7 +1304,7 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
     border-color: rgba(242, 196, 90, 0.5);
   }
   .demo .d-snack.is-info .icon {
-    color: var(--accent);
+    color: var(--accent-text);
   }
 
   /* ---------- Test ---------- */
@@ -1499,7 +1500,7 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
     transform: scale(0.88);
   }
   .demo .t-act--ok > span { color: var(--success); background: rgba(79, 209, 165, 0.15); border: 1.5px solid rgba(79, 209, 165, 0.45); }
-  .demo .t-act--gold > span { color: var(--accent); background: rgba(242, 196, 90, 0.15); border: 1.5px solid rgba(242, 196, 90, 0.45); }
+  .demo .t-act--gold > span { color: var(--accent-text); background: rgba(242, 196, 90, 0.15); border: 1.5px solid rgba(242, 196, 90, 0.45); }
   .demo .t-act--bad > span { color: var(--danger); background: rgba(255, 107, 129, 0.15); border: 1.5px solid rgba(255, 107, 129, 0.45); }
   .demo.t-done .t-actions,
   .demo.t-done .t-hint,
@@ -1574,7 +1575,7 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
     font: 650 6cqw/1 var(--font-display);
   }
   .demo .t-stats .ok b { color: var(--success); }
-  .demo .t-stats .gold b { color: var(--accent); }
+  .demo .t-stats .gold b { color: var(--accent-text); }
   .demo .t-stats .bad b { color: var(--danger); }
   .demo .t-empty-icon {
     display: grid;
@@ -1583,7 +1584,7 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
     height: 22cqw;
     border-radius: 50%;
     background: rgba(242, 196, 90, 0.15);
-    color: var(--accent);
+    color: var(--accent-text);
     font-size: 11cqw;
   }
 
@@ -1654,7 +1655,7 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
     right: 2.6cqw;
     width: 4.6cqw;
     height: 4.6cqw;
-    color: var(--accent);
+    color: var(--accent-text);
   }
   .demo .lw-note {
     display: flex;
@@ -1666,7 +1667,7 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
     flex: none;
     width: 4cqw;
     height: 4cqw;
-    color: var(--accent);
+    color: var(--accent-text);
   }
   .demo .lw-topic {
     display: flex;
@@ -1860,7 +1861,7 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
     font: 650 8.4cqw/1 var(--font-display);
   }
   .demo .lw-score b.is-ok { color: var(--success); }
-  .demo .lw-score b.is-mid { color: var(--accent); }
+  .demo .lw-score b.is-mid { color: var(--accent-text); }
   .demo .lw-score b.is-low { color: var(--danger); }
   .demo .lw-score span {
     color: var(--text-2);
@@ -1896,7 +1897,7 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
   .demo .lw-ok { color: var(--success); font-weight: 600; }
   .demo .lw-bad { color: var(--danger); font-weight: 800; text-decoration: underline; }
   .demo .lw-typed { color: rgba(255, 107, 129, 0.7); font-size: 3.2cqw; }
-  .demo .lw-miss { color: var(--accent); font-weight: 800; text-decoration: underline; }
+  .demo .lw-miss { color: var(--accent-text); font-weight: 800; text-decoration: underline; }
   .demo .lw-x { color: var(--secondary); font-size: 3.2cqw; }
   .demo .lw-tr {
     display: grid;
@@ -2036,7 +2037,7 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
     padding: 2cqw 3cqw;
     border-radius: 3cqw;
     background: rgba(242, 196, 90, 0.12);
-    color: var(--accent);
+    color: var(--accent-text);
     font-size: 3.3cqw;
     font-weight: 700;
   }
@@ -2248,7 +2249,7 @@ const iconNames = ['volume-up-rounded', 'add-task-rounded', 'check-rounded', 'ch
   }
   .demo .v-fs {
     background: rgba(242, 196, 90, 0.18) !important;
-    color: var(--accent) !important;
+    color: var(--accent-text) !important;
     animation: v-fs 2s ease-in-out infinite;
   }
   @keyframes v-fs {

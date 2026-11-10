@@ -30,7 +30,7 @@ const { kicker, title, lead } = Astro.props;
     width: min(720px, 90vw);
     aspect-ratio: 1;
     border-radius: 50%;
-    background: radial-gradient(closest-side, rgba(124, 92, 245, 0.28), transparent);
+    background: radial-gradient(closest-side, rgba(124, 92, 245, calc(0.28 * var(--glow-mul))), transparent);
     pointer-events: none;
     z-index: -1;
   }

@@ -50,13 +50,13 @@ const updated = page.data.updated.toLocaleDateString('tr-TR', { day: 'numeric', 
     padding: 8px 14px;
     border-radius: 999px;
     border: 1px solid var(--border-soft);
-    background: rgba(19, 30, 84, 0.5);
+    background: var(--panel);
     color: var(--text-2);
     font-size: 14px;
     font-weight: 600;
   }
   .updated :global(.icon) {
-    color: var(--accent);
+    color: var(--accent-text);
   }
 
   .legal {
@@ -80,7 +80,7 @@ const updated = page.data.updated.toLocaleDateString('tr-TR', { day: 'numeric', 
     padding: 22px;
     border-radius: 20px;
     border: 1px solid var(--border-soft);
-    background: rgba(11, 21, 64, 0.6);
+    background: var(--panel-deep);
   }
   .toc__title {
     margin-bottom: 12px;
@@ -106,7 +106,7 @@ const updated = page.data.updated.toLocaleDateString('tr-TR', { day: 'numeric', 
     transition: background-color 0.2s, color 0.2s;
   }
   .toc a:hover {
-    background: rgba(159, 178, 255, 0.08);
+    background: var(--hover-tint);
     color: var(--text);
   }
 
@@ -142,13 +142,13 @@ const updated = page.data.updated.toLocaleDateString('tr-TR', { day: 'numeric', 
     margin-bottom: 8px;
   }
   .prose :global(li::marker) {
-    color: var(--accent);
+    color: var(--accent-text);
   }
   .prose :global(strong) {
     color: var(--text);
   }
   .prose :global(a) {
-    color: var(--accent);
+    color: var(--accent-text);
     text-decoration: underline;
     text-decoration-color: rgba(242, 196, 90, 0.4);
     text-underline-offset: 3px;

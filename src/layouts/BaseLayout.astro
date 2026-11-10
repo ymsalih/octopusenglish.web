@@ -98,8 +98,17 @@ const jsonLd =
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
 
-    <!-- JS çalışıyorsa kaydırma animasyonları için öğeler başta gizlenir. -->
-    <script is:inline>document.documentElement.classList.add('js');</script>
+    <!-- JS çalışıyorsa kaydırma animasyonları için öğeler başta gizlenir. Kayıtlı
+         tema, sayfa çizilmeden uygulanır (aksi halde bir an koyu tema görünürdü). -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      try {
+        if (localStorage.getItem('theme') === 'light') {
+          document.documentElement.dataset.theme = 'light';
+          document.querySelector('meta[name="theme-color"]').content = '#F4F3FC';
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <a class="skip" href="#icerik">İçeriğe geç</a>

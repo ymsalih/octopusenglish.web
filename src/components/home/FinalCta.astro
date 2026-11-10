@@ -51,7 +51,7 @@ const bubbles = Array.from({ length: 16 }, (_, i) => ({
     width: min(1100px, 160vw);
     aspect-ratio: 1;
     transform: translate(-50%, -50%);
-    background: radial-gradient(closest-side, rgba(124, 92, 245, 0.35), rgba(124, 92, 245, 0.08) 55%, transparent);
+    background: radial-gradient(closest-side, rgba(124, 92, 245, calc(0.35 * var(--glow-mul))), rgba(124, 92, 245, 0.08) 55%, transparent);
     pointer-events: none;
   }
   .cta__inner {
@@ -105,7 +105,7 @@ const bubbles = Array.from({ length: 16 }, (_, i) => ({
     width: var(--s);
     height: var(--s);
     border-radius: 50%;
-    border: 1px solid rgba(200, 210, 255, 0.45);
+    border: 1px solid rgba(var(--ocean-snow), 0.45);
     background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.5), rgba(159, 178, 255, 0.08) 60%);
     animation: rise var(--dur) linear var(--delay) infinite;
     opacity: 0;

@@ -40,12 +40,12 @@ for (const part of text.split(/(\[\[.*?\]\]|\{\{.*?\}\})/)) {
     white-space: pre;
   }
   .w--gold {
-    color: var(--accent);
-    text-shadow: 0 0 28px rgba(242, 196, 90, 0.35);
+    color: var(--accent-text);
+    text-shadow: 0 0 28px rgba(242, 196, 90, calc(0.35 * var(--glow-mul)));
   }
   .w--violet {
     color: var(--primary-light);
-    text-shadow: 0 0 28px rgba(169, 150, 255, 0.4);
+    text-shadow: 0 0 28px rgba(169, 150, 255, calc(0.4 * var(--glow-mul)));
   }
 
   /* Ekrana girince kelimeler 30 ms arayla belirir (~40 kelime ≈ 1,5 sn).

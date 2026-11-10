@@ -22,8 +22,8 @@
     overflow: hidden;
     pointer-events: none;
     background:
-      radial-gradient(120% 70% at 50% -10%, #17245c 0%, rgba(23, 36, 92, 0) 60%),
-      linear-gradient(180deg, #0b1540 0%, #08103a 45%, #050920 100%);
+      radial-gradient(120% 70% at 50% -10%, var(--ocean-top) 0%, transparent 60%),
+      linear-gradient(180deg, var(--ocean-1) 0%, var(--ocean-2) 45%, var(--ocean-3) 100%);
   }
 
   .ocean__glow {
@@ -32,7 +32,7 @@
     height: 60vmax;
     border-radius: 50%;
     filter: blur(60px);
-    opacity: 0.32;
+    opacity: calc(0.32 * var(--glow-mul));
     will-change: transform;
   }
   .ocean__glow--a {
@@ -67,21 +67,21 @@
   }
   .ocean__snow--far {
     background-image:
-      radial-gradient(1px 1px at 20px 30px, rgba(200, 210, 255, 0.5), transparent 60%),
-      radial-gradient(1px 1px at 140px 90px, rgba(200, 210, 255, 0.35), transparent 60%),
-      radial-gradient(1.2px 1.2px at 260px 210px, rgba(200, 210, 255, 0.45), transparent 60%),
-      radial-gradient(1px 1px at 90px 260px, rgba(200, 210, 255, 0.3), transparent 60%),
-      radial-gradient(1px 1px at 320px 40px, rgba(200, 210, 255, 0.4), transparent 60%);
+      radial-gradient(1px 1px at 20px 30px, rgba(var(--ocean-snow), 0.5), transparent 60%),
+      radial-gradient(1px 1px at 140px 90px, rgba(var(--ocean-snow), 0.35), transparent 60%),
+      radial-gradient(1.2px 1.2px at 260px 210px, rgba(var(--ocean-snow), 0.45), transparent 60%),
+      radial-gradient(1px 1px at 90px 260px, rgba(var(--ocean-snow), 0.3), transparent 60%),
+      radial-gradient(1px 1px at 320px 40px, rgba(var(--ocean-snow), 0.4), transparent 60%);
     background-size: 360px 300px;
     opacity: 0.7;
     animation: snow 90s linear infinite;
   }
   .ocean__snow--near {
     background-image:
-      radial-gradient(1.8px 1.8px at 60px 80px, rgba(220, 225, 255, 0.55), transparent 60%),
-      radial-gradient(1.4px 1.4px at 420px 160px, rgba(220, 225, 255, 0.4), transparent 60%),
-      radial-gradient(2px 2px at 250px 380px, rgba(220, 225, 255, 0.45), transparent 60%),
-      radial-gradient(1.5px 1.5px at 520px 420px, rgba(220, 225, 255, 0.35), transparent 60%);
+      radial-gradient(1.8px 1.8px at 60px 80px, rgba(var(--ocean-snow), 0.55), transparent 60%),
+      radial-gradient(1.4px 1.4px at 420px 160px, rgba(var(--ocean-snow), 0.4), transparent 60%),
+      radial-gradient(2px 2px at 250px 380px, rgba(var(--ocean-snow), 0.45), transparent 60%),
+      radial-gradient(1.5px 1.5px at 520px 420px, rgba(var(--ocean-snow), 0.35), transparent 60%);
     background-size: 600px 500px;
     opacity: 0.6;
     animation: snow 60s linear infinite;
@@ -90,8 +90,8 @@
   .ocean__dark {
     position: absolute;
     inset: 0;
-    background: #02040f;
-    opacity: calc(var(--page-p) * 0.55);
+    background: var(--ocean-deep);
+    opacity: calc(var(--page-p) * 0.55 * var(--glow-mul));
   }
 
   @keyframes snow {

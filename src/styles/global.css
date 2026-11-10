@@ -1,7 +1,12 @@
 /* Sitenin tasarım temeli: renkler uygulamanın koyu temasından (lib/theme/app_theme.dart)
-   alındı; vurgu rengi #F2C45A. Yazı tipleri BaseLayout.astro'da içe aktarılır. */
+   alındı; vurgu rengi #F2C45A. Yazı tipleri BaseLayout.astro'da içe aktarılır.
 
-:root {
+   İki tema var: koyu (varsayılan) ve açık (<html data-theme="light">). Tema düğmesi
+   Header.astro'da. Telefon maketleri (.phone) uygulamanın kendisi gibi her iki
+   temada da koyu kalır; bu yüzden koyu renkler .phone üzerinde yeniden tanımlanır. */
+
+:root,
+.phone {
   color-scheme: dark;
 
   --bg-top: #17245c;
@@ -17,6 +22,7 @@
   --primary-light: #a996ff;
   --secondary: #9fb2ff;
   --accent: #f2c45a;
+  --accent-text: #f2c45a; /* yazı olarak kullanılan altın */
   --accent-soft: #ffe3a1;
   --success: #4fd1a5;
   --danger: #ff6b81;
@@ -28,7 +34,91 @@
 
   --grad-primary: linear-gradient(135deg, #6d4df0 0%, #8e7bff 55%, #9fb2ff 100%);
   --grad-gold: linear-gradient(135deg, #ffd983 0%, #f2c45a 55%, #e0a63a 100%);
+  --grad-text-gold: var(--grad-gold);
+  --grad-text-violet: linear-gradient(120deg, #c9bcff 0%, #a996ff 40%, #9fb2ff 100%);
 
+  /* Kartlar, çipler ve yüzen parçalar */
+  --panel: rgba(19, 30, 84, 0.55);
+  --panel-strong: rgba(19, 30, 84, 0.88);
+  --panel-deep: rgba(11, 21, 64, 0.55);
+  --glass: linear-gradient(180deg, rgba(27, 40, 104, 0.55), rgba(19, 30, 84, 0.35));
+  --glass-shadow: 0 0 0 transparent;
+  --hover-tint: rgba(159, 178, 255, 0.08);
+  --hover-border: rgba(169, 150, 255, 0.35);
+  --icon-bg: rgba(124, 92, 245, 0.18);
+  --spot: rgba(169, 150, 255, 0.16);
+  --float-shadow: 0 16px 34px -16px rgba(0, 0, 0, 0.9);
+  --line-ghost: rgba(159, 178, 255, 0.12);
+  --header-bg: rgba(8, 14, 48, 0.72);
+  --menu-bg: rgba(5, 9, 32, 0.96);
+  --footer-bg: linear-gradient(180deg, rgba(3, 6, 26, 0.4), rgba(3, 6, 26, 0.9));
+  --glow-mul: 1; /* arka plandaki renkli parıltıların gücü */
+
+  /* Arka plandaki okyanus (Ocean.astro) */
+  --ocean-top: #17245c;
+  --ocean-1: #0b1540;
+  --ocean-2: #08103a;
+  --ocean-3: #050920;
+  --ocean-snow: 200, 210, 255;
+  --ocean-deep: #02040f;
+}
+
+/* Açık tema: sabah ışığında sığ deniz. Yazı renkleri beyaz zeminde en az
+   4,5:1 kontrast verecek koyulukta seçildi; vurgu altını yazıda koyulaşır. */
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg-top: #ffffff;
+  --bg: #f4f3fc;
+  --bg-deep: #eeecf9;
+  --abyss: #e6e3f6;
+  --surface: #ffffff;
+  --surface-high: #ece9fb;
+  --border: #d8d3f1;
+  --border-soft: rgba(70, 55, 160, 0.14);
+
+  --primary: #6d4df0;
+  --primary-light: #5f43d8;
+  --secondary: #4a63cf;
+  --accent: #e8b13c; /* zemin olarak (üzerinde koyu yazı) */
+  --accent-text: #875800; /* açık zeminde 4,5:1 üstü */
+  --accent-soft: #7a4f00;
+  --success: #12845e;
+  --danger: #c93652;
+
+  --text: #141a46;
+  --text-2: #444c7c;
+  --muted: #585f88;
+  --ink: #0b1540;
+
+  --grad-text-gold: linear-gradient(135deg, #d4951a 0%, #b47808 55%, #955c00 100%);
+  --grad-text-violet: linear-gradient(120deg, #7f5cf2 0%, #5b45d6 45%, #4a63cf 100%);
+
+  --panel: rgba(255, 255, 255, 0.85);
+  --panel-strong: rgba(255, 255, 255, 0.97);
+  --panel-deep: rgba(255, 255, 255, 0.72);
+  --glass: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.7));
+  --glass-shadow: 0 18px 44px -26px rgba(40, 30, 120, 0.35);
+  --hover-tint: rgba(70, 55, 160, 0.07);
+  --hover-border: rgba(109, 77, 240, 0.4);
+  --icon-bg: rgba(109, 77, 240, 0.1);
+  --spot: rgba(109, 77, 240, 0.08);
+  --float-shadow: 0 18px 36px -18px rgba(40, 30, 120, 0.4);
+  --line-ghost: rgba(70, 55, 160, 0.16);
+  --header-bg: rgba(255, 255, 255, 0.8);
+  --menu-bg: rgba(250, 249, 255, 0.98);
+  --footer-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(233, 230, 249, 0.95));
+  --glow-mul: 0.42;
+
+  --ocean-top: #ffffff;
+  --ocean-1: #f8f7fe;
+  --ocean-2: #f2f0fc;
+  --ocean-3: #eae7f8;
+  --ocean-snow: 109, 77, 240;
+  --ocean-deep: #d9d4f0;
+}
+
+:root {
   /* Fredoka'da Türkçe İ, ş, ğ, Ş, Ğ harfleri yok; tarayıcı yalnızca bu harfleri
      Baloo 2'den alır (o dosyayı da sadece bu harfler için indirir). */
   --font-display: 'Fredoka Variable', 'Baloo 2 Variable', system-ui, sans-serif;
@@ -155,7 +245,7 @@ p {
   font: 700 12.5px/1 var(--font-body);
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-text);
 }
 .kicker::before {
   content: '';
@@ -178,13 +268,13 @@ p {
 }
 
 .text-gold {
-  background: var(--grad-gold);
+  background: var(--grad-text-gold);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 .text-violet {
-  background: linear-gradient(120deg, #c9bcff 0%, #a996ff 40%, #9fb2ff 100%);
+  background: var(--grad-text-violet);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -214,7 +304,7 @@ p {
 }
 .btn--ghost {
   border-color: var(--border);
-  background: rgba(19, 30, 84, 0.5);
+  background: var(--panel);
   color: var(--text);
 }
 .btn--ghost:hover {
@@ -224,7 +314,8 @@ p {
 
 /* Cam efektli kart */
 .glass {
-  background: linear-gradient(180deg, rgba(27, 40, 104, 0.55), rgba(19, 30, 84, 0.35));
+  background: var(--glass);
+  box-shadow: var(--glass-shadow);
   border: 1px solid var(--border-soft);
   border-radius: 24px;
   -webkit-backdrop-filter: blur(14px);
@@ -244,7 +335,7 @@ p {
   border-radius: inherit;
   background: radial-gradient(
     420px circle at var(--mx, 50%) var(--my, -40%),
-    rgba(169, 150, 255, 0.16),
+    var(--spot),
     transparent 60%
   );
   opacity: 0;
@@ -355,4 +446,28 @@ p {
     transform: none;
     filter: none;
   }
+}
+
+/* ---------- Açık tema ayrıntıları ---------- */
+
+/* Telefonun gölgesi açık zeminde daha yumuşak. */
+:root[data-theme='light'] .phone__frame {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 0 0 calc(var(--pw) * 0.012) #070b24,
+    0 0 0 1.5px rgba(120, 140, 230, 0.35),
+    0 44px 80px -36px rgba(30, 20, 90, 0.5),
+    0 30px 110px -50px rgba(124, 92, 245, 0.45);
+}
+
+/* Tema değişirken renkler yumuşakça geçer; sınıf yalnızca geçiş boyunca durur
+   (Header.astro), böylece sayfadaki diğer animasyonlar etkilenmez. */
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease !important;
 }

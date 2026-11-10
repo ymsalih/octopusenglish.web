@@ -15,6 +15,8 @@ export function createOctopusScene(canvas, opts) {
   opts = opts || {};
   var still = typeof opts.still === 'number' ? opts.still : null;
   var introSpeed = opts.introSpeed || 1;
+  // Web: açık temada deniz aydınlık çizilir (setTheme ile değişir).
+  var light = !!opts.light;
   var INTRO_END = 4.0; // sahne zamanı (sn): bu noktadan sonra hız 1x
   // Gerçek süreyi sahne zamanına çevirir; INTRO_END'de iki hız kesintisiz birleşir.
   function sceneTime(real) {
@@ -242,15 +244,18 @@ export function createOctopusScene(canvas, opts) {
     var D = DPR;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     var g = ctx.createLinearGradient(0, 0, 0, H * D);
-    g.addColorStop(0, '#17245C'); g.addColorStop(0.45, '#0B1540'); g.addColorStop(1, '#050920');
+    if (light) { g.addColorStop(0, '#FFFFFF'); g.addColorStop(0.45, '#F3F1FD'); g.addColorStop(1, '#ECE9FA'); }
+    else { g.addColorStop(0, '#17245C'); g.addColorStop(0.45, '#0B1540'); g.addColorStop(1, '#050920'); }
     ctx.fillStyle = g; ctx.fillRect(0, 0, W * D, H * D);
-    ctx.globalCompositeOperation = 'lighter';
+    // Koyu suda ışık eklenerek ("lighter"), açık suda üstüne boyanarak çizilir.
+    ctx.globalCompositeOperation = light ? 'source-over' : 'lighter';
+    var ray = light ? 'rgba(124,92,245,' : 'rgba(120,150,255,';
     // Web: geniş ekranlarda ışık huzmesi sayısı ekran genişliğine göre artar.
     var rays = Math.max(4, Math.round(W / 300));
     for (var i = 0; i < rays; i++) {
       var x = (0.12 + i * (0.75 / (rays - 1))) * W + Math.sin(t * 0.25 + i * 1.7) * 18;
       var rg = ctx.createLinearGradient(0, 0, 0, H * 0.8 * D);
-      rg.addColorStop(0, 'rgba(120,150,255,0.09)'); rg.addColorStop(1, 'rgba(120,150,255,0)');
+      rg.addColorStop(0, ray + (light ? '0.06)' : '0.09)')); rg.addColorStop(1, ray + '0)');
       ctx.fillStyle = rg; ctx.beginPath();
       ctx.moveTo((x - 12) * D, 0); ctx.lineTo((x + 20) * D, 0);
       ctx.lineTo((x + 120 + (i % 4) * 12) * D, H * 0.8 * D); ctx.lineTo((x + 30) * D, H * 0.8 * D);
@@ -259,13 +264,15 @@ export function createOctopusScene(canvas, opts) {
     if (glow > 0) {
       var gr = Math.min(W * 0.75, H * 0.75);
       var gg = ctx.createRadialGradient(cx * D, cy * D, 0, cx * D, cy * D, gr * D);
-      gg.addColorStop(0, 'rgba(125,80,235,' + (0.24 * glow).toFixed(3) + ')'); gg.addColorStop(1, 'rgba(125,80,235,0)');
+      gg.addColorStop(0, 'rgba(125,80,235,' + ((light ? 0.14 : 0.24) * glow).toFixed(3) + ')'); gg.addColorStop(1, 'rgba(125,80,235,0)');
       ctx.fillStyle = gg; ctx.fillRect(0, 0, W * D, H * D);
     }
     for (var p = 0; p < parts.length; p++) {
       var q = parts[p];
       var py = ((q.y - t * 0.012 * q.z) % 1 + 1) % 1, px = q.x + Math.sin(t * 0.3 + q.ph) * 0.01;
-      ctx.fillStyle = 'rgba(190,200,255,' + (0.1 + 0.3 * q.z).toFixed(3) + ')';
+      ctx.fillStyle = light
+        ? 'rgba(109,77,240,' + (0.08 + 0.2 * q.z).toFixed(3) + ')'
+        : 'rgba(190,200,255,' + (0.1 + 0.3 * q.z).toFixed(3) + ')';
       ctx.beginPath(); ctx.arc(px * W * D, py * H * D, (0.5 + 1.1 * q.z) * D, 0, TAU); ctx.fill();
     }
     ctx.globalCompositeOperation = 'source-over';
@@ -317,7 +324,7 @@ export function createOctopusScene(canvas, opts) {
     if (fog > 0.004) {
       lx.setTransform(1, 0, 0, 1, 0, 0);
       lx.globalCompositeOperation = 'source-atop';
-      lx.fillStyle = 'rgba(11,21,64,' + fog.toFixed(3) + ')';
+      lx.fillStyle = (light ? 'rgba(236,233,250,' : 'rgba(11,21,64,') + fog.toFixed(3) + ')';
       lx.fillRect(0, 0, layer.width, layer.height);
       lx.globalCompositeOperation = 'source-over';
     }
@@ -357,6 +364,8 @@ export function createOctopusScene(canvas, opts) {
       raf = requestAnimationFrame(loop);
     },
     redraw: function () { drawn = false; },
+    /** Web: tema değişince denizi açık ya da koyu çizer. */
+    setTheme: function (isLight) { light = !!isLight; drawn = false; },
     stop: function () { running = false; cancelAnimationFrame(raf); }
   };
 }
