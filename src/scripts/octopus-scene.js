@@ -244,7 +244,7 @@ export function createOctopusScene(canvas, opts) {
     var D = DPR;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     var g = ctx.createLinearGradient(0, 0, 0, H * D);
-    if (light) { g.addColorStop(0, '#FFFFFF'); g.addColorStop(0.45, '#F3F1FD'); g.addColorStop(1, '#ECE9FA'); }
+    if (light) { g.addColorStop(0, '#EEECF7'); g.addColorStop(0.45, '#E8E5F4'); g.addColorStop(1, '#E1DDEF'); }
     else { g.addColorStop(0, '#17245C'); g.addColorStop(0.45, '#0B1540'); g.addColorStop(1, '#050920'); }
     ctx.fillStyle = g; ctx.fillRect(0, 0, W * D, H * D);
     // Koyu suda ışık eklenerek ("lighter"), açık suda üstüne boyanarak çizilir.
@@ -324,7 +324,7 @@ export function createOctopusScene(canvas, opts) {
     if (fog > 0.004) {
       lx.setTransform(1, 0, 0, 1, 0, 0);
       lx.globalCompositeOperation = 'source-atop';
-      lx.fillStyle = (light ? 'rgba(236,233,250,' : 'rgba(11,21,64,') + fog.toFixed(3) + ')';
+      lx.fillStyle = (light ? 'rgba(230,227,242,' : 'rgba(11,21,64,') + fog.toFixed(3) + ')';
       lx.fillRect(0, 0, layer.width, layer.height);
       lx.globalCompositeOperation = 'source-over';
     }

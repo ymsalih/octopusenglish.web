@@ -73,7 +73,7 @@
       radial-gradient(1px 1px at 90px 260px, rgba(var(--ocean-snow), 0.3), transparent 60%),
       radial-gradient(1px 1px at 320px 40px, rgba(var(--ocean-snow), 0.4), transparent 60%);
     background-size: 360px 300px;
-    opacity: 0.7;
+    opacity: calc(0.7 * var(--snow-mul));
     animation: snow 90s linear infinite;
   }
   .ocean__snow--near {
@@ -83,7 +83,7 @@
       radial-gradient(2px 2px at 250px 380px, rgba(var(--ocean-snow), 0.45), transparent 60%),
       radial-gradient(1.5px 1.5px at 520px 420px, rgba(var(--ocean-snow), 0.35), transparent 60%);
     background-size: 600px 500px;
-    opacity: 0.6;
+    opacity: calc(0.6 * var(--snow-mul));
     animation: snow 60s linear infinite;
   }
 

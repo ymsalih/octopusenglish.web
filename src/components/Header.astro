@@ -80,7 +80,7 @@ const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/(index)?$/, ''
     switchTimer = window.setTimeout(() => root.classList.remove('theme-switching'), 450);
     if (light) root.dataset.theme = 'light';
     else delete root.dataset.theme;
-    if (themeMeta) themeMeta.content = light ? '#F4F3FC' : '#0B1540';
+    if (themeMeta) themeMeta.content = light ? '#E8E5F4' : '#0B1540';
     try {
       localStorage.setItem('theme', light ? 'light' : 'dark');
     } catch {}

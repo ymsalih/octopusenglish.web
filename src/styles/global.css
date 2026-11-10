@@ -53,6 +53,7 @@
   --menu-bg: rgba(5, 9, 32, 0.96);
   --footer-bg: linear-gradient(180deg, rgba(3, 6, 26, 0.4), rgba(3, 6, 26, 0.9));
   --glow-mul: 1; /* arka plandaki renkli parıltıların gücü */
+  --snow-mul: 1; /* deniz karı parçacıklarının görünürlüğü */
 
   /* Arka plandaki okyanus (Ocean.astro) */
   --ocean-top: #17245c;
@@ -63,59 +64,66 @@
   --ocean-deep: #02040f;
 }
 
-/* Açık tema: sabah ışığında sığ deniz. Yazı renkleri beyaz zeminde en az
-   4,5:1 kontrast verecek koyulukta seçildi; vurgu altını yazıda koyulaşır. */
+/* Açık tema: alacakaranlıkta sığ deniz. Bembeyaz yerine göz yormayan lavanta-gri
+   bir zemin; kartlar zeminden açık, yazılar koyu. Telefon güneşte bile okunsun
+   diye gövde yazısı en az 7:1, soluk yazılar en az 4,5:1 kontrastta. */
 :root[data-theme='light'] {
   color-scheme: light;
 
-  --bg-top: #ffffff;
-  --bg: #f4f3fc;
-  --bg-deep: #eeecf9;
-  --abyss: #e6e3f6;
-  --surface: #ffffff;
-  --surface-high: #ece9fb;
-  --border: #d8d3f1;
-  --border-soft: rgba(70, 55, 160, 0.14);
+  --bg-top: #eceaf6;
+  --bg: #e6e3f2;
+  --bg-deep: #e1ddef;
+  --abyss: #d8d3ea;
+  --surface: #f7f6fc;
+  --surface-high: #e3dff2;
+  --border: #c9c3e4;
+  --border-soft: rgba(60, 45, 140, 0.16);
 
-  --primary: #6d4df0;
-  --primary-light: #5f43d8;
-  --secondary: #4a63cf;
+  --primary: #6343e6;
+  --primary-light: #4f33c4;
+  --secondary: #3a51b8;
   --accent: #e8b13c; /* zemin olarak (üzerinde koyu yazı) */
-  --accent-text: #875800; /* açık zeminde 4,5:1 üstü */
-  --accent-soft: #7a4f00;
-  --success: #12845e;
-  --danger: #c93652;
+  --accent-text: #6f4700; /* açık zeminde 6:1 üstü */
+  --accent-soft: #6a4300;
+  --success: #0c6e4c;
+  --danger: #ad2943;
 
-  --text: #141a46;
-  --text-2: #444c7c;
-  --muted: #585f88;
+  --text: #0d1136;
+  --text-2: #2c3259;
+  --muted: #464c74;
   --ink: #0b1540;
 
-  --grad-text-gold: linear-gradient(135deg, #d4951a 0%, #b47808 55%, #955c00 100%);
-  --grad-text-violet: linear-gradient(120deg, #7f5cf2 0%, #5b45d6 45%, #4a63cf 100%);
+  --grad-text-gold: linear-gradient(135deg, #b87c08 0%, #95600a 55%, #7a4a00 100%);
+  --grad-text-violet: linear-gradient(120deg, #6a45e6 0%, #4f36c8 45%, #3a51b8 100%);
 
-  --panel: rgba(255, 255, 255, 0.85);
-  --panel-strong: rgba(255, 255, 255, 0.97);
-  --panel-deep: rgba(255, 255, 255, 0.72);
-  --glass: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.7));
-  --glass-shadow: 0 18px 44px -26px rgba(40, 30, 120, 0.35);
-  --hover-tint: rgba(70, 55, 160, 0.07);
-  --hover-border: rgba(109, 77, 240, 0.4);
-  --icon-bg: rgba(109, 77, 240, 0.1);
-  --spot: rgba(109, 77, 240, 0.08);
-  --float-shadow: 0 18px 36px -18px rgba(40, 30, 120, 0.4);
-  --line-ghost: rgba(70, 55, 160, 0.16);
-  --header-bg: rgba(255, 255, 255, 0.8);
-  --menu-bg: rgba(250, 249, 255, 0.98);
-  --footer-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(233, 230, 249, 0.95));
-  --glow-mul: 0.42;
+  --panel: rgba(248, 247, 253, 0.94);
+  --panel-strong: #f9f8fd;
+  --panel-deep: rgba(246, 245, 252, 0.88);
+  --glass: linear-gradient(180deg, rgba(249, 248, 254, 0.97), rgba(243, 241, 251, 0.9));
+  --glass-shadow: 0 14px 34px -22px rgba(40, 30, 120, 0.38);
+  --hover-tint: rgba(60, 45, 140, 0.08);
+  --hover-border: rgba(99, 67, 230, 0.45);
+  --icon-bg: rgba(99, 67, 230, 0.12);
+  --spot: rgba(99, 67, 230, 0.07);
+  --float-shadow: 0 16px 32px -18px rgba(40, 30, 120, 0.45);
+  --line-ghost: rgba(60, 45, 140, 0.2);
+  --header-bg: rgba(232, 229, 244, 0.9);
+  --menu-bg: rgba(232, 229, 244, 0.985);
+  --footer-bg: linear-gradient(180deg, rgba(225, 221, 239, 0.5), rgba(214, 209, 234, 0.96));
+  --glow-mul: 0.3;
+  --snow-mul: 0.45;
 
-  --ocean-top: #ffffff;
-  --ocean-1: #f8f7fe;
-  --ocean-2: #f2f0fc;
-  --ocean-3: #eae7f8;
-  --ocean-snow: 109, 77, 240;
-  --ocean-deep: #d9d4f0;
+  --ocean-top: #eeecf7;
+  --ocean-1: #e8e5f4;
+  --ocean-2: #e3e0f1;
+  --ocean-3: #dcd8ed;
+  --ocean-snow: 90, 64, 200;
+  --ocean-deep: #cfc9e6;
+}
+
+/* Koyu zeminde koyu yazı ince görünür; açık temada gövde yazısı bir kademe kalın. */
+:root[data-theme='light'] body {
+  font-weight: 500;
 }
 
 :root {
